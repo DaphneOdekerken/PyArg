@@ -4,7 +4,7 @@ from ASPIC.aspic_classes.democratic_ordering import DemocraticOrdering
 from ASPIC.aspic_classes.elitist_ordering import ElitistOrdering
 from ASPIC.aspic_classes.ordering import Ordering
 from ASPIC.aspic_classes.preference import Preference
-from ASPIC.instantiated_argument.instantiated_argument import InstantiatedArgument
+from ASPIC.aspic_classes.instantiated_argument import InstantiatedArgument
 
 
 class WeakestLinkOrdering(Ordering):

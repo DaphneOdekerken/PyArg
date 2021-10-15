@@ -3,7 +3,7 @@ from typing import Dict, Set
 from ASPIC.aspic_classes.defeasible_rule import DefeasibleRule
 from ASPIC.aspic_classes.ordinary_premise import OrdinaryPremise
 from ASPIC.aspic_classes.preference import Preference
-from ASPIC.instantiated_argument.instantiated_argument import InstantiatedArgument
+from ASPIC.aspic_classes.instantiated_argument import InstantiatedArgument
 
 
 class Ordering:

@@ -8,7 +8,7 @@ class Queryable(Literal):
     """
     def __init__(self, literal_str: str, description_if_present: str, description_if_not_present: str, query: str,
                  query_explanation: str, priority: float):
-        super().__init__(literal_str, description_if_present, description_if_not_present, True)
+        super().__init__(literal_str, description_if_present, description_if_not_present)
         self.natural_language_query = query
         self.long_natural_language_query = query_explanation
         self.priority = priority

@@ -8,7 +8,7 @@ from ASPIC.aspic_classes.literal import Literal
 from ASPIC.aspic_classes.ordering import Ordering
 from ASPIC.aspic_classes.ordinary_premise import OrdinaryPremise
 from ASPIC.aspic_classes.preference import Preference
-from ASPIC.instantiated_argument.instantiated_argument import InstantiatedArgument
+from ASPIC.aspic_classes.instantiated_argument import InstantiatedArgument
 from ASPIC.aspic_classes.argumentation_system import ArgumentationSystem
 
 

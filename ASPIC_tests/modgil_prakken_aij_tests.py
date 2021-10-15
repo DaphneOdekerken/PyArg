@@ -1,6 +1,5 @@
 import unittest
 
-from ASPIC.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from ASPIC.aspic_classes.argumentation_system import ArgumentationSystem
 from ASPIC.aspic_classes.argumentation_theory import ArgumentationTheory
 from ASPIC.aspic_classes.defeasible_rule import DefeasibleRule
@@ -11,7 +10,7 @@ from ASPIC.aspic_classes.ordinary_premise import OrdinaryPremise
 from ASPIC.aspic_classes.preference import Preference
 from ASPIC.aspic_classes.strict_rule import StrictRule
 from ASPIC.aspic_classes.weakest_link_ordering import WeakestLinkElitistOrdering, WeakestLinkDemocraticOrdering
-from ASPIC.instantiated_argument.instantiated_argument import InstantiatedArgument
+from ASPIC.aspic_classes.instantiated_argument import InstantiatedArgument
 
 
 def get_argumentation_theory(include_d: bool = False, include_e: bool = False) -> ArgumentationTheory:

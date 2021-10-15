@@ -8,7 +8,7 @@ from ASPIC.aspic_classes.axiom import Axiom
 from ASPIC.aspic_classes.ordering import Ordering
 from ASPIC.aspic_classes.ordinary_premise import OrdinaryPremise
 from ASPIC.dynamic_aspic_classes.queryable import Queryable
-from ASPIC.instantiated_argument.potential_argument import PotentialArgument
+from ASPIC.dynamic_aspic_classes.potential_argument import PotentialArgument
 
 
 class PotentialArgumentationTheory(ArgumentationTheory):

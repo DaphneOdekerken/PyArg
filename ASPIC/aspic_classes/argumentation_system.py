@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Set
+from typing import Dict, List, Optional, Set
 
 from ASPIC.aspic_classes.defeasible_rule import DefeasibleRule
 from ASPIC.aspic_classes.strict_rule import StrictRule

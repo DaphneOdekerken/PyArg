@@ -5,7 +5,7 @@ from ASPIC.aspic_classes.defeasible_rule import DefeasibleRule
 from ASPIC.aspic_classes.literal import Literal
 from ASPIC.aspic_classes.rule import Rule
 from ASPIC.aspic_classes.strict_rule import StrictRule
-from ASPIC.instantiated_argument.instantiated_argument import InstantiatedArgument
+from ASPIC.aspic_classes.instantiated_argument import InstantiatedArgument
 
 
 class PotentialArgument(InstantiatedArgument):
