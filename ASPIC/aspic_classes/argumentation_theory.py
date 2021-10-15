@@ -1,5 +1,5 @@
 import itertools
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Set, Tuple
 
 from ASPIC.abstract_argumentation_classes.defeat import Defeat
 from ASPIC.aspic_classes.axiom import Axiom
@@ -36,7 +36,7 @@ class ArgumentationTheory:
                 self.add_ordinary_queryable_preference(ordinary_premise_preference)
 
     @property
-    def arguments(self) -> Dict[Literal, InstantiatedArgument]:
+    def arguments(self) -> Dict[Literal, Set[InstantiatedArgument]]:
         arguments_per_conclusion = {literal: set() for literal in self.argumentation_system.language.values()}
 
         for knowledge_item in self.knowledge_base_axioms:
@@ -72,6 +72,13 @@ class ArgumentationTheory:
     @property
     def all_arguments(self) -> List[InstantiatedArgument]:
         return [argument for arguments_for_literal in self.arguments.values() for argument in arguments_for_literal]
+
+    @property
+    def all_attacks(self) -> List[Tuple[InstantiatedArgument, InstantiatedArgument]]:
+        return [(argument_a, argument_b)
+                for argument_a in self.all_arguments
+                for argument_b in self.all_arguments
+                if self.attacks(argument_a, argument_b)]
 
     def add_ordinary_queryable_preference(self, queryable_preference: Preference):
         a, b = str(queryable_preference.object_a), str(queryable_preference.object_b)

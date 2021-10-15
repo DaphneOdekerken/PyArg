@@ -1,6 +1,7 @@
 from typing import Optional, List, Tuple
 
 from ASPIC.abstract_argumentation_classes.argument import Argument
+from ASPIC.aspic_classes.argumentation_theory import ArgumentationTheory
 
 
 class StructuredArgumentationFramework:
@@ -34,3 +35,7 @@ class StructuredArgumentationFramework:
         for less_preferred, more_preferred in argument_preference_relation:
             self._more_preferred_than[less_preferred].add(more_preferred)
             self._less_preferred_than[more_preferred].add(less_preferred)
+
+    @classmethod
+    def from_argumentation_theory(cls, name: str, argumentation_theory: ArgumentationTheory):
+        return cls(name, argumentation_theory.all_arguments, argumentation_theory.all_attacks)
