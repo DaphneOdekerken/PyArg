@@ -23,6 +23,10 @@ class AbstractArgumentationFramework:
         else:
             self._defeats = defeats
 
+        for defeat in defeats:
+            defeat.from_argument.add_outgoing_attack(defeat.to_argument)
+            defeat.to_argument.add_ingoing_attack(defeat.from_argument)
+
     @classmethod
     def from_argumentation_theory(cls, name: str, argumentation_theory: ArgumentationTheory,
                                   ordering: Optional[Ordering] = None):
