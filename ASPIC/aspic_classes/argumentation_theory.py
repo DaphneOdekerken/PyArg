@@ -35,8 +35,13 @@ class ArgumentationTheory:
             for ordinary_premise_preference in ordinary_premise_preferences:
                 self.add_ordinary_queryable_preference(ordinary_premise_preference)
 
+        self._arguments = self.recompute_arguments()
+
     @property
     def arguments(self) -> Dict[Literal, Set[InstantiatedArgument]]:
+        return self._arguments
+
+    def recompute_arguments(self):
         arguments_per_conclusion = {literal: set() for literal in self.argumentation_system.language.values()}
 
         for knowledge_item in self.knowledge_base_axioms:

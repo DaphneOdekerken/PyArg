@@ -1,10 +1,11 @@
 import itertools
-from typing import List, Dict, Literal, Set
+from typing import List, Dict, Set
 
 from ASPIC.abstract_argumentation_classes.defeat import Defeat
 from ASPIC.aspic_classes.argumentation_system import ArgumentationSystem
 from ASPIC.aspic_classes.argumentation_theory import ArgumentationTheory
 from ASPIC.aspic_classes.axiom import Axiom
+from ASPIC.aspic_classes.literal import Literal
 from ASPIC.aspic_classes.ordering import Ordering
 from ASPIC.aspic_classes.ordinary_premise import OrdinaryPremise
 from ASPIC.dynamic_aspic_classes.queryable import Queryable
@@ -16,9 +17,9 @@ class PotentialArgumentationTheory(ArgumentationTheory):
                  knowledge_base_ordinary_premises: List[OrdinaryPremise], queryables: List[Queryable]):
         super().__init__(argumentation_system, knowledge_base_axioms, knowledge_base_ordinary_premises)
         self.queryables = queryables
+        self._potential_arguments = self.recompute_potential_arguments()
 
-    @property
-    def potential_arguments(self) -> Dict[Literal, Set[PotentialArgument]]:
+    def recompute_potential_arguments(self) -> Dict[Literal, Set[PotentialArgument]]:
         arguments_per_conclusion = {literal: set() for literal in self.argumentation_system.language.values()}
 
         for queryable in self.queryables:
@@ -53,12 +54,16 @@ class PotentialArgumentationTheory(ArgumentationTheory):
         return arguments_per_conclusion
 
     @property
+    def potential_arguments(self) -> Dict[Literal, Set[PotentialArgument]]:
+        return self._potential_arguments
+
+    @property
     def all_potential_arguments(self) -> List[PotentialArgument]:
         return [argument for arguments_for_literal in self.potential_arguments.values()
                 for argument in arguments_for_literal]
 
     def get_all_potential_defeats(self, ordering: Ordering) -> List[Defeat]:
         return [Defeat(argument_a, argument_b)
-                for argument_a in self.potential_arguments
-                for argument_b in self.potential_arguments
+                for argument_a in self.all_potential_arguments
+                for argument_b in self.all_potential_arguments
                 if self.defeats(argument_a, argument_b, ordering)]

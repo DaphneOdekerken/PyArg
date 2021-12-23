@@ -1,4 +1,4 @@
-from typing import Optional, List, Set
+from typing import Optional, List, Set, Tuple
 
 from ASPIC.abstract_argumentation_classes.argument import Argument
 from ASPIC.abstract_argumentation_classes.defeat import Defeat
@@ -32,8 +32,16 @@ class ArgumentIncompleteArgumentationFramework:
             self._defeats = defeats
 
         for defeat in defeats:
-            defeat.from_argument.add_outgoing_attack(defeat.to_argument)
-            defeat.to_argument.add_ingoing_attack(defeat.from_argument)
+            if defeat.from_argument.name in self._arguments.keys():
+                defeat_from_argument = self._arguments[defeat.from_argument.name]
+            else:
+                defeat_from_argument = self._uncertain_arguments[defeat.from_argument.name]
+            if defeat.to_argument.name in self._arguments.keys():
+                defeat_to_argument = self._arguments[defeat.to_argument.name]
+            else:
+                defeat_to_argument = self._uncertain_arguments[defeat.to_argument.name]
+            defeat_from_argument.add_outgoing_attack(defeat.to_argument)
+            defeat_to_argument.add_ingoing_attack(defeat.from_argument)
 
     @classmethod
     def from_potential_argumentation_theory(cls, name: str,
@@ -48,8 +56,46 @@ class ArgumentIncompleteArgumentationFramework:
         defeats = potential_argumentation_theory.get_all_potential_defeats(ordering)
         return cls(name, arguments, uncertain_arguments, defeats)
 
-    def get_necessary_grounded_extension(self) -> Set[Argument]:
-        raise NotImplementedError
+    def get_necessary_grounded_extension(self) -> Tuple[Set[Argument], Set[Argument]]:
+        ng = {argument for argument in self._arguments.values() if not argument.get_ingoing_attack_arguments}
+        ang = {argument for ng_argument in ng for argument in ng_argument.get_outgoing_attack_arguments}
 
-    def get_possible_grounded_extension(self) -> Set[Argument]:
-        raise NotImplementedError
+        change = True
+        while change:
+            new_in_ng = {argument for argument in self._arguments.values()
+                         if argument not in ng and
+                         all(attacking_argument in ang
+                             for attacking_argument in argument.get_ingoing_attack_arguments)}
+            if new_in_ng:
+                change = True
+                ng = ng | new_in_ng
+                ang = ang | {argument for ng_argument in ng for argument in ng_argument.get_outgoing_attack_arguments}
+            else:
+                change = False
+
+        return ng, ang
+
+    def get_possible_grounded_extension(self) -> Tuple[Set[Argument], Set[Argument]]:
+        pg = {argument for argument in self._uncertain_arguments.values()
+              if all(str(attacking_argument) not in self._arguments.keys()
+                     for attacking_argument in argument.get_ingoing_attack_arguments)}
+        apg = {argument
+               for pg_argument in pg
+               for argument in pg_argument.get_outgoing_attack_arguments
+               if argument.name in self._arguments}
+
+        change = True
+        while change:
+            new_in_pg = {argument for argument in self._uncertain_arguments.values()
+                         if argument not in pg and
+                         all(attacking_argument in apg
+                             for attacking_argument in argument.get_ingoing_attack_arguments)}
+            if new_in_pg:
+                change = True
+                pg = pg | new_in_pg
+                apg = apg | {argument for pg_argument in pg for argument in pg_argument.get_outgoing_attack_arguments
+                             if argument.name in self._arguments}
+            else:
+                change = False
+
+        return pg, apg

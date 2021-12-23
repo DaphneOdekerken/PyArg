@@ -10,7 +10,7 @@ class Literal:
     Also, a literal has a list of contraries.
     """
 
-    def __init__(self, literal_str: str, description_if_present: str, description_if_not_present: str):
+    def __init__(self, literal_str: str, description_if_present: str = '', description_if_not_present: str = ''):
         self.s1 = literal_str
         self.s1_hash = hash(self.s1)
 
@@ -21,7 +21,11 @@ class Literal:
             self.negated = False
 
         self.abs_literal_str = literal_str
+        if description_if_present == '':
+            description_if_present = literal_str
         self.description_if_present = description_if_present
+        if description_if_not_present == '':
+            description_if_not_present = 'NOT ' + description_if_present
         self.description_if_not_present = description_if_not_present
 
         self.contraries = []

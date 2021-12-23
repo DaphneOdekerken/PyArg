@@ -7,6 +7,9 @@ class Argument:
         self._ingoing_attack_arguments = []
         self._outgoing_attack_arguments = []
 
+    def __repr__(self):
+        return self.name
+
     def __str__(self):
         return self.name
 
