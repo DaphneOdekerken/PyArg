@@ -76,7 +76,9 @@ class ArgumentIncompleteArgumentationFramework:
         return ng, ang
 
     def get_possible_grounded_extension(self) -> Tuple[Set[Argument], Set[Argument]]:
-        pg = {argument for argument in self._uncertain_arguments.values()
+        all_certain_or_uncertain_arguments = list(self._uncertain_arguments.values()) + list(self._arguments.values())
+
+        pg = {argument for argument in all_certain_or_uncertain_arguments
               if all(str(attacking_argument) not in self._arguments.keys()
                      for attacking_argument in argument.get_ingoing_attack_arguments)}
         apg = {argument
@@ -86,7 +88,7 @@ class ArgumentIncompleteArgumentationFramework:
 
         change = True
         while change:
-            new_in_pg = {argument for argument in self._uncertain_arguments.values()
+            new_in_pg = {argument for argument in all_certain_or_uncertain_arguments
                          if argument not in pg and
                          all(attacking_argument in apg
                              for attacking_argument in argument.get_ingoing_attack_arguments)}

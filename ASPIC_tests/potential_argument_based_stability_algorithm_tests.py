@@ -8,8 +8,10 @@ from ASPIC.aspic_classes.preference import Preference
 from ASPIC.dynamic_aspic_classes.potential_argumentation_theory import PotentialArgumentationTheory
 from ASPIC.dynamic_aspic_classes.queryable import Queryable
 from ASPIC.labels.enum_stability_label import EnumStabilityLabel
+from ASPIC.labels.potential_argument_label import PotentialArgumentLabel
 from ASPIC.stability.potential_argument_based_stability_algorithm import \
-    potential_argument_based_stability_algorithm_from_potential_argumentation_theory
+    potential_argument_based_stability_algorithm_from_potential_argumentation_theory, \
+    from_potential_argument_labels_to_literal_labels
 
 
 def get_test_argumentation_system() -> ArgumentationSystem:
@@ -87,63 +89,85 @@ class TestPotentialArgumentBasedStabilityAlgorithm(unittest.TestCase):
         ordering = LastLinkElitistOrdering(arg_sys.rule_preference_dict, {})
         potential_argumentation_theory = \
             PotentialArgumentationTheory(arg_sys, knowledge_base_axioms, knowledge_base_normal_premises, queryables)
-        labels = potential_argument_based_stability_algorithm_from_potential_argumentation_theory(
+        potential_argument_labels = potential_argument_based_stability_algorithm_from_potential_argumentation_theory(
             potential_argumentation_theory, ordering)
 
-        self.assertEqual(labels.literal_labeling[lan['bought']], EnumStabilityLabel.DEFENDED)
-        self.assertEqual(labels.literal_labeling[lan['~bought']], EnumStabilityLabel.UNSATISFIABLE)
-        self.assertEqual(labels.literal_labeling[lan['complaint']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['~complaint']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['fraud']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['accept']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['reject']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['trusted']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['~accept']], EnumStabilityLabel.UNSATISFIABLE)
-        self.assertEqual(labels.literal_labeling[lan['~reject']], EnumStabilityLabel.UNSATISFIABLE)
+        for potential_argument, potential_argument_label in potential_argument_labels.items():
+            if str(potential_argument.conclusion) == 'complaint':
+                self.assertEqual(potential_argument_label, PotentialArgumentLabel(False, False, True, False, False))
+            elif str(potential_argument.conclusion) in ['bought', 'paid', '~received']:
+                self.assertEqual(potential_argument_label, PotentialArgumentLabel(True, True, True, False, False))
+            elif str(potential_argument.conclusion) in ['~bought', '~paid', 'received']:
+                self.assertEqual(potential_argument_label, PotentialArgumentLabel(False, False, False, True, True))
+            elif str(potential_argument.conclusion) == 'fraud':
+                self.assertEqual(potential_argument_label, PotentialArgumentLabel(True, False, True, False, True))
+            elif str(potential_argument.conclusion) == 'accept':
+                self.assertEqual(potential_argument_label, PotentialArgumentLabel(False, False, True, False, False))
+            elif str(potential_argument.conclusion) == 'reject':
+                self.assertEqual(potential_argument_label, PotentialArgumentLabel(False, False, True, False, False))
+
+        labels = from_potential_argument_labels_to_literal_labels(potential_argument_labels, arg_sys.language)
+
+        self.assertEqual(labels[lan['bought']], EnumStabilityLabel.DEFENDED)
+        self.assertEqual(labels[lan['~bought']], EnumStabilityLabel.UNSATISFIABLE)
+        self.assertEqual(labels[lan['complaint']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['~complaint']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['fraud']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['accept']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['reject']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['trusted']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['~accept']], EnumStabilityLabel.UNSATISFIABLE)
+        self.assertEqual(labels[lan['~reject']], EnumStabilityLabel.UNSATISFIABLE)
 
         knowledge_base_axioms = [lan[lit] for lit in ['bought', 'paid', '~received', 'trusted']]
         potential_argumentation_theory = \
             PotentialArgumentationTheory(arg_sys, knowledge_base_axioms, knowledge_base_normal_premises, queryables)
-        labels = potential_argument_based_stability_algorithm_from_potential_argumentation_theory(
+        potential_argument_labels = potential_argument_based_stability_algorithm_from_potential_argumentation_theory(
             potential_argumentation_theory, ordering)
-        self.assertEqual(labels.literal_labeling[lan['-d1']], EnumStabilityLabel.DEFENDED)
-        self.assertEqual(labels.literal_labeling[lan['~trusted']], EnumStabilityLabel.UNSATISFIABLE)
-        self.assertEqual(labels.literal_labeling[lan['complaint']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['~complaint']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['fraud']], EnumStabilityLabel.OUT)
-        self.assertEqual(labels.literal_labeling[lan['accept']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['reject']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['trusted']], EnumStabilityLabel.DEFENDED)
-        self.assertEqual(labels.literal_labeling[lan['~accept']], EnumStabilityLabel.UNSATISFIABLE)
-        self.assertEqual(labels.literal_labeling[lan['~reject']], EnumStabilityLabel.UNSATISFIABLE)
+        labels = from_potential_argument_labels_to_literal_labels(potential_argument_labels, arg_sys.language)
+
+        self.assertEqual(labels[lan['-d1']], EnumStabilityLabel.DEFENDED)
+        self.assertEqual(labels[lan['~trusted']], EnumStabilityLabel.UNSATISFIABLE)
+        self.assertEqual(labels[lan['complaint']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['~complaint']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['fraud']], EnumStabilityLabel.OUT)
+        self.assertEqual(labels[lan['accept']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['reject']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['trusted']], EnumStabilityLabel.DEFENDED)
+        self.assertEqual(labels[lan['~accept']], EnumStabilityLabel.UNSATISFIABLE)
+        self.assertEqual(labels[lan['~reject']], EnumStabilityLabel.UNSATISFIABLE)
 
         knowledge_base_axioms = [lan[lit] for lit in ['bought', 'paid', '~received', 'trusted', 'complaint']]
         potential_argumentation_theory = \
             PotentialArgumentationTheory(arg_sys, knowledge_base_axioms, knowledge_base_normal_premises, queryables)
-        labels = potential_argument_based_stability_algorithm_from_potential_argumentation_theory(
+        potential_argument_labels = potential_argument_based_stability_algorithm_from_potential_argumentation_theory(
             potential_argumentation_theory, ordering)
-        self.assertEqual(labels.literal_labeling[lan['-d1']], EnumStabilityLabel.DEFENDED)
-        self.assertEqual(labels.literal_labeling[lan['~trusted']], EnumStabilityLabel.UNSATISFIABLE)
-        self.assertEqual(labels.literal_labeling[lan['complaint']], EnumStabilityLabel.DEFENDED)
-        self.assertEqual(labels.literal_labeling[lan['~complaint']], EnumStabilityLabel.UNSATISFIABLE)
-        self.assertEqual(labels.literal_labeling[lan['fraud']], EnumStabilityLabel.OUT)
-        self.assertEqual(labels.literal_labeling[lan['accept']], EnumStabilityLabel.OUT)
-        self.assertEqual(labels.literal_labeling[lan['reject']], EnumStabilityLabel.DEFENDED)
-        self.assertEqual(labels.literal_labeling[lan['trusted']], EnumStabilityLabel.DEFENDED)
-        self.assertEqual(labels.literal_labeling[lan['~accept']], EnumStabilityLabel.UNSATISFIABLE)
-        self.assertEqual(labels.literal_labeling[lan['~reject']], EnumStabilityLabel.UNSATISFIABLE)
+        labels = from_potential_argument_labels_to_literal_labels(potential_argument_labels, arg_sys.language)
+
+        self.assertEqual(labels[lan['-d1']], EnumStabilityLabel.DEFENDED)
+        self.assertEqual(labels[lan['~trusted']], EnumStabilityLabel.UNSATISFIABLE)
+        self.assertEqual(labels[lan['complaint']], EnumStabilityLabel.DEFENDED)
+        self.assertEqual(labels[lan['~complaint']], EnumStabilityLabel.UNSATISFIABLE)
+        self.assertEqual(labels[lan['fraud']], EnumStabilityLabel.OUT)
+        self.assertEqual(labels[lan['accept']], EnumStabilityLabel.OUT)
+        self.assertEqual(labels[lan['reject']], EnumStabilityLabel.DEFENDED)
+        self.assertEqual(labels[lan['trusted']], EnumStabilityLabel.DEFENDED)
+        self.assertEqual(labels[lan['~accept']], EnumStabilityLabel.UNSATISFIABLE)
+        self.assertEqual(labels[lan['~reject']], EnumStabilityLabel.UNSATISFIABLE)
 
         knowledge_base_axioms = [lan[lit] for lit in ['complaint']]
         potential_argumentation_theory = \
             PotentialArgumentationTheory(arg_sys, knowledge_base_axioms, knowledge_base_normal_premises, queryables)
-        labels = potential_argument_based_stability_algorithm_from_potential_argumentation_theory(
+        potential_argument_labels = potential_argument_based_stability_algorithm_from_potential_argumentation_theory(
             potential_argumentation_theory, ordering)
-        self.assertEqual(labels.literal_labeling[lan['-d1']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['complaint']], EnumStabilityLabel.DEFENDED)
-        self.assertEqual(labels.literal_labeling[lan['~complaint']], EnumStabilityLabel.UNSATISFIABLE)
-        self.assertEqual(labels.literal_labeling[lan['fraud']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['accept']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['reject']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['trusted']], EnumStabilityLabel.UNSTABLE)
-        self.assertEqual(labels.literal_labeling[lan['~accept']], EnumStabilityLabel.UNSATISFIABLE)
-        self.assertEqual(labels.literal_labeling[lan['~reject']], EnumStabilityLabel.UNSATISFIABLE)
+        labels = from_potential_argument_labels_to_literal_labels(potential_argument_labels, arg_sys.language)
+
+        self.assertEqual(labels[lan['-d1']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['complaint']], EnumStabilityLabel.DEFENDED)
+        self.assertEqual(labels[lan['~complaint']], EnumStabilityLabel.UNSATISFIABLE)
+        self.assertEqual(labels[lan['fraud']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['accept']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['reject']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['trusted']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['~accept']], EnumStabilityLabel.UNSATISFIABLE)
+        self.assertEqual(labels[lan['~reject']], EnumStabilityLabel.UNSATISFIABLE)

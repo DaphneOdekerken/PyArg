@@ -13,7 +13,7 @@ class PotentialArgumentLabel(Label):
         self.defeated_by_possible_grounded_extension = defeated_by_possible_grounded_extension
 
     def __str__(self):
-        s1 = '(A:{0}, NG:{1}, PG:{2}, ANG:{3}, PNG:{4})'.format(
+        s1 = '(A:{0}, NG:{1}, PG:{2}, ANG:{3}, APG:{4})'.format(
             str(self.in_arguments),
             str(self.in_necessary_grounded_extension),
             str(self.in_possible_grounded_extension),
