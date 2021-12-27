@@ -1,4 +1,4 @@
-from typing import Optional, List, Set, Tuple
+from typing import Optional, List, Set, Tuple, Dict
 
 from ASPIC.abstract_argumentation_classes.argument import Argument
 from ASPIC.abstract_argumentation_classes.defeat import Defeat
@@ -74,6 +74,14 @@ class ArgumentIncompleteArgumentationFramework:
                 change = False
 
         return ng, ang
+
+    @property
+    def arguments(self) -> Dict[str, Argument]:
+        return self._arguments
+
+    @property
+    def uncertain_arguments(self) -> Dict[str, Argument]:
+        return self._uncertain_arguments
 
     def get_possible_grounded_extension(self) -> Tuple[Set[Argument], Set[Argument]]:
         all_certain_or_uncertain_arguments = list(self._uncertain_arguments.values()) + list(self._arguments.values())
