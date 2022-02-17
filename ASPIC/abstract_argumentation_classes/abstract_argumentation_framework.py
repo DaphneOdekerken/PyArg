@@ -69,7 +69,7 @@ class AbstractArgumentationFramework:
 
     @property
     def arguments(self):
-        return self._arguments.values()
+        return list(self._arguments.values())
 
     @property
     def defeats(self):
