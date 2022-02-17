@@ -59,6 +59,14 @@ class AbstractArgumentationFramework:
     def is_defeated(self, argument: Argument) -> bool:
         return len(self.get_incoming_defeat_arguments(argument)) > 0
 
+    def is_in_arguments(self, argument_name: str) -> bool:
+        return argument_name in self._arguments
+
+    def get_argument(self, argument_name: str) -> Argument:
+        if not self.is_in_arguments(argument_name):
+            raise ValueError('There is no argument named ' + argument_name + '.')
+        return self._arguments[argument_name]
+
     @property
     def arguments(self):
         return self._arguments.values()
