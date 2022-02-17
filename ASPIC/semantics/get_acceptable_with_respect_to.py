@@ -1,24 +1,19 @@
-from typing import Set
+from typing import Set, Iterable
 
 from ASPIC.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from ASPIC.abstract_argumentation_classes.argument import Argument
 from ASPIC.abstract_argumentation_classes.defeat import Defeat
+from ASPIC.semantics.is_acceptable_with_respect_to import is_acceptable_with_respect_to
 
 
-def is_acceptable_with_respect_to(argument: Argument, argument_set: Set[Argument],
-                                  argumentation_framework: AbstractArgumentationFramework) -> bool:
-    return all(any([attacker_attacker in argument_set
-                    for attacker_attacker in argumentation_framework.get_incoming_defeat_arguments(attacker)])
-               for attacker in argumentation_framework.get_incoming_defeat_arguments(argument))
-
-
-def get_acceptable_with_respect_to(argument_set: Set[Argument],
+def get_acceptable_with_respect_to(argument_set: Iterable[Argument],
                                    argumentation_framework: AbstractArgumentationFramework) -> Set[Argument]:
     """
+    Get the set of argument that is acceptable with respect to this set of arguments.
 
-    :param argument_set:
-    :param argumentation_framework:
-    :return:
+    :param argument_set: The set of arguments for which we want to find the acceptable arguments.
+    :param argumentation_framework: Abstract argumentation framework.
+    :return: The set of arguments that are acceptable w.r.t. this set of arguments.
 
     >>> a = Argument('a')
     >>> b = Argument('b')

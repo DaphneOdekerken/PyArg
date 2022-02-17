@@ -12,24 +12,25 @@ from ASPIC.abstract_argumentation_classes.defeat import Defeat
 
 class PreferredExtensionLabel(Enum):
     IN = 1              # Arguments *might* be in a preferred extension
-    OUT = 2             # Argument is attacked by an IN argument
+    OUT = 2             # Argument is defeated by an IN argument
     BLANK = 3           # Default label for all arguments, indicating that the argument is still unprocessed.
-    MUST_OUT = 4        # Argument attacks (defeats) IN argument
+    MUST_OUT = 4        # Argument defeats IN argument
     UNDEC = 5           # Argument may not be included in a preferred extension because not defended by any IN argument.
 
 
 def get_preferred_extensions(argumentation_framework: AbstractArgumentationFramework) -> Set[FrozenSet[Argument]]:
     """
+    Get the preferred extensions of an argumentation framework.
 
-    :param argumentation_framework:
-    :return:
+    :param argumentation_framework: The argumentation framework for which we need the preferred extensions.
+    :return: Preferred extension of the argumentation framework.
 
     >>> b = Argument('b')
     >>> c = Argument('c')
     >>> d = Argument('d')
     >>> arguments = [b, c, d]
-    >>> attacks = [Defeat(b, c), Defeat(c, d), Defeat(d, c)]
-    >>> af = AbstractArgumentationFramework('af', arguments, attacks)
+    >>> defeats = [Defeat(b, c), Defeat(c, d), Defeat(d, c)]
+    >>> af = AbstractArgumentationFramework('af', arguments, defeats)
     >>> pes = get_preferred_extensions(af)
     >>> len(pes)
     1
@@ -57,7 +58,7 @@ def _recursively_get_preferred_extensions(argumentation_framework: AbstractArgum
     else:
         blank_argument = [argument for argument in argumentation_framework.arguments
                           if labelling[argument] == PreferredExtensionLabel.BLANK][0]
-        alternative_labelling = _in_trans(labelling, blank_argument)
+        alternative_labelling = _in_trans(labelling, blank_argument, argumentation_framework)
         preferred_extensions = _recursively_get_preferred_extensions(argumentation_framework, alternative_labelling,
                                                                      preferred_extensions)
         alternative_labelling = _undec_trans(labelling, blank_argument)
@@ -66,15 +67,15 @@ def _recursively_get_preferred_extensions(argumentation_framework: AbstractArgum
     return preferred_extensions
 
 
-def _in_trans(labelling: Dict[Argument, PreferredExtensionLabel], argument: Argument) -> \
-        Dict[Argument, PreferredExtensionLabel]:
+def _in_trans(labelling: Dict[Argument, PreferredExtensionLabel], argument: Argument,
+              argumentation_framework: AbstractArgumentationFramework) -> Dict[Argument, PreferredExtensionLabel]:
     new_labelling = labelling.copy()
     new_labelling[argument] = PreferredExtensionLabel.IN
-    for attacker in argument.get_outgoing_attack_arguments:
-        new_labelling[attacker] = PreferredExtensionLabel.OUT
-    for attacked in argument.get_ingoing_attack_arguments:
-        if attacked not in argument.get_outgoing_attack_arguments:
-            new_labelling[attacked] = PreferredExtensionLabel.MUST_OUT
+    for defeater in argumentation_framework.get_outgoing_defeat_arguments(argument):
+        new_labelling[defeater] = PreferredExtensionLabel.OUT
+    for defeated in argumentation_framework.get_incoming_defeat_arguments(argument):
+        if defeated not in argumentation_framework.get_outgoing_defeat_arguments(argument):
+            new_labelling[defeated] = PreferredExtensionLabel.MUST_OUT
     return new_labelling
 
 
