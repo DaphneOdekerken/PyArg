@@ -15,14 +15,14 @@ def get_relevant_uncertain_arguments_for_adding_to_ng(
         return []
 
     relevant_list = []
-    attacking_potential_arguments = set(argument.get_ingoing_attack_arguments)
+    attacking_potential_arguments = set(argument.get_ingoing_defeat_arguments)
 
     while attacking_potential_arguments:
         attacking_potential_argument = attacking_potential_arguments.pop()
 
         possible_defenders = [att_att_pot_arg
-                              for att_att_pot_arg in attacking_potential_argument.get_ingoing_attack_arguments
-                              if attacking_potential_argument not in att_att_pot_arg.get_ingoing_attack_arguments]
+                              for att_att_pot_arg in attacking_potential_argument.get_ingoing_defeat_arguments
+                              if attacking_potential_argument not in att_att_pot_arg.get_ingoing_defeat_arguments]
 
         if not possible_defenders:
             return []
@@ -37,6 +37,6 @@ def get_relevant_uncertain_arguments_for_adding_to_ng(
             relevant_list += possible_yet_unknown_defenders
 
             attacking_potential_arguments |= {defender_attacker for defender in possible_not_yet_in_ng_defenders
-                                              for defender_attacker in defender.get_ingoing_attack_arguments}
+                                              for defender_attacker in defender.get_ingoing_defeat_arguments}
 
     return relevant_list
