@@ -20,8 +20,8 @@ def get_acceptable_with_respect_to(argument_set: Iterable[Argument],
     >>> c = Argument('c')
     >>> d = Argument('d')
     >>> arguments = [a, b, c, d]
-    >>> attacks = [Defeat(b, a), Defeat(c, b), Defeat(d, c)]
-    >>> af = AbstractArgumentationFramework('af', arguments, attacks)
+    >>> defeats = [Defeat(b, a), Defeat(c, b), Defeat(d, c)]
+    >>> af = AbstractArgumentationFramework('af', arguments, defeats)
     >>> acc_set = get_acceptable_with_respect_to(set(), af)
     >>> d in acc_set
     True

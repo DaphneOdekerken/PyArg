@@ -18,8 +18,8 @@ def get_grounded_extension(argumentation_framework: AbstractArgumentationFramewo
     >>> c = Argument('c')
     >>> d = Argument('d')
     >>> arguments = [a, b, c, d]
-    >>> attacks = [Defeat(b, a), Defeat(c, b), Defeat(d, c)]
-    >>> af = AbstractArgumentationFramework('af', arguments, attacks)
+    >>> defeats = [Defeat(b, a), Defeat(c, b), Defeat(d, c)]
+    >>> af = AbstractArgumentationFramework('af', arguments, defeats)
     >>> ge = get_grounded_extension(af)
     >>> a in ge
     False
