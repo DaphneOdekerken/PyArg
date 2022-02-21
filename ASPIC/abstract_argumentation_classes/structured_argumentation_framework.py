@@ -5,6 +5,8 @@ from ASPIC.aspic_classes.argumentation_theory import ArgumentationTheory
 
 
 class StructuredArgumentationFramework:
+    # TODO: Check if this is necessary; if so, add docstrings and tests.
+
     def __init__(self, name: str = '',
                  arguments: Optional[List[Argument]] = None,
                  attacks: Optional[List[Tuple[Argument, Argument]]] = None,

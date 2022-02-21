@@ -3,7 +3,7 @@ from typing import Dict
 from ASPIC.abstract_argumentation_classes.argument_incomplete_argumentation_framework import \
     ArgumentIncompleteArgumentationFramework
 from ASPIC.aspic_classes.literal import Literal
-from ASPIC.aspic_classes.ordering import Ordering
+from ASPIC.aspic_classes.orderings.ordering import Ordering
 from ASPIC.dynamic_aspic_classes.potential_argument import PotentialArgument
 from ASPIC.dynamic_aspic_classes.potential_argumentation_theory import PotentialArgumentationTheory
 from ASPIC.labels.enum_stability_label import EnumStabilityLabel

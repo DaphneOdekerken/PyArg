@@ -1,12 +1,12 @@
 from typing import Dict, Set
 
 from ASPIC.aspic_classes.defeasible_rule import DefeasibleRule
-from ASPIC.aspic_classes.ordering import Ordering
+from ASPIC.aspic_classes.orderings.ordering import Ordering
 from ASPIC.aspic_classes.ordinary_premise import OrdinaryPremise
 from ASPIC.aspic_classes.preference import Preference
 
 
-class DemocraticOrdering(Ordering):
+class ElitistOrdering(Ordering):
     def __init__(self, defeasible_rule_preference_dict: Dict[str, Dict[str, Preference]],
                  ordinary_premise_preference_dict: Dict[str, Dict[str, Preference]]):
         super().__init__(defeasible_rule_preference_dict, ordinary_premise_preference_dict)
@@ -16,7 +16,7 @@ class DemocraticOrdering(Ordering):
             return False
         if len(rule_set_b) == 0:
             return True
-        return all([any([self.rule_is_strictly_weaker_than(rule_from_a, rule_from_b)
+        return any([all([self.rule_is_strictly_weaker_than(rule_from_a, rule_from_b)
                          for rule_from_b in rule_set_b])
                     for rule_from_a in rule_set_a])
 
@@ -26,6 +26,6 @@ class DemocraticOrdering(Ordering):
             return False
         if len(ordinary_premise_set_b) == 0:
             return True
-        return all([any([self.ordinary_premise_is_strictly_weaker_than(ordinary_premise_from_a, ordinary_premise_from_b)
+        return any([all([self.ordinary_premise_is_strictly_weaker_than(ordinary_premise_from_a, ordinary_premise_from_b)
                          for ordinary_premise_from_b in ordinary_premise_set_b])
                     for ordinary_premise_from_a in ordinary_premise_set_a])

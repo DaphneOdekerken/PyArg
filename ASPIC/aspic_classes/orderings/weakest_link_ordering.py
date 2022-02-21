@@ -1,8 +1,8 @@
 from typing import Dict
 
-from ASPIC.aspic_classes.democratic_ordering import DemocraticOrdering
-from ASPIC.aspic_classes.elitist_ordering import ElitistOrdering
-from ASPIC.aspic_classes.ordering import Ordering
+from ASPIC.aspic_classes.orderings.democratic_ordering import DemocraticOrdering
+from ASPIC.aspic_classes.orderings.elitist_ordering import ElitistOrdering
+from ASPIC.aspic_classes.orderings.ordering import Ordering
 from ASPIC.aspic_classes.preference import Preference
 from ASPIC.aspic_classes.instantiated_argument import InstantiatedArgument
 

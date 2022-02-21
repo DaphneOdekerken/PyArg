@@ -2,12 +2,14 @@ from typing import Optional, List, Set, Tuple, Dict
 
 from ASPIC.abstract_argumentation_classes.argument import Argument
 from ASPIC.abstract_argumentation_classes.defeat import Defeat
-from ASPIC.aspic_classes.last_link_ordering import LastLinkElitistOrdering
-from ASPIC.aspic_classes.ordering import Ordering
+from ASPIC.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering
+from ASPIC.aspic_classes.orderings.ordering import Ordering
 from ASPIC.dynamic_aspic_classes.potential_argumentation_theory import PotentialArgumentationTheory
 
 
 class ArgumentIncompleteArgumentationFramework:
+    # TODO: Docstrings and tests.
+
     def __init__(self, name: str = '',
                  arguments: Optional[List[Argument]] = None,
                  uncertain_arguments: Optional[List[Argument]] = None,

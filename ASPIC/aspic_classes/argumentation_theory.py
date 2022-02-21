@@ -5,7 +5,7 @@ from ASPIC.abstract_argumentation_classes.defeat import Defeat
 from ASPIC.aspic_classes.axiom import Axiom
 from ASPIC.aspic_classes.defeasible_rule import DefeasibleRule
 from ASPIC.aspic_classes.literal import Literal
-from ASPIC.aspic_classes.ordering import Ordering
+from ASPIC.aspic_classes.orderings.ordering import Ordering
 from ASPIC.aspic_classes.ordinary_premise import OrdinaryPremise
 from ASPIC.aspic_classes.preference import Preference
 from ASPIC.aspic_classes.instantiated_argument import InstantiatedArgument

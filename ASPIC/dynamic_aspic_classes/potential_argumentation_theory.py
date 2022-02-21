@@ -6,7 +6,7 @@ from ASPIC.aspic_classes.argumentation_system import ArgumentationSystem
 from ASPIC.aspic_classes.argumentation_theory import ArgumentationTheory
 from ASPIC.aspic_classes.axiom import Axiom
 from ASPIC.aspic_classes.literal import Literal
-from ASPIC.aspic_classes.ordering import Ordering
+from ASPIC.aspic_classes.orderings.ordering import Ordering
 from ASPIC.aspic_classes.ordinary_premise import OrdinaryPremise
 from ASPIC.dynamic_aspic_classes.queryable import Queryable
 from ASPIC.dynamic_aspic_classes.potential_argument import PotentialArgument

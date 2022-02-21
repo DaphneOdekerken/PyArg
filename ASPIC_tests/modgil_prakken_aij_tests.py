@@ -3,13 +3,14 @@ import unittest
 from ASPIC.aspic_classes.argumentation_system import ArgumentationSystem
 from ASPIC.aspic_classes.argumentation_theory import ArgumentationTheory
 from ASPIC.aspic_classes.defeasible_rule import DefeasibleRule
-from ASPIC.aspic_classes.elitist_ordering import ElitistOrdering
-from ASPIC.aspic_classes.last_link_ordering import LastLinkElitistOrdering, LastLinkDemocraticOrdering
+from ASPIC.aspic_classes.orderings.elitist_ordering import ElitistOrdering
+from ASPIC.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering, LastLinkDemocraticOrdering
 from ASPIC.aspic_classes.literal import Literal
 from ASPIC.aspic_classes.ordinary_premise import OrdinaryPremise
 from ASPIC.aspic_classes.preference import Preference
 from ASPIC.aspic_classes.strict_rule import StrictRule
-from ASPIC.aspic_classes.weakest_link_ordering import WeakestLinkElitistOrdering, WeakestLinkDemocraticOrdering
+from ASPIC.aspic_classes.orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
+    WeakestLinkDemocraticOrdering
 from ASPIC.aspic_classes.instantiated_argument import InstantiatedArgument
 
 

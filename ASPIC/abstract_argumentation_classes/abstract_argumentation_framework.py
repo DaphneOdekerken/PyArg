@@ -3,8 +3,8 @@ from typing import Optional, List
 from ASPIC.abstract_argumentation_classes.argument import Argument
 from ASPIC.abstract_argumentation_classes.defeat import Defeat
 from ASPIC.aspic_classes.argumentation_theory import ArgumentationTheory
-from ASPIC.aspic_classes.last_link_ordering import LastLinkElitistOrdering
-from ASPIC.aspic_classes.ordering import Ordering
+from ASPIC.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering
+from ASPIC.aspic_classes.orderings.ordering import Ordering
 from ASPIC_tests.modgil_prakken_aij_tests import get_argumentation_theory
 
 

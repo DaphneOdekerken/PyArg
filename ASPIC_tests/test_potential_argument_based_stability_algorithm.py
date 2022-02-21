@@ -2,7 +2,7 @@ import unittest
 
 from ASPIC.aspic_classes.argumentation_system import ArgumentationSystem
 from ASPIC.aspic_classes.defeasible_rule import DefeasibleRule
-from ASPIC.aspic_classes.last_link_ordering import LastLinkElitistOrdering
+from ASPIC.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering
 from ASPIC.aspic_classes.literal import Literal
 from ASPIC.aspic_classes.preference import Preference
 from ASPIC.dynamic_aspic_classes.potential_argumentation_theory import PotentialArgumentationTheory
