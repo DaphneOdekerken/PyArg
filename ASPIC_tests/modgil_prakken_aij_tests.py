@@ -141,9 +141,9 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
         d3 = DefeasibleRule(3, {language['a']}, language['p'], 'd3')
 
         arg_theory.argumentation_system.add_rule_preference(Preference(d2, '<', d3))
-        arg_theory.add_ordinary_queryable_preference(Preference(language['-r'], '<', language['r']))
+        arg_theory.add_ordinary_premise_preference(Preference(language['-r'], '<', language['r']))
         # arg_theory.add_ordinary_queryable_preference(Preference(language['-a'], '=', language['r']))
-        arg_theory.add_ordinary_queryable_preference(Preference(language['~s'], '<', language['-r']))
+        arg_theory.add_ordinary_premise_preference(Preference(language['~s'], '<', language['-r']))
 
         self.assertSetEqual(arg_a.defeasible_rules, arg_a.last_defeasible_rules, {d3})
         self.assertSetEqual(arg_a.ordinary_premises, {language['a']})

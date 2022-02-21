@@ -63,7 +63,7 @@ class AbstractArgumentationFramework:
         if ordering is None:
             ordering = LastLinkElitistOrdering(argumentation_theory.argumentation_system.rule_preference_dict,
                                                argumentation_theory.ordinary_premise_preference_dict)
-        return cls(name, argumentation_theory.all_arguments, argumentation_theory.get_all_defeats(ordering))
+        return cls(name, argumentation_theory.all_arguments, argumentation_theory.recompute_all_defeats(ordering))
 
     def get_incoming_defeat_arguments(self, argument: Argument) -> List[Argument]:
         """
