@@ -74,7 +74,7 @@ def _in_trans(labelling: Dict[Argument, PreferredExtensionLabel], argument: Argu
     for defeater in argumentation_framework.get_outgoing_defeat_arguments(argument):
         new_labelling[defeater] = PreferredExtensionLabel.OUT
     for defeated in argumentation_framework.get_incoming_defeat_arguments(argument):
-        if defeated not in argumentation_framework.get_outgoing_defeat_arguments(argument):
+        if new_labelling[defeated] != PreferredExtensionLabel.OUT:
             new_labelling[defeated] = PreferredExtensionLabel.MUST_OUT
     return new_labelling
 
