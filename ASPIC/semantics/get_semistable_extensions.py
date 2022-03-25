@@ -60,8 +60,6 @@ def _recursively_get_semistable_extensions(argumentation_framework: AbstractArgu
                     [frozenset(sorted({argument for argument in argumentation_framework.arguments
                                        if ss_labelling[argument] == SemiStableExtensionLabel.UNDEC})),
                      ss_labelling])
-            print(calculated_semistable_undec)
-            print('label before:', labellings)
             if not any(candidate_semistable_undec > semistable_undec[0]
                        for semistable_undec in calculated_semistable_undec):
                 labellings.append(labelling)
@@ -70,7 +68,6 @@ def _recursively_get_semistable_extensions(argumentation_framework: AbstractArgu
                     for semistable_undec in calculated_semistable_undec:
                         if candidate_semistable_undec < semistable_undec[0]:
                             labellings.remove(semistable_undec[1])
-            print('label after:', labellings)
     else:
         blank_argument = [argument for argument in argumentation_framework.arguments
                           if labelling[argument] == SemiStableExtensionLabel.BLANK][0]

@@ -330,6 +330,13 @@ class ArgumentationTheory:
         :param ordering: The ordering used to decide if the attacking argument is weaker than the attacking argument.
         :return: List of all defeats.
         """
+
+        if ordering == None:
+            return [Defeat(argument_a,argument_b)
+                    for argument_a in self.all_arguments
+                    for argument_b in self.all_arguments
+                    if self.attacks(argument_a,argument_b)]
+
         return [Defeat(argument_a, argument_b)
                 for argument_a in self.all_arguments
                 for argument_b in self.all_arguments

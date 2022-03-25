@@ -16,7 +16,7 @@ class DefeasibleRule(Rule):
 
     @property
     def id_str(self) -> str:
-        return 'd' + str(self.id)
+        return str(self.id)
 
     def add_stronger_rule(self, other_rule: 'DefeasibleRule'):
         self._stronger_rules.append(other_rule)

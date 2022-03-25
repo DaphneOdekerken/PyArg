@@ -1,4 +1,4 @@
-from _typeshed import SupportsLessThan
+#from _typeshed import SupportsLessThan
 from enum import Enum
 from typing import Set, Dict, FrozenSet, List, Union, Any
 
@@ -22,7 +22,7 @@ class EagerExtensionLabel(Enum):
 
 
 def get_eager_extension(argumentation_framework: AbstractArgumentationFramework) -> List[
-    Set[Union[SupportsLessThan, Any]]]:
+    Set[Union[Any]]]:
     """
     Get the eager extension of an argumentation framework.
 
