@@ -28,8 +28,14 @@ from ASPIC.semantics.get_ideal_extension import get_ideal_extension
 from ASPIC.semantics.get_stable_extensions import get_stable_extensions
 from ASPIC.semantics.get_semistable_extensions import get_semistable_extensions
 from ASPIC.semantics.get_eager_extension import get_eager_extension
+from Explanations.explanation_functions.reach_and_dist import get_reach
+from Explanations.explanation_functions.defending import get_defending, get_dir_defending
+from Explanations.explanation_functions.not_defending import get_not_defending, get_no_self_defense, \
+    get_no_dir_defending
+
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.LUMEN])
+
 
 abstract_setting = html.Div(children=[
     html.Div([
@@ -68,7 +74,7 @@ ASPIC_setting = html.Div(children=[
             html.Br(),
             dcc.Textarea(
                 id='aspic-axioms',
-                placeholder='Add one axiom per line. For examle:\n p \n -q \n ~r',
+                placeholder='Add one axiom per line. For example:\n p \n -q \n ~r',
                 value='',
                 style={'height': 150, 'margin-top': '10px'}, ),
         ], style={'padding': 10, 'flex': 1, 'margin-left': '10px'}),
@@ -78,7 +84,7 @@ ASPIC_setting = html.Div(children=[
             html.Br(),
             dcc.Textarea(
                 id='aspic-ordinary-premises',
-                placeholder='Add one ordinary premise per line. For examle:\n p \n -q \n ~r',
+                placeholder='Add one ordinary premise per line. For example:\n p \n -q \n ~r',
                 value='',
                 style={'height': 150, 'margin-top': '10px'}, ),
         ], style={'padding': 10, 'flex': 1}),
@@ -255,6 +261,136 @@ str_evaluation = html.Div([
 
     html.Div(id='strAF-evaluation', style={'whiteSpace': 'pre-line'}),
 ])
+
+
+abstr_explanation = html.Div([
+    html.Div([
+        html.Div([
+            html.Div([
+                html.B('Type'),
+
+                dcc.RadioItems(
+                    options=[
+                        {'label': 'Acceptance', 'value': 'Acc'},
+                        {'label': 'Non-Acceptance', 'value': 'NonAcc'}
+                    ],
+                    value='',
+                    id='abstr-explanation-type',
+                    style={'margin-top': '10px'}
+                ),
+            ]), 
+            
+            html.Div([
+                html.B('Strategy'),
+
+                dcc.RadioItems(
+                    options=[
+                        {'label': 'Credulous', 'value': 'Cred'},
+                        {'label': 'Skeptical', 'value': 'Skep'}
+                    ],
+                    value='',
+                    id='abstr-explanation-strategy',
+                    style={'margin-top': '10px'}
+                ),
+            ], style={'margin-top': '20px'}),
+        ], style={'padding': 10, 'flex': 1}),
+        
+        html.Div([
+            html.B('Explanation function'),
+
+            dcc.RadioItems(
+                id='abstr-explanation-function',
+                style={'margin-top': '10px'}
+            ),
+        ], style={'padding': 10, 'flex': 1}),
+
+    ], style={'display': 'flex', 'flex-direction': 'row'}),
+
+    html.Div(
+        [html.Button('Derive Explanations', id='abstrAF-Expl', n_clicks=0)], style={'text-align': 'left',
+                                                                                    'margin-left': '10px'}
+    ),
+
+    html.Div(id='abstrAF-explanation', style={'whiteSpace': 'pre-line'}),
+])
+
+
+str_explanation = html.Div([
+    html.Div([
+        html.Div([
+            html.Div([
+                html.B('Type'),
+
+                dcc.RadioItems(
+                    options=[
+                        {'label': 'Acceptance', 'value': 'Acc'},
+                        {'label': 'Non-Acceptance', 'value': 'NonAcc'}
+                    ],
+                    value='',
+                    id='str-explanation-type',
+                    style={'margin-top': '10px'}
+                ),
+            ]), 
+            
+            html.Div([
+                html.B('Strategy'),
+
+                dcc.RadioItems(
+                    options=[
+                        {'label': 'Credulous', 'value': 'Cred'},
+                        {'label': 'Skeptical', 'value': 'Skep'}
+                    ],
+                    value='',
+                    id='str-explanation-strategy',
+                    style={'margin-top': '10px'}
+                ),
+            ], style={'margin-top': '20px'}),
+        ], style={'padding': 10, 'flex': 1}),
+        
+        html.Div([
+            html.Div([
+                html.B('Explanation function'),
+
+                dcc.RadioItems(
+
+                    id='str-explanation-function',
+                    style={'margin-top': '10px'}
+                ),
+            ]),
+            
+            html.Div([
+                html.B('Explanation form'),
+
+                dcc.RadioItems(
+                    options=[
+                        {'label': 'Argument', 'value': 'Arg'},
+                        {'label': 'Premises', 'value': 'Prem'},
+                        {'label': 'Rules', 'value': 'Rule'},
+                        {'label': 'Sub-arguments', 'value': 'SubArg'},
+                        {'label': 'Sub-argument conclusions', 'value': 'SubArgConc'}
+                    ],
+                    id='str-explanation-form',
+                    style={'margin-top': '10px'}
+                ),
+            ], style={'margin-top': '20px'}),
+            
+        ], style={'padding': 10, 'flex': 1})
+
+    ], style={'display': 'flex', 'flex-direction': 'row'}),
+
+    html.Div(
+        [html.Button('Derive Explanations', id='strAF-Expl', n_clicks=0)], style={'text-align': 'left',
+                                                                                  'margin-left': '10px'}
+    ),
+
+    html.Div(id='strAF-explanation', style={'whiteSpace': 'pre-line'}),
+])
+
+
+expl_function_options = {
+    'Acc': ['Defending', 'DirDefending'],
+    'NonAcc': ['NoDefAgainst', 'NoDirDefense', 'NoSelfDefense']
+}
 
 
 def get_argumentation_framework(arguments, attacks):
@@ -518,6 +654,129 @@ def get_accepted_formulas(extensions, strategy):
         accepted_formulas = set.intersection(*extension_formulas)
 
     return accepted_formulas
+    
+    
+def get_abstr_explanations(arg_framework, semantics, extensions, accepted, function, expl_type, strategy):
+    """
+    Calculate, for each argument, the explanations, given the function, type and strategy.
+    
+    :param arg_framework: The argumentation framework the explanation has to be calculated from.
+    :param semantics: The semantics used to determine (non-)acceptance.
+    :param extensions: The sets of accepted arguments in arg_framework, based on semantics.
+    :param accepted: The arguments that are considered accepted given the extensions and strategy.
+    :param function: The explanation function, to determine the content of the explanation.
+    :param expl_type: The explanation type, to determine acceptance/non-acceptance explanation.
+    :param strategy: The strategy of the explanation, whether credulous or skeptical reasoning. 
+    :return: A dictionary with for each (non-)accepted argument its explanation, given the parameters. 
+    """
+    explanation = {}
+    not_accepted = [arg for arg in arg_framework.arguments if arg not in accepted]
+    if expl_type == 'Acc':
+        for arg in accepted:
+            if function == 'Defending':
+                explanation[str(arg)] = get_defending(arg_framework, arg, extensions)
+            elif function == 'DirDefending':
+                explanation[str(arg)] = get_dir_defending(arg_framework, arg, extensions)
+        return explanation
+
+    elif expl_type == 'NonAcc':
+        for arg in not_accepted:
+            not_defending_sets = []
+            if function == 'NoDefAgainst':
+                explanation[str(arg)] = get_not_defending(arg_framework, arg, extensions)                
+            elif function == 'NoDirDefense':
+                explanation[str(arg)] = get_no_dir_defending(arg_framework, arg, extensions)                        
+            elif function == 'NoSelfDefense':
+                explanation[str(arg)] = get_no_self_defense(arg_framework, arg, extensions)        
+        return explanation 
+    
+  
+def get_str_explanations(argumentation_theory, semantics, ordering_choice, extensions, accepted_formulas, function,
+                         expl_type, strategy, form):
+    """
+    Calculate, for each formula, the explanations, given the function, type, strategy and form.
+    
+    :param argumentation_Theory: the argumentation theory the explanation has to be calculated from.
+    :param semantics: The semantics used to determine (non-)acceptance.
+    :param ordering_choice: The chosen ordering, combining both last/weakest link and democratic/elitist.
+    :param extensions: The sets of accepted arguments in arg_framework, based on semantics.
+    :param accepted_formulas: The formulas that are considered accepted given the extensions and strategy.
+    :param function: The explanation function, to determine the content of the explanation.
+    :param expl_type: The explanation type, to determine acceptance/non-acceptance explanation.
+    :param strategy: The strategy of the explanation, whether credulous or skeptical reasoning. 
+    :param form: The form of the explanation, for example, explanations in terms of arguments, rules or premises.
+    :return: A dictionary with for each (non-)accepted argument its explanation, given the parameters. 
+    """
+    if ordering_choice == 'demlastl':
+        ordering = LastLinkDemocraticOrdering(argumentation_theory.argumentation_system.rule_preference_dict,
+                                              argumentation_theory.ordinary_premise_preference_dict)
+    elif ordering_choice == 'elilastl':
+        ordering = LastLinkElitistOrdering(argumentation_theory.argumentation_system.rule_preference_dict,
+                                           argumentation_theory.ordinary_premise_preference_dict)
+    elif ordering_choice == 'demweakl':
+        ordering = WeakestLinkDemocraticOrdering(argumentation_theory.argumentation_system.rule_preference_dict,
+                                                 argumentation_theory.ordinary_premise_preference_dict)
+    elif ordering_choice == 'eliweakl':
+        ordering = WeakestLinkElitistOrdering(argumentation_theory.argumentation_system.rule_preference_dict,
+                                              argumentation_theory.ordinary_premise_preference_dict)
+    else:
+        ordering = None
+    abstractAF = AbstractArgumentationFramework.from_argumentation_theory('af', argumentation_theory, ordering)
+    abstr_explanation = {}
+    if expl_type == 'Acc':
+        for formula in accepted_formulas:
+            form_arg = argumentation_theory.arguments[formula]
+            arg_expl = []
+            for arg in form_arg:
+                if function == 'Defending':
+                    arg_expl.extend(get_defending(abstractAF, arg, extensions))
+                elif function == 'DirDefending':
+                    arg_expl.extend(get_dir_defending(abstractAF, arg, extensions))
+            abstr_explanation[str(formula)] = arg_expl
+
+    elif expl_type == 'NonAcc':
+        formulas = set()
+        for arg in abstractAF.arguments:
+            for subarg in arg.sub_arguments:
+                formulas.add(subarg.conclusion)
+        for formula in formulas.difference(accepted_formulas):
+            form_arg = argumentation_theory.arguments[formula]
+            arg_expl = []
+            for arg in form_arg:
+                if function == 'NoDefAgainst':
+                    arg_expl.extend(get_not_defending(abstractAF, arg, extensions))
+                elif function == 'NoDirDefense':
+                    arg_expl.extend(get_no_dir_defending(abstractAF, arg, extensions))
+                elif function == 'NoSelfDefense':
+                    arg_expl.extend(get_no_self_defense(abstractAF, arg, extension))
+            abstr_explanation[str(formula)] = arg_expl
+
+    if form == 'Arg':
+        return abstr_explanation            
+    
+    else:
+        for expl_form in abstr_explanation:
+            explanation = abstr_explanation[expl_form]
+            form_expl = []
+            for sets in explanation:
+                for arg in sets:
+                    if form == 'Prem' and arg.premises not in form_expl:
+                        form_expl.append(arg.premises)
+                    elif form == 'Rule':
+                        defrules = arg.defeasible_rules
+                        rules = defrules.union(arg.strict_rules)
+                        if rules not in form_expl:
+                            form_expl.append(rules)
+                    elif form == 'SubArg' and arg.sub_arguments not in form_expl:
+                        form_expl.append(arg.sub_arguments)
+                    elif form == 'SubArgConc':  
+                        subargconc = set()  
+                        for subarg in arg.sub_arguments:
+                            if subarg.conclusion not in subargconc:
+                                subargconc.add(subarg.conclusion)
+                        form_expl.append(subargconc)
+            abstr_explanation[expl_form] = form_expl
+        return abstr_explanation
 
 
 def get_abstr_graph_data(arg_framework):
@@ -584,6 +843,9 @@ def get_str_graph_data(argumentation_theory, ordering_choice):
     return data
 
 
+
+
+
 layout_abstract = html.Div([
     html.Div([
         html.Div([
@@ -618,6 +880,22 @@ layout_abstract = html.Div([
                 dbc.CardBody(abstr_evaluation),
                 id="abstr-evaluation-collapse", is_open=False
             ),
+            
+            dbc.CardHeader(
+                dbc.Button(
+                    "Explanation",
+                    style={'color': '#152A47',
+                           'text-align': 'left',
+                           'background-color': '#7BE7FF',
+                           'border-color': '#7BE7FF',
+                           'width': '100%'},
+                    id="abstr-explanation-button",
+                )
+            ),
+            dbc.Collapse(
+                dbc.CardBody(abstr_explanation),
+                id="abstr-explanation-collapse", is_open=False
+            ),
         ], style={'padding': 10, 'flex': 1}),
 
         html.Div([
@@ -634,6 +912,11 @@ layout_abstract = html.Div([
 
                 html.Div(
                     id='abstr-evaluation',
+                    style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
+                ),
+
+                html.Div(
+                    id='abstr-explanation',
                     style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
                 )
             ], style={'display': 'flex', 'flex-direction': 'row'})
@@ -675,6 +958,22 @@ layout_ASPIC = html.Div([
                 dbc.CardBody(str_evaluation),
                 id="str-evaluation-collapse", is_open=False
             ),
+            
+            dbc.CardHeader(
+                dbc.Button(
+                    "Explanation",
+                    style={'color': '#152A47',
+                           'text-align': 'left',
+                           'background-color': '#7BE7FF',
+                           'border-color': '#7BE7FF',
+                           'width': '100%'},
+                    id="str-explanation-button",
+                )
+            ),
+            dbc.Collapse(
+                dbc.CardBody(str_explanation),
+                id="str-explanation-collapse", is_open=False
+            ),
         ], style={'padding': 10, 'flex': 1}),
 
         html.Div([
@@ -692,6 +991,11 @@ layout_ASPIC = html.Div([
                 html.Div(
                     id='str-evaluation',
                     style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
+                ),
+
+                html.Div(
+                    id='str-explanation',
+                    style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
                 )
             ], style={'display': 'flex', 'flex-direction': 'row'})
         ], style={'padding': 10, 'flex': 1}),
@@ -701,7 +1005,7 @@ layout_ASPIC = html.Div([
 app.layout = html.Div([
     html.Div([
         html.Div([
-            html.H1('PyASPIC', className='header-title'),
+            html.H1('PyArg', className='header-title'),
         ], style={'padding': 10, 'flex': 5}),
         
         html.Div([
@@ -731,7 +1035,8 @@ app.validation_layout = html.Div([
     abstract_setting,
     ASPIC_setting,
     abstr_evaluation,
-    str_evaluation
+    str_evaluation,
+    abstr_explanation
 ])
 
 
@@ -769,6 +1074,26 @@ def toggle_collapse(n, is_open):
 
 
 @app.callback(
+    dash.dependencies.Output("abstr-explanation-collapse", "is_open"),
+    [dash.dependencies.Input("abstr-explanation-button", "n_clicks")],
+    [dash.dependencies.State("abstr-explanation-collapse", "is_open")],
+)
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+
+@app.callback(
+    dash.dependencies.Output('abstr-explanation-function', 'options'),
+    [dash.dependencies.Input('abstr-explanation-type', 'value')],
+    prevent_initial_call=True
+)
+def setting_choice(choice):
+    return [{'label': i, 'value': i} for i in expl_function_options[choice]]
+
+
+@app.callback(
     dash.dependencies.Output("str-arg-setting-collapse", "is_open"),
     [dash.dependencies.Input("str-arg-setting-button", "n_clicks")],
     [dash.dependencies.State("str-arg-setting-collapse", "is_open")],
@@ -791,6 +1116,27 @@ def toggle_collapse(n, is_open):
 
 
 @app.callback(
+    dash.dependencies.Output("str-explanation-collapse", "is_open"),
+    [dash.dependencies.Input("str-explanation-button", "n_clicks")],
+    [dash.dependencies.State("str-explanation-collapse", "is_open")],
+)
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+
+@app.callback(
+    dash.dependencies.Output('str-explanation-function', 'options'),
+    [dash.dependencies.Input('str-explanation-type', 'value')],
+    prevent_initial_call=True
+)
+def setting_choice(choice):
+    return [{'label': i, 'value': i} for i in expl_function_options[choice]]
+
+
+
+@app.callback(
     dash.dependencies.Output('abstr-output', 'children'),
     dash.dependencies.Output('abstrnet', 'data'),
     dash.dependencies.Input('abstrAF-Calc', 'n_clicks'),
@@ -803,14 +1149,6 @@ def create_AF(click, arguments, attacks):
     if 'abstrAF-Calc' in changed_id:
         arg_framework = get_argumentation_framework(arguments, attacks)
         data = get_abstr_graph_data(arg_framework)
-        admissible = get_abstr_extensions(arg_framework, 'Adm')
-        cmp_extension = get_abstr_extensions(arg_framework, 'Cmp')
-        grd_extension = get_abstr_extensions(arg_framework, 'Grd')
-        prf_extension = get_abstr_extensions(arg_framework, 'Prf')
-        idl_extension = get_abstr_extensions(arg_framework, 'Idl')
-        stb_extension = get_abstr_extensions(arg_framework, 'Stb')
-        sstb_extension = get_abstr_extensions(arg_framework, 'Sstb')
-        egr_extension = get_abstr_extensions(arg_framework, 'Egr')
         return html.Div([html.H4('The arguments of the AF:', style={'color': '#152A47'}),
                          html.H6('\n {}'.format(arg_framework.arguments))]), data
     else:
@@ -846,6 +1184,39 @@ def evaluate_abstrAF(click, arguments, attacks, semantics, strategy):
                          html.H6('\n {}'.format(extension)),
                          html.H4('The accepted argument(s):', style={'color': '#152A47'}),
                          html.H6('\n {}'.format(accepted))])
+
+
+@app.callback(
+    dash.dependencies.Output('abstr-explanation', 'children'),
+    dash.dependencies.Input('abstrAF-Expl', 'n_clicks'),
+    dash.dependencies.Input('abstract-arguments', 'value'),
+    dash.dependencies.Input('abstract-attacks', 'value'),
+    dash.dependencies.Input('abstr-evaluation-semantics', 'value'),
+    dash.dependencies.Input('abstr-explanation-function', 'value'),
+    dash.dependencies.Input('abstr-explanation-type', 'value'),
+    dash.dependencies.Input('abstr-explanation-strategy', 'value'),
+    prevent_initial_call=True
+)
+def derive_abstrExpl(click, arguments, attacks, semantics, function, expltype, strategy):
+    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    if 'AF-Expl' in changed_id:
+        arg_framework = get_argumentation_framework(arguments, attacks)
+        output_str = ''
+        frozen_extensions = get_abstr_extensions(arg_framework, semantics)
+        accepted = set()
+        if semantics != 'Grd':
+            extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
+            if strategy == 'Skep':
+                accepted = set.intersection(*extension)
+            elif strategy == 'Cred':
+                accepted = set.union(*extension)
+        elif semantics == 'Grd':
+            extension = frozen_extensions
+            accepted = extension
+        explanations = get_abstr_explanations(arg_framework, semantics, extension, accepted, function, expltype,
+                                              strategy)
+        return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
+                         html.H6('\n {}'.format(explanations))])  
 
 
 @app.callback(
@@ -936,6 +1307,48 @@ def evaluate_strAF(click, axioms, ordinary, strict, defeasible, premise_preferen
                          html.H6('\n {}'.format(extension)),
                          html.H4('The accepted formula(s):', style={'color': '#152A47'}),
                          html.H6('\n {}'.format(accepted))])
+
+
+@app.callback(
+    dash.dependencies.Output('str-explanation', 'children'),
+    dash.dependencies.Input('strAF-Expl', 'n_clicks'),
+    dash.dependencies.Input('aspic-axioms', 'value'),
+    dash.dependencies.Input('aspic-ordinary-premises', 'value'),
+    dash.dependencies.Input('aspic-strict-rules', 'value'),
+    dash.dependencies.Input('aspic-defeasible-rules', 'value'),
+    dash.dependencies.Input('ordinary-prem-preferences', 'value'),
+    dash.dependencies.Input('defeasible-rule-preferences', 'value'),
+    dash.dependencies.Input('ordering-choice', 'value'),
+    dash.dependencies.Input('ordering-link', 'value'),
+    dash.dependencies.Input('str-evaluation-semantics', 'value'),
+    dash.dependencies.Input('str-explanation-function', 'value'),
+    dash.dependencies.Input('str-explanation-type', 'value'),
+    dash.dependencies.Input('str-explanation-strategy', 'value'),
+    dash.dependencies.Input('str-explanation-form', 'value'),
+    prevent_initial_call=True
+)
+def derive_strExpl(click, axioms, ordinary, strict, defeasible, premise_preferences, rule_preferences, choice, link,
+                   semantics, function, expltype, strategy, form):
+    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    if 'AF-Expl' in changed_id:
+        ordering = choice + link
+        arg_theory, error_message = get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
+                                                             rule_preferences, ordering)
+        if error_message != '':
+            return error_message
+        frozen_extensions = get_str_extensions(arg_theory, semantics, ordering)
+        accepted = set()
+        if semantics != 'Grd':
+            extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
+            accepted = get_accepted_formulas(extension, strategy)
+        elif semantics == 'Grd':
+            extension = frozen_extensions
+            accepted = extension
+        explanations = get_str_explanations(arg_theory, semantics, ordering, extension, accepted, function, expltype,
+                                            strategy, form)
+
+        return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
+                         html.H6('\n {}'.format(explanations))])
 
 
 if __name__ == '__main__':
