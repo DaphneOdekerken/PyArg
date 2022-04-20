@@ -33,6 +33,7 @@ from py_arg.explanation.defending import get_defending, get_dir_defending
 from py_arg.explanation.not_defending import get_not_defending, get_no_self_defense, get_no_dir_defending
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.LUMEN])
+server = app.server
 
 abstract_setting = html.Div(children=[
     html.Div([
