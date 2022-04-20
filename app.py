@@ -8,27 +8,27 @@ from dash.exceptions import PreventUpdate
 import dash.dependencies
 import visdcc
 
-from ASPIC.aspic_classes.argumentation_system import ArgumentationSystem
-from ASPIC.aspic_classes.argumentation_theory import ArgumentationTheory
-from ASPIC.aspic_classes.defeasible_rule import DefeasibleRule
-from ASPIC.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering, LastLinkDemocraticOrdering
-from ASPIC.aspic_classes.literal import Literal
-from ASPIC.aspic_classes.ordinary_premise import OrdinaryPremise
-from ASPIC.aspic_classes.preference import Preference
-from ASPIC.aspic_classes.strict_rule import StrictRule
-from ASPIC.aspic_classes.orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
+from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
+from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering, LastLinkDemocraticOrdering
+from py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.ordinary_premise import OrdinaryPremise
+from py_arg.aspic_classes.preference import Preference
+from py_arg.aspic_classes.strict_rule import StrictRule
+from py_arg.aspic_classes.orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
     WeakestLinkDemocraticOrdering
-from ASPIC.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from ASPIC.abstract_argumentation_classes.argument import Argument
-from ASPIC.abstract_argumentation_classes.defeat import Defeat
-from ASPIC.semantics.get_admissible_sets import get_admissible_sets
-from ASPIC.semantics.get_complete_extensions import get_complete_extensions
-from ASPIC.semantics.get_grounded_extension import get_grounded_extension
-from ASPIC.semantics.get_preferred_extensions import get_preferred_extensions
-from ASPIC.semantics.get_ideal_extension import get_ideal_extension
-from ASPIC.semantics.get_stable_extensions import get_stable_extensions
-from ASPIC.semantics.get_semistable_extensions import get_semistable_extensions
-from ASPIC.semantics.get_eager_extension import get_eager_extension
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.semantics.get_admissible_sets import get_admissible_sets
+from py_arg.semantics.get_complete_extensions import get_complete_extensions
+from py_arg.semantics.get_grounded_extension import get_grounded_extension
+from py_arg.semantics.get_preferred_extensions import get_preferred_extensions
+from py_arg.semantics.get_ideal_extension import get_ideal_extension
+from py_arg.semantics.get_stable_extensions import get_stable_extensions
+from py_arg.semantics.get_semistable_extensions import get_semistable_extensions
+from py_arg.semantics.get_eager_extension import get_eager_extension
 from Explanations.explanation_functions.defending import get_defending, get_dir_defending
 from Explanations.explanation_functions.not_defending import get_not_defending, get_no_self_defense, \
     get_no_dir_defending
