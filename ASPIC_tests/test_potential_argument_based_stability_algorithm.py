@@ -55,7 +55,7 @@ def get_test_argumentation_system() -> ArgumentationSystem:
         contraries[str(defeasible_rule_literal_negation)] = [defeasible_rule_literal]
 
     # Add additional undercutter (defeasible rule)
-    d4 = DefeasibleRule(4, {all_literals['trusted']}, all_literals['-d1'], 'd4')
+    d4 = DefeasibleRule(4, {all_literals['trusted']}, all_literals['-1'], 'd4')
     defeasible_rules.append(d4)
     defeasible_rule_literal = Literal.from_defeasible_rule(d4)
     defeasible_rule_literal_negation = Literal.from_defeasible_rule_negation(d4)
@@ -126,7 +126,7 @@ class TestPotentialArgumentBasedStabilityAlgorithm(unittest.TestCase):
             potential_argumentation_theory, ordering)
         labels = from_potential_argument_labels_to_literal_labels(potential_argument_labels, arg_sys.language)
 
-        self.assertEqual(labels[lan['-d1']], EnumStabilityLabel.DEFENDED)
+        self.assertEqual(labels[lan['-1']], EnumStabilityLabel.DEFENDED)
         self.assertEqual(labels[lan['~trusted']], EnumStabilityLabel.UNSATISFIABLE)
         self.assertEqual(labels[lan['complaint']], EnumStabilityLabel.UNSTABLE)
         self.assertEqual(labels[lan['~complaint']], EnumStabilityLabel.UNSTABLE)
@@ -144,7 +144,7 @@ class TestPotentialArgumentBasedStabilityAlgorithm(unittest.TestCase):
             potential_argumentation_theory, ordering)
         labels = from_potential_argument_labels_to_literal_labels(potential_argument_labels, arg_sys.language)
 
-        self.assertEqual(labels[lan['-d1']], EnumStabilityLabel.DEFENDED)
+        self.assertEqual(labels[lan['-1']], EnumStabilityLabel.DEFENDED)
         self.assertEqual(labels[lan['~trusted']], EnumStabilityLabel.UNSATISFIABLE)
         self.assertEqual(labels[lan['complaint']], EnumStabilityLabel.DEFENDED)
         self.assertEqual(labels[lan['~complaint']], EnumStabilityLabel.UNSATISFIABLE)
@@ -162,7 +162,7 @@ class TestPotentialArgumentBasedStabilityAlgorithm(unittest.TestCase):
             potential_argumentation_theory, ordering)
         labels = from_potential_argument_labels_to_literal_labels(potential_argument_labels, arg_sys.language)
 
-        self.assertEqual(labels[lan['-d1']], EnumStabilityLabel.UNSTABLE)
+        self.assertEqual(labels[lan['-1']], EnumStabilityLabel.UNSTABLE)
         self.assertEqual(labels[lan['complaint']], EnumStabilityLabel.DEFENDED)
         self.assertEqual(labels[lan['~complaint']], EnumStabilityLabel.UNSATISFIABLE)
         self.assertEqual(labels[lan['fraud']], EnumStabilityLabel.UNSTABLE)
