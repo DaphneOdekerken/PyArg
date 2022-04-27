@@ -31,6 +31,7 @@ from py_arg.semantics.get_semistable_extensions import get_semistable_extensions
 from py_arg.semantics.get_eager_extension import get_eager_extension
 from py_arg.explanation.defending import get_defending, get_dir_defending
 from py_arg.explanation.not_defending import get_not_defending, get_no_self_defense, get_no_dir_defending
+from py_arg.explanation.suff_nec import get_suff_nec
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.LUMEN])
 server = app.server
@@ -397,6 +398,7 @@ str_explanation = html.Div([
 
 expl_function_options = {
     'Acc': ['Defending', 'DirDefending'],
+    'AbstrAcc': ['Defending', 'DirDefending', 'Suff', 'MinSuff', 'Nec'],
     'NonAcc': ['NoDefAgainst', 'NoDirDefense', 'NoSelfDefense']
 }
 
@@ -685,11 +687,12 @@ def get_abstr_explanations(arg_framework, semantics, extensions, accepted, funct
                 explanation[str(arg)] = get_defending(arg_framework, arg, extensions)
             elif function == 'DirDefending':
                 explanation[str(arg)] = get_dir_defending(arg_framework, arg, extensions)
+            else:
+                explanation[str(arg)] = get_suff_nec(arg_framework, arg, function, expl_type)
         return explanation
 
     elif expl_type == 'NonAcc':
         for arg in not_accepted:
-            not_defending_sets = []
             if function == 'NoDefAgainst':
                 explanation[str(arg)] = get_not_defending(arg_framework, arg, extensions)
             elif function == 'NoDirDefense':
@@ -1132,6 +1135,8 @@ def toggle_collapse(n, is_open):
     prevent_initial_call=True
 )
 def setting_choice(choice):
+    if choice == 'Acc':
+        choice = 'AbstrAcc'
     return [{'label': i, 'value': i} for i in expl_function_options[choice]]
 
 
