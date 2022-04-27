@@ -1222,9 +1222,9 @@ def evaluate_abstrAF(click, arguments, attacks, semantics, strategy):
             extension = frozen_extensions
             accepted = extension
         return html.Div([html.H4('The extension(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(extension)),
+                         html.H6('\n {}'.format(str(extension).replace('set()', '{}'))),
                          html.H4('The accepted argument(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(accepted))])
+                         html.H6('\n {}'.format(str(accepted).replace('set()', '{}')))])
 
 
 @app.callback(
@@ -1261,7 +1261,7 @@ def derive_abstrExpl(click, arguments, attacks, semantics, function, expltype, s
             explanations = get_abstr_explanations(arg_framework, semantics, extension, accepted, function, expltype,
                                                   strategy)
             return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(explanations))])
+                             html.H6('\n {}'.format(str(explanations).replace('set()', '{}')))])
 
 
 @app.callback(
@@ -1323,10 +1323,10 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
                         expl_output = html.Div([html.H4(
                             'The skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(skep_expla.get(str(argument)))), html.H4(
+                            html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()', '{}'))), html.H4(
                                 'The credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(cred_expla.get(str(argument))))])
+                            html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()', '{}')))])
                     elif function is not None and expltype == 'NonAcc':
                         expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
                                                 'There is no non-acceptance explanation for argument {}, since it is '
@@ -1340,14 +1340,14 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
                         expl_output = html.Div(
                             [html.H4('The credulous acceptance explanation for {}:'.format(str(argument)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(cred_expla.get(str(argument))))])
+                             html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()', '{}')))])
                     elif function is not None and expltype == 'NonAcc':
                         skep_expla = get_abstr_explanations(arg_framework, semantics, extensions, skep_accepted,
                                                             function, expltype, 'Skep')
                         expl_output = html.Div(
                             [html.H4('The not skeptical acceptance explanation for {}:'.format(str(argument)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(skep_expla.get(str(argument))))])
+                             html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()', '{}')))])
                 elif skep_accept == False and cred_accept == False:
                     output_accept += str(argument) + ' is neither  credulously nor skeptically accepted.'
                     if function is not None and expltype == 'NonAcc':
@@ -1358,10 +1358,10 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
                         expl_output = html.Div([html.H4(
                             'The not skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(skep_expla.get(str(argument)))), html.H4(
+                            html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()', '{}'))), html.H4(
                                 'The not credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(cred_expla.get(str(argument))))])
+                            html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()', '{}')))])
                     elif function is not None and expltype == 'Acc':
                         expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
                                                 'There is no acceptance explanation for argument {}, since it is not '
@@ -1459,9 +1459,9 @@ def evaluate_strAF(click, axioms, ordinary, strict, defeasible, premise_preferen
             extension = frozen_extensions
             accepted = extension
         return html.Div([html.H4('The extension(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(extension)),
+                         html.H6('\n {}'.format(str(extension).replace('set()','{}'))),
                          html.H4('The accepted formula(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(accepted))])
+                         html.H6('\n {}'.format(str(accepted).replace('set()','{}')))])
 
 
 @app.callback(
@@ -1508,7 +1508,7 @@ def derive_strExpl(click, axioms, ordinary, strict, defeasible, premise_preferen
                                                 strategy, form)
 
             return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(explanations))])
+                             html.H6('\n {}'.format(str(explanations).replace('set()','{}')))])
 
 
 @app.callback(
@@ -1596,10 +1596,10 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                         expl_output = html.Div([html.H4(
                             'The skeptical acceptance explanation for {}:'.format(str(formula)),
                             style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(skep_expla.get(str(formula)))), html.H4(
+                            html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}'))), html.H4(
                                 'The credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(cred_expla.get(str(formula))))])
+                            html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
                     elif function is not None and expltype == 'NonAcc':
                         expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
                                                 'There is no non-acceptance explanation for formula {}, since it is '
@@ -1614,14 +1614,14 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                         expl_output = html.Div(
                             [html.H4('The credulous acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(cred_expla.get(str(formula))))])
+                             html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
                     elif function is not None and expltype == 'NonAcc':
                         skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
                                                           function, expltype, 'Skep', form)
                         expl_output = html.Div(
                             [html.H4('The not skeptical acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(skep_expla.get(str(formula))))])
+                             html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}')))])
                 elif cred_accept:
                     output_accept += str(formula) + ' is credulously but not (weakly) skeptically accepted.'
                     if function is not None and expltype == 'Acc':
@@ -1630,14 +1630,14 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                         expl_output = html.Div(
                             [html.H4('The credulous acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(cred_expla.get(str(formula))))])
+                             html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
                     elif function is not None and expltype == 'NonAcc':
                         skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
                                                           function, expltype, 'Skep', form)
                         expl_output = html.Div(
                             [html.H4('The not skeptical acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(skep_expla.get(str(formula))))])
+                             html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}')))])
                 elif skep_accept == False and cred_accept == False:
                     output_accept += str(argument) + ' is neither credulously nor (weakly) skeptically accepted.'
                     if function is not None and expltype == 'NonAcc':
@@ -1648,10 +1648,10 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                         expl_output = html.Div([html.H4(
                             'The not skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(skep_expla.get(str(argument)))), html.H4(
+                            html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()','{}'))), html.H4(
                                 'The not credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(cred_expla.get(str(argument))))])
+                            html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()','{}')))])
                     elif function is not None and expltype == 'Acc':
                         expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
                                                 'There is no acceptance explanation for formula {}, since it is not '
