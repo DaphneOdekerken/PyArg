@@ -147,6 +147,7 @@ ASPIC_setting = html.Div(children=[
                     ],
                     value='nochoice',
                     id='ordering-choice',
+                    inputStyle={'margin-right': '6px'}
                 ),
             ], style={'padding': 5, 'flex': 1}),
 
@@ -158,7 +159,8 @@ ASPIC_setting = html.Div(children=[
                         {'label': 'Weakest link', 'value': 'weakl'}
                     ],
                     value='nolink',
-                    id='ordering-link'
+                    id='ordering-link',
+                    inputStyle={'margin-right': '6px'}
                 ),
             ], style={'padding': 5, 'flex': 1}),
         ], style={'display': 'flex', 'flex-direction': 'row', 'margin-left': '10px'}),
@@ -189,7 +191,8 @@ abstr_evaluation = html.Div([
                 ],
                 value='',
                 id='abstr-evaluation-semantics',
-                style={'margin-top': '10px'}
+                style={'margin-top': '10px'},
+                inputStyle={'margin-right': '6px'}
             ),
         ], style={'padding': 10, 'flex': 1}),
 
@@ -203,7 +206,8 @@ abstr_evaluation = html.Div([
                 ],
                 value='',
                 id='abstr-evaluation-strategy',
-                style={'margin-top': '10px'}
+                style={'margin-top': '10px'},
+                inputStyle={'margin-right': '6px'}
             ),
         ], style={'padding': 10, 'flex': 1}),
     ], style={'display': 'flex', 'flex-direction': 'row'}),
@@ -233,7 +237,8 @@ str_evaluation = html.Div([
                 ],
                 value='',
                 id='str-evaluation-semantics',
-                style={'margin-top': '10px'}
+                style={'margin-top': '10px'},
+                inputStyle={'margin-right': '6px'}
             ),
         ], style={'padding': 10, 'flex': 1}),
 
@@ -248,7 +253,8 @@ str_evaluation = html.Div([
                 ],
                 value='',
                 id='str-evaluation-strategy',
-                style={'margin-top': '10px'}
+                style={'margin-top': '10px'},
+                inputStyle={'margin-right': '6px'}
             ),
         ], style={'padding': 10, 'flex': 1}),
     ], style={'display': 'flex', 'flex-direction': 'row'}),
@@ -273,7 +279,8 @@ abstr_explanation = html.Div([
                     ],
                     value='',
                     id='abstr-explanation-type',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ]),
 
@@ -287,7 +294,8 @@ abstr_explanation = html.Div([
                     ],
                     value='',
                     id='abstr-explanation-strategy',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ], style={'margin-top': '20px'}),
         ], style={'padding': 10, 'flex': 1}),
@@ -297,7 +305,8 @@ abstr_explanation = html.Div([
 
             dcc.RadioItems(
                 id='abstr-explanation-function',
-                style={'margin-top': '10px'}
+                style={'margin-top': '10px'},
+                inputStyle={'margin-right': '6px'}
             ),
         ], style={'padding': 10, 'flex': 1}),
 
@@ -324,7 +333,8 @@ str_explanation = html.Div([
                     ],
                     value='',
                     id='str-explanation-type',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ]),
 
@@ -338,7 +348,8 @@ str_explanation = html.Div([
                     ],
                     value='',
                     id='str-explanation-strategy',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ], style={'margin-top': '20px'}),
         ], style={'padding': 10, 'flex': 1}),
@@ -350,7 +361,8 @@ str_explanation = html.Div([
                 dcc.RadioItems(
 
                     id='str-explanation-function',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ]),
 
@@ -366,7 +378,8 @@ str_explanation = html.Div([
                         {'label': 'Sub-argument conclusions', 'value': 'SubArgConc'}
                     ],
                     id='str-explanation-form',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ], style={'margin-top': '20px'}),
 
@@ -1054,7 +1067,8 @@ app.layout = html.Div([
                 {'label': 'ASPIC+', 'value': 'ASPIC'}
             ],
             value='',
-            labelStyle={'display': 'inline-block', 'margin-left': '20px'}),
+            labelStyle={'display': 'inline-block', 'margin-left': '20px'},
+            inputStyle={'margin-right': '6px'}),
     ]),
     html.Div(id='arg-layout')
 ])
