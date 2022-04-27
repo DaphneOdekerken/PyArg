@@ -31,6 +31,7 @@ from py_arg.semantics.get_semistable_extensions import get_semistable_extensions
 from py_arg.semantics.get_eager_extension import get_eager_extension
 from py_arg.explanation.defending import get_defending, get_dir_defending
 from py_arg.explanation.not_defending import get_not_defending, get_no_self_defense, get_no_dir_defending
+from py_arg.explanation.suff_nec import get_suff_nec
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.LUMEN])
 server = app.server
@@ -147,6 +148,7 @@ ASPIC_setting = html.Div(children=[
                     ],
                     value='nochoice',
                     id='ordering-choice',
+                    inputStyle={'margin-right': '6px'}
                 ),
             ], style={'padding': 5, 'flex': 1}),
 
@@ -158,7 +160,8 @@ ASPIC_setting = html.Div(children=[
                         {'label': 'Weakest link', 'value': 'weakl'}
                     ],
                     value='nolink',
-                    id='ordering-link'
+                    id='ordering-link',
+                    inputStyle={'margin-right': '6px'}
                 ),
             ], style={'padding': 5, 'flex': 1}),
         ], style={'display': 'flex', 'flex-direction': 'row', 'margin-left': '10px'}),
@@ -189,7 +192,8 @@ abstr_evaluation = html.Div([
                 ],
                 value='',
                 id='abstr-evaluation-semantics',
-                style={'margin-top': '10px'}
+                style={'margin-top': '10px'},
+                inputStyle={'margin-right': '6px'}
             ),
         ], style={'padding': 10, 'flex': 1}),
 
@@ -203,7 +207,8 @@ abstr_evaluation = html.Div([
                 ],
                 value='',
                 id='abstr-evaluation-strategy',
-                style={'margin-top': '10px'}
+                style={'margin-top': '10px'},
+                inputStyle={'margin-right': '6px'}
             ),
         ], style={'padding': 10, 'flex': 1}),
     ], style={'display': 'flex', 'flex-direction': 'row'}),
@@ -233,7 +238,8 @@ str_evaluation = html.Div([
                 ],
                 value='',
                 id='str-evaluation-semantics',
-                style={'margin-top': '10px'}
+                style={'margin-top': '10px'},
+                inputStyle={'margin-right': '6px'}
             ),
         ], style={'padding': 10, 'flex': 1}),
 
@@ -248,7 +254,8 @@ str_evaluation = html.Div([
                 ],
                 value='',
                 id='str-evaluation-strategy',
-                style={'margin-top': '10px'}
+                style={'margin-top': '10px'},
+                inputStyle={'margin-right': '6px'}
             ),
         ], style={'padding': 10, 'flex': 1}),
     ], style={'display': 'flex', 'flex-direction': 'row'}),
@@ -273,7 +280,8 @@ abstr_explanation = html.Div([
                     ],
                     value='',
                     id='abstr-explanation-type',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ]),
 
@@ -287,7 +295,8 @@ abstr_explanation = html.Div([
                     ],
                     value='',
                     id='abstr-explanation-strategy',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ], style={'margin-top': '20px'}),
         ], style={'padding': 10, 'flex': 1}),
@@ -297,7 +306,8 @@ abstr_explanation = html.Div([
 
             dcc.RadioItems(
                 id='abstr-explanation-function',
-                style={'margin-top': '10px'}
+                style={'margin-top': '10px'},
+                inputStyle={'margin-right': '6px'}
             ),
         ], style={'padding': 10, 'flex': 1}),
 
@@ -324,7 +334,8 @@ str_explanation = html.Div([
                     ],
                     value='',
                     id='str-explanation-type',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ]),
 
@@ -338,7 +349,8 @@ str_explanation = html.Div([
                     ],
                     value='',
                     id='str-explanation-strategy',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ], style={'margin-top': '20px'}),
         ], style={'padding': 10, 'flex': 1}),
@@ -350,7 +362,8 @@ str_explanation = html.Div([
                 dcc.RadioItems(
 
                     id='str-explanation-function',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ]),
 
@@ -366,7 +379,8 @@ str_explanation = html.Div([
                         {'label': 'Sub-argument conclusions', 'value': 'SubArgConc'}
                     ],
                     id='str-explanation-form',
-                    style={'margin-top': '10px'}
+                    style={'margin-top': '10px'},
+                    inputStyle={'margin-right': '6px'}
                 ),
             ], style={'margin-top': '20px'}),
 
@@ -384,6 +398,7 @@ str_explanation = html.Div([
 
 expl_function_options = {
     'Acc': ['Defending', 'DirDefending'],
+    'AbstrAcc': ['Defending', 'DirDefending', 'Suff', 'MinSuff', 'Nec'],
     'NonAcc': ['NoDefAgainst', 'NoDirDefense', 'NoSelfDefense']
 }
 
@@ -672,11 +687,12 @@ def get_abstr_explanations(arg_framework, semantics, extensions, accepted, funct
                 explanation[str(arg)] = get_defending(arg_framework, arg, extensions)
             elif function == 'DirDefending':
                 explanation[str(arg)] = get_dir_defending(arg_framework, arg, extensions)
+            else:
+                explanation[str(arg)] = get_suff_nec(arg_framework, arg, function, expl_type)
         return explanation
 
     elif expl_type == 'NonAcc':
         for arg in not_accepted:
-            not_defending_sets = []
             if function == 'NoDefAgainst':
                 explanation[str(arg)] = get_not_defending(arg_framework, arg, extensions)
             elif function == 'NoDirDefense':
@@ -1054,7 +1070,8 @@ app.layout = html.Div([
                 {'label': 'ASPIC+', 'value': 'ASPIC'}
             ],
             value='',
-            labelStyle={'display': 'inline-block', 'margin-left': '20px'}),
+            labelStyle={'display': 'inline-block', 'margin-left': '20px'},
+            inputStyle={'margin-right': '6px'}),
     ]),
     html.Div(id='arg-layout')
 ])
@@ -1118,6 +1135,8 @@ def toggle_collapse(n, is_open):
     prevent_initial_call=True
 )
 def setting_choice(choice):
+    if choice == 'Acc':
+        choice = 'AbstrAcc'
     return [{'label': i, 'value': i} for i in expl_function_options[choice]]
 
 
@@ -1208,9 +1227,9 @@ def evaluate_abstrAF(click, arguments, attacks, semantics, strategy):
             extension = frozen_extensions
             accepted = extension
         return html.Div([html.H4('The extension(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(extension)),
+                         html.H6('\n {}'.format(str(extension).replace('set()', '{}'))),
                          html.H4('The accepted argument(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(accepted))])
+                         html.H6('\n {}'.format(str(accepted).replace('set()', '{}')))])
 
 
 @app.callback(
@@ -1227,23 +1246,27 @@ def evaluate_abstrAF(click, arguments, attacks, semantics, strategy):
 def derive_abstrExpl(click, arguments, attacks, semantics, function, expltype, strategy):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'AF-Expl' in changed_id:
-        arg_framework = get_argumentation_framework(arguments, attacks)
-        output_str = ''
-        frozen_extensions = get_abstr_extensions(arg_framework, semantics)
-        accepted = set()
-        if semantics != 'Grd':
-            extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
-            if strategy == 'Skep':
-                accepted = set.intersection(*extension)
-            elif strategy == 'Cred':
-                accepted = set.union(*extension)
-        elif semantics == 'Grd':
-            extension = frozen_extensions
-            accepted = extension
-        explanations = get_abstr_explanations(arg_framework, semantics, extension, accepted, function, expltype,
-                                              strategy)
-        return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(explanations))])
+        if semantics == '':
+            return html.Div([html.H4('Error', style={'color': 'red'}),
+                             'Choose a semantics under "Evaluation" before deriving explanations.'])
+        else:
+            arg_framework = get_argumentation_framework(arguments, attacks)
+            output_str = ''
+            frozen_extensions = get_abstr_extensions(arg_framework, semantics)
+            accepted = set()
+            if semantics != 'Grd':
+                extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
+                if strategy == 'Skep':
+                    accepted = set.intersection(*extension)
+                elif strategy == 'Cred':
+                    accepted = set.union(*extension)
+            elif semantics == 'Grd':
+                extension = frozen_extensions
+                accepted = extension
+            explanations = get_abstr_explanations(arg_framework, semantics, extension, accepted, function, expltype,
+                                                  strategy)
+            return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
+                             html.H6('\n {}'.format(str(explanations).replace('set()', '{}')))])
 
 
 @app.callback(
@@ -1305,10 +1328,10 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
                         expl_output = html.Div([html.H4(
                             'The skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(skep_expla.get(str(argument)))), html.H4(
+                            html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()', '{}'))), html.H4(
                                 'The credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(cred_expla.get(str(argument))))])
+                            html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()', '{}')))])
                     elif function is not None and expltype == 'NonAcc':
                         expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
                                                 'There is no non-acceptance explanation for argument {}, since it is '
@@ -1322,14 +1345,14 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
                         expl_output = html.Div(
                             [html.H4('The credulous acceptance explanation for {}:'.format(str(argument)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(cred_expla.get(str(argument))))])
+                             html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()', '{}')))])
                     elif function is not None and expltype == 'NonAcc':
                         skep_expla = get_abstr_explanations(arg_framework, semantics, extensions, skep_accepted,
                                                             function, expltype, 'Skep')
                         expl_output = html.Div(
                             [html.H4('The not skeptical acceptance explanation for {}:'.format(str(argument)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(skep_expla.get(str(argument))))])
+                             html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()', '{}')))])
                 elif skep_accept == False and cred_accept == False:
                     output_accept += str(argument) + ' is neither  credulously nor skeptically accepted.'
                     if function is not None and expltype == 'NonAcc':
@@ -1340,10 +1363,10 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
                         expl_output = html.Div([html.H4(
                             'The not skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(skep_expla.get(str(argument)))), html.H4(
+                            html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()', '{}'))), html.H4(
                                 'The not credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(cred_expla.get(str(argument))))])
+                            html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()', '{}')))])
                     elif function is not None and expltype == 'Acc':
                         expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
                                                 'There is no acceptance explanation for argument {}, since it is not '
@@ -1441,9 +1464,9 @@ def evaluate_strAF(click, axioms, ordinary, strict, defeasible, premise_preferen
             extension = frozen_extensions
             accepted = extension
         return html.Div([html.H4('The extension(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(extension)),
+                         html.H6('\n {}'.format(str(extension).replace('set()','{}'))),
                          html.H4('The accepted formula(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(accepted))])
+                         html.H6('\n {}'.format(str(accepted).replace('set()','{}')))])
 
 
 @app.callback(
@@ -1468,24 +1491,29 @@ def derive_strExpl(click, axioms, ordinary, strict, defeasible, premise_preferen
                    semantics, function, expltype, strategy, form):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'AF-Expl' in changed_id:
-        ordering = choice + link
-        arg_theory, error_message = get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
-                                                             rule_preferences, ordering)
-        if error_message != '':
-            return error_message
-        frozen_extensions = get_str_extensions(arg_theory, semantics, ordering)
-        accepted = set()
-        if semantics != 'Grd':
-            extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
-            accepted = get_accepted_formulas(extension, strategy)
-        elif semantics == 'Grd':
-            extension = frozen_extensions
-            accepted = extension
-        explanations = get_str_explanations(arg_theory, semantics, ordering, extension, accepted, function, expltype,
-                                            strategy, form)
+        if semantics == '':
+            return html.Div([html.H4('Error', style={'color': 'red'}),
+                             'Choose a semantics under "Evaluation" before deriving explanations.'])
+        else:
+            ordering = choice + link
+            arg_theory, error_message = get_argumentation_theory(axioms, ordinary, strict, defeasible,
+                                                                 premise_preferences, rule_preferences, ordering)
+            if error_message != '':
+                return error_message
+            frozen_extensions = get_str_extensions(arg_theory, semantics, ordering)
+            accepted = set()
+            if semantics != 'Grd':
+                extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
+                accepted = get_accepted_formulas(extension, strategy)
+            elif semantics == 'Grd':
+                extension = frozen_extensions
+                accepted = extension
+            explanations = get_str_explanations(arg_theory, semantics, ordering, extension, accepted, function,
+                                                expltype,
+                                                strategy, form)
 
-        return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(explanations))])
+            return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
+                             html.H6('\n {}'.format(str(explanations).replace('set()','{}')))])
 
 
 @app.callback(
@@ -1573,10 +1601,10 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                         expl_output = html.Div([html.H4(
                             'The skeptical acceptance explanation for {}:'.format(str(formula)),
                             style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(skep_expla.get(str(formula)))), html.H4(
+                            html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}'))), html.H4(
                                 'The credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(cred_expla.get(str(formula))))])
+                            html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
                     elif function is not None and expltype == 'NonAcc':
                         expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
                                                 'There is no non-acceptance explanation for formula {}, since it is '
@@ -1591,14 +1619,14 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                         expl_output = html.Div(
                             [html.H4('The credulous acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(cred_expla.get(str(formula))))])
+                             html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
                     elif function is not None and expltype == 'NonAcc':
                         skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
                                                           function, expltype, 'Skep', form)
                         expl_output = html.Div(
                             [html.H4('The not skeptical acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(skep_expla.get(str(formula))))])
+                             html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}')))])
                 elif cred_accept:
                     output_accept += str(formula) + ' is credulously but not (weakly) skeptically accepted.'
                     if function is not None and expltype == 'Acc':
@@ -1607,14 +1635,14 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                         expl_output = html.Div(
                             [html.H4('The credulous acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(cred_expla.get(str(formula))))])
+                             html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
                     elif function is not None and expltype == 'NonAcc':
                         skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
                                                           function, expltype, 'Skep', form)
                         expl_output = html.Div(
                             [html.H4('The not skeptical acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(skep_expla.get(str(formula))))])
+                             html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}')))])
                 elif skep_accept == False and cred_accept == False:
                     output_accept += str(argument) + ' is neither credulously nor (weakly) skeptically accepted.'
                     if function is not None and expltype == 'NonAcc':
@@ -1625,10 +1653,10 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                         expl_output = html.Div([html.H4(
                             'The not skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(skep_expla.get(str(argument)))), html.H4(
+                            html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()','{}'))), html.H4(
                                 'The not credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(cred_expla.get(str(argument))))])
+                            html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()','{}')))])
                     elif function is not None and expltype == 'Acc':
                         expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
                                                 'There is no acceptance explanation for formula {}, since it is not '
