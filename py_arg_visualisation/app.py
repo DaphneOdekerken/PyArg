@@ -1227,23 +1227,27 @@ def evaluate_abstrAF(click, arguments, attacks, semantics, strategy):
 def derive_abstrExpl(click, arguments, attacks, semantics, function, expltype, strategy):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'AF-Expl' in changed_id:
-        arg_framework = get_argumentation_framework(arguments, attacks)
-        output_str = ''
-        frozen_extensions = get_abstr_extensions(arg_framework, semantics)
-        accepted = set()
-        if semantics != 'Grd':
-            extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
-            if strategy == 'Skep':
-                accepted = set.intersection(*extension)
-            elif strategy == 'Cred':
-                accepted = set.union(*extension)
-        elif semantics == 'Grd':
-            extension = frozen_extensions
-            accepted = extension
-        explanations = get_abstr_explanations(arg_framework, semantics, extension, accepted, function, expltype,
-                                              strategy)
-        return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(explanations))])
+        if semantics == '':
+            return html.Div([html.H4('Error', style={'color': 'red'}),
+                             'Choose a semantics under "Evaluation" before deriving explanations.'])
+        else:
+            arg_framework = get_argumentation_framework(arguments, attacks)
+            output_str = ''
+            frozen_extensions = get_abstr_extensions(arg_framework, semantics)
+            accepted = set()
+            if semantics != 'Grd':
+                extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
+                if strategy == 'Skep':
+                    accepted = set.intersection(*extension)
+                elif strategy == 'Cred':
+                    accepted = set.union(*extension)
+            elif semantics == 'Grd':
+                extension = frozen_extensions
+                accepted = extension
+            explanations = get_abstr_explanations(arg_framework, semantics, extension, accepted, function, expltype,
+                                                  strategy)
+            return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
+                             html.H6('\n {}'.format(explanations))])
 
 
 @app.callback(
@@ -1468,24 +1472,29 @@ def derive_strExpl(click, axioms, ordinary, strict, defeasible, premise_preferen
                    semantics, function, expltype, strategy, form):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'AF-Expl' in changed_id:
-        ordering = choice + link
-        arg_theory, error_message = get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
-                                                             rule_preferences, ordering)
-        if error_message != '':
-            return error_message
-        frozen_extensions = get_str_extensions(arg_theory, semantics, ordering)
-        accepted = set()
-        if semantics != 'Grd':
-            extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
-            accepted = get_accepted_formulas(extension, strategy)
-        elif semantics == 'Grd':
-            extension = frozen_extensions
-            accepted = extension
-        explanations = get_str_explanations(arg_theory, semantics, ordering, extension, accepted, function, expltype,
-                                            strategy, form)
+        if semantics == '':
+            return html.Div([html.H4('Error', style={'color': 'red'}),
+                             'Choose a semantics under "Evaluation" before deriving explanations.'])
+        else:
+            ordering = choice + link
+            arg_theory, error_message = get_argumentation_theory(axioms, ordinary, strict, defeasible,
+                                                                 premise_preferences, rule_preferences, ordering)
+            if error_message != '':
+                return error_message
+            frozen_extensions = get_str_extensions(arg_theory, semantics, ordering)
+            accepted = set()
+            if semantics != 'Grd':
+                extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
+                accepted = get_accepted_formulas(extension, strategy)
+            elif semantics == 'Grd':
+                extension = frozen_extensions
+                accepted = extension
+            explanations = get_str_explanations(arg_theory, semantics, ordering, extension, accepted, function,
+                                                expltype,
+                                                strategy, form)
 
-        return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(explanations))])
+            return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
+                             html.H6('\n {}'.format(explanations))])
 
 
 @app.callback(
