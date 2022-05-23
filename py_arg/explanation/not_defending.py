@@ -13,10 +13,10 @@ def get_not_defending(argumentation_framework: AbstractArgumentationFramework, a
     :param argument: the argument that is not accepted
     :param extensions: the extensions (sets of accepted arguments) of the argumentation framework.
     :return: a list of sets of arguments, each representing one or more extensions, containing the arguments that
-    attack the argument and to which the extension provides to defense.
+        attack the argument and to which the extension provides to defense.
     """
     reach, distance = get_reach(argumentation_framework, argument)
-    
+
     attackers = set()
     not_defending_sets = []
     for pot_def_arg in reach:
@@ -24,8 +24,8 @@ def get_not_defending(argumentation_framework: AbstractArgumentationFramework, a
         for dist in dist_pot_arg:
             if dist % 2:
                 attackers.add(pot_def_arg)
-                break               
-                
+                break
+
     for extension in extensions:
         not_def_ext = set()
         if argument not in extension:
@@ -36,15 +36,15 @@ def get_not_defending(argumentation_framework: AbstractArgumentationFramework, a
                     dist_pot_def = distance_def[str(pot_defender)]
                     for dist in dist_pot_def:
                         if dist % 2:
-                            defenders.add(pot_defender)  
+                            defenders.add(pot_defender)
                 no_def_against = [nodefense for nodefense in defenders if nodefense not in extension]
                 if no_def_against == list(defenders):
-                    not_def_ext.add(defeater)      
+                    not_def_ext.add(defeater)
             if not_def_ext not in not_defending_sets:
                 not_defending_sets.append(not_def_ext)
-            
-    return not_defending_sets         
-        
+
+    return not_defending_sets
+
 
 def get_no_dir_defending(argumentation_framework: AbstractArgumentationFramework, argument: Argument, extensions):
     """
@@ -56,10 +56,10 @@ def get_no_dir_defending(argumentation_framework: AbstractArgumentationFramework
     :param argument: the argument that is not accepted
     :param extensions: the extensions (sets of accepted arguments) of the argumentation framework.
     :return: a list of sets of arguments, each representing one or more extensions, containing the arguments that
-    directly attack the argument and to which the extension provides to direct defense.
+        directly attack the argument and to which the extension provides to direct defense.
     """
     not_dir_def_sets = []
-    for extension in extensions: 
+    for extension in extensions:
         attackers = argumentation_framework.get_incoming_defeat_arguments(argument)
         not_def_ext = set()
         if argument not in extension:
@@ -68,10 +68,10 @@ def get_no_dir_defending(argumentation_framework: AbstractArgumentationFramework
                     if dirdf in extension] == []:
                     not_def_ext.add(attacker)
             if not_def_ext not in not_dir_def_sets:
-                not_dir_def_sets.append(not_def_ext)          
-    
-    return not_dir_def_sets    
-        
+                not_dir_def_sets.append(not_def_ext)
+
+    return not_dir_def_sets
+
 
 def get_no_self_defense(argumentation_framework: AbstractArgumentationFramework, argument: Argument, extensions):
     """
@@ -82,13 +82,13 @@ def get_no_self_defense(argumentation_framework: AbstractArgumentationFramework,
     :param argument: the argument that is not accepted
     :param extensions: the extensions (sets of accepted arguments) of the argumentation framework.
     :return: a list of sets of arguments, each representing one or more extensions, containing the arguments that attack
-    the argument, to which the extension provides to defense and which the argument itself does not (in)directly
-    attack either.
+        the argument, to which the extension provides to defense and which the argument itself does not (in)directly
+        attack either.
     """
     not_defending = get_not_defending(argumentation_framework, argument, extensions)
-    
+
     not_dir_defending_sets = []
-    for not_def_ext in not_defending: 
+    for not_def_ext in not_defending:
         not_ddef_ext = set()
         for attacker in not_def_ext:
             reach_att, distance_att = get_reach(argumentation_framework, attacker)
@@ -102,6 +102,5 @@ def get_no_self_defense(argumentation_framework: AbstractArgumentationFramework,
                 not_ddef_ext.add(attacker)
         if not_ddef_ext not in not_dir_defending_sets:
             not_dir_defending_sets.append(not_ddef_ext)
-    
-    return not_dir_defending_sets
 
+    return not_dir_defending_sets

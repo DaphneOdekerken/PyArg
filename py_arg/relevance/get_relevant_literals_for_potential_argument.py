@@ -1,5 +1,6 @@
-from typing import List, Literal
+from typing import List
 
+from py_arg.aspic_classes.literal import Literal
 from py_arg.dynamic_aspic_classes.potential_argument import PotentialArgument
 from py_arg.dynamic_aspic_classes.queryable import Queryable
 

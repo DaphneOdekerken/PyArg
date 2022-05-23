@@ -6,13 +6,14 @@ from py_arg.explanation.reach_and_dist import get_reach
 def get_defending(argumentation_framework: AbstractArgumentationFramework, argument: Argument, extensions):
     """
     Obtain for each extension with the argument te set of arguments that (in)directly defend the argument.
+
     In papers: Defending.
 
     :param argumentation_framework: the argumentation framework the explanation should be about
     :param argument: the argument that is accepted
     :param extensions: the extensions (sets of accepted arguments) of the argumentation framework.
     :return: a list of sets of arguments, each representing one or more extensions, containing the arguments from the
-    extension that (in)directly defend the argument.
+        extension that (in)directly defend the argument.
     """
     reach, distance = get_reach(argumentation_framework, argument)
 
@@ -37,13 +38,14 @@ def get_defending(argumentation_framework: AbstractArgumentationFramework, argum
 def get_dir_defending(argumentation_framework: AbstractArgumentationFramework, argument: Argument, extensions):
     """
     Obtain for each extension with the argument te set of arguments that directly defend the argument.
+
     In papers: DirDefending.
 
     :param argumentation_framework: the argumentation framework the explanation should be about
     :param argument: the argument that is accepted
     :param extensions: the extensions (sets of accepted arguments) of the argumentation framework.
     :return: a list of sets of arguments, each representing one or more extensions, containing the arguments from the
-    extension that directly defend the argument.
+        extension that directly defend the argument.
     """
     reach, distance = get_reach(argumentation_framework, argument)
 

@@ -10,7 +10,7 @@ def get_reach(argumentation_framework: AbstractArgumentationFramework, argument:
     :param argumentation_framework: The argumentation framework used to determine reach and distance.
     :param argument: The argument for which the reach and distance need to be calculated.
     :return: A set of arguments from which the argument can be reached and a dictionary with for each argument in the
-    framework the distance (possibly several) to the given argument.
+        framework the distance (possibly several) to the given argument.
     """
     initial_reach = {argument}
     distance = {}
@@ -33,7 +33,7 @@ def recursive_reach(argumentation_framework, reach, argument, new_argument, dist
     :param visited: a list of defeats that has been used by the algorithm.
     :param distance: the dictionary with the distances.
     :return: A set of arguments from which the argument can be reached and a dictionary with for each argument in the
-    framework the distance (possibly several) to the given argument.
+        framework the distance (possibly several) to the given argument.
     """
     visited_start = visited.copy()
     for pot_argument in argumentation_framework.arguments:
