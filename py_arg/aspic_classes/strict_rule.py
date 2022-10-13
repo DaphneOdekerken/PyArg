@@ -10,3 +10,6 @@ class StrictRule(Rule):
 
     def __repr__(self):
         return ','.join([str(antecedent) for antecedent in self.antecedents]) + '->' + str(self.consequent)
+
+    def __str__(self):
+        return self.__repr__()
