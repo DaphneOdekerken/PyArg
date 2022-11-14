@@ -21,6 +21,9 @@ class InstantiatedArgument(Argument):
         self.defeasible_rules = defeasible_rules
         self.strict_rules = strict_rules
         self.top_rule = top_rule
+        self.sub_conclusions = {sub_conclusion for dir_sub in self.direct_sub_arguments
+                                for sub_conclusion in dir_sub.sub_conclusions}
+        self.sub_conclusions.add(self.conclusion)
 
     # def __repr__(self):
     #     return self.name

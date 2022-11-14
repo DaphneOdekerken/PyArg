@@ -42,7 +42,7 @@ class Literal:
 
     @classmethod
     def from_defeasible_rule_negation(cls, defeasible_rule):
-        return cls('-' + defeasible_rule.id_str, defeasible_rule.id_str + ' is not applicable',
+        return cls('~' + defeasible_rule.id_str, defeasible_rule.id_str + ' is not applicable',
                    defeasible_rule.id_str + ' is applicable')
 
     def __str__(self):

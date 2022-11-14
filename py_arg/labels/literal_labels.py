@@ -12,3 +12,6 @@ class LiteralLabels:
         if not isinstance(item, Literal):
             raise ValueError(f'{item} is not a Literal!')
         return self.literal_labeling[item]
+
+    def __eq__(self, other):
+        return self.literal_labeling == other.literal_labeling

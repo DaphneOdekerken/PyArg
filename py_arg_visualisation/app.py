@@ -456,20 +456,28 @@ def get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_prefe
     defrule_list = []
     for defrules in defrule_sep:
         defrule_list.append(defrules)
-    literal_str_list = []
-    for ax in axiom_list:
-        literal_str_list.append(ax)
-    for op in ordinary_list:
-        literal_str_list.append(op)
-    for strr in strrule_list:
-        literal_str_list.append(strr)
-    for defr in defrule_list:
-        literal_str_list.append(defr)
+    literal_str_list = set()
+    for item in axiom_list + ordinary_list + strrule_list + defrule_list:
+        if item[0] in '-~':
+            item = item[1:]
+        literal_str_list.add(item)
+        literal_str_list.add('-' + item)
+        literal_str_list.add('~' + item)
+    literal_str_list = list(literal_str_list)
 
-    literal_str_list += ['-' + literal_str for literal_str in literal_str_list]
-    literal_str_list += ['~' + literal_str for literal_str in literal_str_list]
+    # for ax in axiom_list:
+    #     literal_str_list.append(ax)
+    # for op in ordinary_list:
+    #     literal_str_list.append(op)
+    # for strr in strrule_list:
+    #     literal_str_list.append(strr)
+    # for defr in defrule_list:
+    #     literal_str_list.append(defr)
 
-    literal_str_list = list(dict.fromkeys(literal_str_list))
+    # literal_str_list += ['-' + literal_str for literal_str in literal_str_list]
+    # literal_str_list += ['~' + literal_str for literal_str in literal_str_list]
+    #
+    # literal_str_list = list(dict.fromkeys(literal_str_list))
 
     language = {literal_str: Literal(literal_str, literal_str + ' is present', literal_str + ' is absent')
                 for literal_str in literal_str_list}
@@ -1670,4 +1678,4 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True, host='0.0.0.0', port=8050)
+    app.run_server(debug=True, host='127.0.0.1', port=8050)

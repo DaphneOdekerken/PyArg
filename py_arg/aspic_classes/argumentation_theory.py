@@ -99,7 +99,9 @@ class ArgumentationTheory:
         while change:
             change = False
             for defeasible_rule in self._argumentation_system.defeasible_rules:
-                possible_antecedents = [arguments_per_conclusion[antecedent]
+                possible_antecedents = [[argument_for_antecedent
+                                         for argument_for_antecedent in arguments_per_conclusion[antecedent]
+                                         if defeasible_rule.consequent not in argument_for_antecedent.sub_conclusions]
                                         for antecedent in defeasible_rule.antecedents]
                 if all(possible_antecedents):
                     for direct_sub_argument_tuple in itertools.product(*possible_antecedents):
@@ -109,7 +111,10 @@ class ArgumentationTheory:
                             arguments_per_conclusion[defeasible_rule.consequent].add(new_instantiated_argument)
                             change = True
             for strict_rule in self._argumentation_system.strict_rules:
-                possible_antecedents = [arguments_per_conclusion[antecedent] for antecedent in strict_rule.antecedents]
+                possible_antecedents = [[argument_for_antecedent
+                                         for argument_for_antecedent in arguments_per_conclusion[antecedent]
+                                         if strict_rule.consequent not in argument_for_antecedent.sub_conclusions]
+                                        for antecedent in strict_rule.antecedents]
                 if all(possible_antecedents):
                     for direct_sub_argument_tuple in itertools.product(*possible_antecedents):
                         new_instantiated_argument = \
@@ -330,12 +335,11 @@ class ArgumentationTheory:
         :param ordering: The ordering used to decide if the attacking argument is weaker than the attacking argument.
         :return: List of all defeats.
         """
-
-        if ordering == None:
-            return [Defeat(argument_a,argument_b)
+        if ordering is None:
+            return [Defeat(argument_a, argument_b)
                     for argument_a in self.all_arguments
                     for argument_b in self.all_arguments
-                    if self.attacks(argument_a,argument_b)]
+                    if self.attacks(argument_a, argument_b)]
 
         return [Defeat(argument_a, argument_b)
                 for argument_a in self.all_arguments
