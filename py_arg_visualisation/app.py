@@ -397,8 +397,7 @@ str_explanation = html.Div([
 ])
 
 expl_function_options = {
-    'Acc': ['Defending', 'DirDefending'],
-    'AbstrAcc': ['Defending', 'DirDefending', 'Suff', 'MinSuff', 'Nec'],
+    'Acc': ['Defending', 'DirDefending', 'Suff', 'MinSuff', 'Nec'],
     'NonAcc': ['NoDefAgainst', 'NoDirDefense', 'NoSelfDefense']
 }
 
@@ -710,8 +709,7 @@ def get_abstr_explanations(arg_framework, semantics, extensions, accepted, funct
         return explanation
 
 
-def get_str_explanations(argumentation_theory, semantics, ordering_choice, extensions, accepted_formulas, function,
-                         expl_type, strategy, form):
+def get_str_explanations(argumentation_theory, semantics, ordering_choice, extensions, accepted_formulas, function, expl_type, strategy, form):
     """
     Calculate, for each formula, the explanations, given the function, type, strategy and form.
     
@@ -746,12 +744,72 @@ def get_str_explanations(argumentation_theory, semantics, ordering_choice, exten
         for formula in accepted_formulas:
             form_arg = argumentation_theory.arguments[formula]
             arg_expl = []
+            suff_expl = []
             for arg in form_arg:
                 if function == 'Defending':
                     arg_expl.extend(get_defending(abstractAF, arg, extensions))
                 elif function == 'DirDefending':
                     arg_expl.extend(get_dir_defending(abstractAF, arg, extensions))
+                else:
+                    suff_expl.extend(get_suff_nec(abstractAF, arg, 'Suff', expl_type))
+            if suff_expl != []:
+                if function == 'Suff':
+                    arg_expl.extend(suff_expl)
+                else: 
+                    form_expl = []
+                    form_expls = []  
+                    if form == 'Arg':
+                        form_expl = suff_expl
+                    else: 
+                        for sets in suff_expl:
+                            set_expl = []
+                            for arg in sets:
+                                if form == 'Prem' and arg.premises not in form_expl:
+                                    set_expl.append(arg.premises)
+                                elif form == 'Rule':
+                                    defrules = arg.defeasible_rules
+                                    rules = defrules.union(arg.strict_rules)
+                                    if rules not in form_expl:
+                                        set_expl.append(rules)
+                                elif form == 'SubArg' and arg.sub_arguments not in form_expl:
+                                    set_expl.append(arg.sub_arguments)
+                                elif form == 'SubArgConc':  
+                                    subargconc = set()  
+                                    for subarg in arg.sub_arguments:
+                                        if subarg.conclusion not in subargconc:
+                                            subargconc.add(subarg.conclusion)
+                                    set_expl.append(subargconc) 
+                            form_expl.append(set_expl)
+                    
+                        for expl in form_expl:
+                            form_expls.append(set().union(*expl))
+                        form_expl = form_expls
+                    
+                    if function == 'MinSuff':
+                        minsuff_expl = []
+                        sort_form_expl = sorted(form_expl, key=len)
+                        for suff in sort_form_expl:
+                            minsuff_suff = []
+                            for minsuff in minsuff_expl:
+                                if minsuff.issubset(suff):
+                                    minsuff_suff.append(minsuff)
+                                if suff.issubset(minsuff):
+                                    minsuff_expl.remove(minsuff)
+                                    minsuff_suff.append(suff)
+                            if minsuff_suff == [] and suff not in minsuff_expl:
+                                minsuff_expl.append(suff)
+                        arg_expl.extend(minsuff_expl)
+                        
+                    elif function == 'Nec':
+                        nec_expl = form_expl[0]
+                        for suffexpl in form_expl:
+                            nec_expl = nec_expl.intersection(suffexpl)
+                        arg_expl.extend(nec_expl)
+#                    
             abstr_explanation[str(formula)] = arg_expl
+            
+        if function == 'MinSuff' or function == 'Nec':
+            return abstr_explanation
 
     elif expl_type == 'NonAcc':
         formulas = set()
@@ -767,12 +825,12 @@ def get_str_explanations(argumentation_theory, semantics, ordering_choice, exten
                 elif function == 'NoDirDefense':
                     arg_expl.extend(get_no_dir_defending(abstractAF, arg, extensions))
                 elif function == 'NoSelfDefense':
-                    arg_expl.extend(get_no_self_defense(abstractAF, arg, extensions))
+                    arg_expl.extend(get_no_self_defense(abstractAF, arg, extension))
             abstr_explanation[str(formula)] = arg_expl
 
     if form == 'Arg':
-        return abstr_explanation
-
+        return abstr_explanation            
+    
     else:
         for expl_form in abstr_explanation:
             explanation = abstr_explanation[expl_form]
@@ -786,10 +844,14 @@ def get_str_explanations(argumentation_theory, semantics, ordering_choice, exten
                         rules = defrules.union(arg.strict_rules)
                         if rules not in form_expl:
                             form_expl.append(rules)
+#                    elif form == 'TopRule': 
+#                        if arg.top_rule != None: 
+#                            if arg.top_rule not in form_expl:
+#                                form_expl.append(arg.top_rule)
                     elif form == 'SubArg' and arg.sub_arguments not in form_expl:
                         form_expl.append(arg.sub_arguments)
-                    elif form == 'SubArgConc':
-                        subargconc = set()
+                    elif form == 'SubArgConc':  
+                        subargconc = set()  
                         for subarg in arg.sub_arguments:
                             if subarg.conclusion not in subargconc:
                                 subargconc.add(subarg.conclusion)
@@ -1143,8 +1205,6 @@ def toggle_collapse(n, is_open):
     prevent_initial_call=True
 )
 def setting_choice(choice):
-    if choice == 'Acc':
-        choice = 'AbstrAcc'
     return [{'label': i, 'value': i} for i in expl_function_options[choice]]
 
 
