@@ -6,7 +6,6 @@ from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.orderings.elitist_ordering import ElitistOrdering
 from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering, LastLinkDemocraticOrdering
 from py_arg.aspic_classes.literal import Literal
-from py_arg.aspic_classes.ordinary_premise import OrdinaryPremise
 from py_arg.aspic_classes.preference import Preference
 from py_arg.aspic_classes.strict_rule import StrictRule
 from py_arg.aspic_classes.orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
@@ -62,9 +61,6 @@ def get_argumentation_theory(include_d: bool = False, include_e: bool = False) -
     if include_d:
         ordinary_premises.append(language['~d'])
 
-    for ordinary_premise in ordinary_premises:
-        ordinary_premise.__class__ = OrdinaryPremise
-
     arg_theory = ArgumentationTheory(arg_sys, axioms, ordinary_premises)
     return arg_theory
 
@@ -109,18 +105,18 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
         language = arg_theory.argumentation_system.language
         args_per_literal = arg_theory.arguments
         all_args = set().union(*args_per_literal.values())
-        arg_a_prime = InstantiatedArgument.observation_based(language['a'])
+        arg_a_prime = InstantiatedArgument.ordinary_premise_based(language['a'])
         arg_a = InstantiatedArgument.defeasible_rule_based(
             DefeasibleRule(3, {language['a']}, language['p']), {arg_a_prime})
-        arg_b1 = InstantiatedArgument.observation_based(language['~s'])
+        arg_b1 = InstantiatedArgument.ordinary_premise_based(language['~s'])
         arg_b1_prime = InstantiatedArgument.defeasible_rule_based(
             DefeasibleRule(1, {language['~s']}, language['t']), {arg_b1})
-        arg_b2 = InstantiatedArgument.observation_based(language['r'])
+        arg_b2 = InstantiatedArgument.ordinary_premise_based(language['r'])
         arg_b2_prime = InstantiatedArgument.defeasible_rule_based(
             DefeasibleRule(2, {language['r']}, language['q']), {arg_b2})
         arg_b = InstantiatedArgument.strict_rule_based(
             StrictRule(1, {language['t'], language['q']}, language['-p']), {arg_b2_prime, arg_b1_prime})
-        arg_c = InstantiatedArgument.observation_based(language['-r'])
+        arg_c = InstantiatedArgument.ordinary_premise_based(language['-r'])
 
         self.assertListEqual(sorted(all_args),
                              sorted([arg_a_prime, arg_a, arg_b1, arg_b1_prime, arg_b2, arg_b2_prime, arg_b, arg_c]))
@@ -145,7 +141,7 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
 
         arg_theory = get_argumentation_theory(include_d=True)
         language = arg_theory.argumentation_system.language
-        arg_d1 = InstantiatedArgument.observation_based(language['~d'])
+        arg_d1 = InstantiatedArgument.ordinary_premise_based(language['~d'])
         arg_d2 = InstantiatedArgument.defeasible_rule_based(DefeasibleRule(4, {language['~d']}, language['s']),
                                                             {arg_d1})
         self.assertTrue(arg_theory.contrary_undermines(arg_d2, arg_b))
@@ -205,7 +201,7 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
         self.assertFalse(arg_theory.defeats(arg_c, arg_b2_prime, ell))
         self.assertTrue(arg_theory.defeats(arg_b2, arg_c, ell))
 
-        arg_d1 = InstantiatedArgument.observation_based(language['~d'])
+        arg_d1 = InstantiatedArgument.ordinary_premise_based(language['~d'])
         arg_d2 = InstantiatedArgument.defeasible_rule_based(DefeasibleRule(4, {language['~d']}, language['s']),
                                                             {arg_d1})
         arg_e = InstantiatedArgument.strict_rule_based(arg_theory.argumentation_system.strict_rules[1], {arg_b2})

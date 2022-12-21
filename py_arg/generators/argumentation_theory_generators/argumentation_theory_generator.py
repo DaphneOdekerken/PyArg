@@ -2,8 +2,6 @@ import random
 
 from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from py_arg.aspic_classes.axiom import Axiom
-from py_arg.aspic_classes.ordinary_premise import OrdinaryPremise
 
 
 class ArgumentationTheoryGenerator:
@@ -39,13 +37,9 @@ class ArgumentationTheoryGenerator:
         axiom_size = int(knowledge_base_size * self.axiom_knowledge_ratio)
         axiom_indices = random.sample(range(knowledge_base_size), axiom_size)
         axioms = [knowledge_base[i] for i in axiom_indices]
-        for axiom in axioms:
-            axiom.__class__ = Axiom
 
         ordinary_premises = [knowledge_base[i] for i in range(knowledge_base_size)
                              if i not in axiom_indices]
-        for ordinary_premise in ordinary_premises:
-            ordinary_premise.__class__ = OrdinaryPremise
 
         return ArgumentationTheory(argumentation_system=self.argumentation_system,
                                    knowledge_base_axioms=axioms,

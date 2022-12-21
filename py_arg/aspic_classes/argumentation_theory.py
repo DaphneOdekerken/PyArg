@@ -3,12 +3,10 @@ from typing import List, Dict, Optional, Set, Tuple
 
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.defeat import Defeat
-from py_arg.aspic_classes.axiom import Axiom
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.literal import Literal
 from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering
 from py_arg.aspic_classes.orderings.ordering import Ordering
-from py_arg.aspic_classes.ordinary_premise import OrdinaryPremise
 from py_arg.aspic_classes.preference import Preference
 from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
 from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
@@ -21,8 +19,8 @@ class ArgumentationTheory:
     """
 
     def __init__(self, argumentation_system: ArgumentationSystem,
-                 knowledge_base_axioms: List[Axiom],
-                 knowledge_base_ordinary_premises: List[OrdinaryPremise],
+                 knowledge_base_axioms: List[Literal],
+                 knowledge_base_ordinary_premises: List[Literal],
                  ordinary_premise_preferences: Optional[List[Preference]] = None):
         self._argumentation_system = argumentation_system
         self._knowledge_base_axioms = knowledge_base_axioms
@@ -57,7 +55,7 @@ class ArgumentationTheory:
         self._knowledge_base_axioms = knowledge_base_axioms_input
         self._recompute_arguments()
 
-    def add_to_knowledge_base_axioms(self, new_knowledge_base_axiom: Axiom):
+    def add_to_knowledge_base_axioms(self, new_knowledge_base_axiom: Literal):
         self._knowledge_base_axioms.append(new_knowledge_base_axiom)
         self._recompute_arguments()
 
@@ -70,7 +68,7 @@ class ArgumentationTheory:
         self._knowledge_base_ordinary_premises = knowledge_base_ordinary_premises_input
         self._recompute_arguments()
 
-    def add_to_knowledge_base_ordinary_premises(self, new_knowledge_base_ordinary_premise: OrdinaryPremise):
+    def add_to_knowledge_base_ordinary_premises(self, new_knowledge_base_ordinary_premise: Literal):
         self._knowledge_base_ordinary_premises.append(new_knowledge_base_ordinary_premise)
         self._recompute_arguments()
 
@@ -93,9 +91,9 @@ class ArgumentationTheory:
         arguments_per_conclusion = {literal: set() for literal in self._argumentation_system.language.values()}
 
         for knowledge_item in self._knowledge_base_axioms:
-            arguments_per_conclusion[knowledge_item].add(InstantiatedArgument.observation_based(knowledge_item))
+            arguments_per_conclusion[knowledge_item].add(InstantiatedArgument.axiom_based(knowledge_item))
         for knowledge_item in self._knowledge_base_ordinary_premises:
-            arguments_per_conclusion[knowledge_item].add(InstantiatedArgument.observation_based(knowledge_item))
+            arguments_per_conclusion[knowledge_item].add(InstantiatedArgument.ordinary_premise_based(knowledge_item))
 
         change = True
         while change:

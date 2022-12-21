@@ -1,8 +1,8 @@
 from typing import Dict, Set
 
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
+from py_arg.aspic_classes.literal import Literal
 from py_arg.aspic_classes.orderings.ordering import Ordering
-from py_arg.aspic_classes.ordinary_premise import OrdinaryPremise
 from py_arg.aspic_classes.preference import Preference
 
 
@@ -20,8 +20,8 @@ class ElitistOrdering(Ordering):
                          for rule_from_b in rule_set_b])
                     for rule_from_a in rule_set_a])
 
-    def ordinary_premise_set_is_strictly_weaker_than(self, ordinary_premise_set_a: Set[OrdinaryPremise],
-                                                     ordinary_premise_set_b: Set[OrdinaryPremise]):
+    def ordinary_premise_set_is_strictly_weaker_than(self, ordinary_premise_set_a: Set[Literal],
+                                                     ordinary_premise_set_b: Set[Literal]):
         if len(ordinary_premise_set_a) == 0:
             return False
         if len(ordinary_premise_set_b) == 0:

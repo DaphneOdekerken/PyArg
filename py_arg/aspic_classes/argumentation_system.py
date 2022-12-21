@@ -26,10 +26,10 @@ class ArgumentationSystem:
         for defeasible_rule in defeasible_rules:
             defeasible_rule_literal = Literal.from_defeasible_rule(defeasible_rule)
             defeasible_rule_literal_negation = Literal.from_defeasible_rule_negation(defeasible_rule)
+            defeasible_rule_literal.contraries_and_contradictories = {defeasible_rule_literal_negation}
+            defeasible_rule_literal_negation.contraries_and_contradictories = {defeasible_rule_literal}
             language[str(defeasible_rule_literal)] = defeasible_rule_literal
             language[str(defeasible_rule_literal_negation)] = defeasible_rule_literal_negation
-            contraries_and_contradictories[str(defeasible_rule_literal)] = {defeasible_rule_literal_negation}
-            contraries_and_contradictories[str(defeasible_rule_literal_negation)] = {defeasible_rule_literal}
 
         # Rule preferences
         self.rule_preference_dict = \

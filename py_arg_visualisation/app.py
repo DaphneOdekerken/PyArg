@@ -13,7 +13,6 @@ from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering, LastLinkDemocraticOrdering
 from py_arg.aspic_classes.literal import Literal
-from py_arg.aspic_classes.ordinary_premise import OrdinaryPremise
 from py_arg.aspic_classes.preference import Preference
 from py_arg.aspic_classes.strict_rule import StrictRule
 from py_arg.aspic_classes.orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
@@ -540,9 +539,6 @@ def get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_prefe
 
     axioms = [language[literal_str] for literal_str in axiom_list]
     ordinary_premises = [language[literal_str] for literal_str in ordinary_list]
-
-    for ordinary_premise in ordinary_premises:
-        ordinary_premise.__class__ = OrdinaryPremise
 
     arg_theory = ArgumentationTheory(arg_sys, axioms, ordinary_premises)
 
