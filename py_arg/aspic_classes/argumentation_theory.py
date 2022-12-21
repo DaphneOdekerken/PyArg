@@ -165,9 +165,7 @@ class ArgumentationTheory:
             return False
         if not isinstance(argument_b.top_rule, DefeasibleRule):
             return False
-        if argument_a.conclusion not in argument_b.conclusion.contraries_and_contradictories:
-            return False
-        return True
+        return argument_a.conclusion.is_contrary_or_contradictory_of(argument_b.conclusion)
 
     def rebuts(self, argument_a: InstantiatedArgument, argument_b: InstantiatedArgument) -> bool:
         """
@@ -207,11 +205,7 @@ class ArgumentationTheory:
             return False
         if not isinstance(argument_b.top_rule, DefeasibleRule):
             return False
-        if argument_a.conclusion not in argument_b.conclusion.contraries_and_contradictories:
-            return False
-        if argument_b.conclusion in argument_a.conclusion.contraries_and_contradictories:
-            return False
-        return True
+        return argument_a.conclusion.is_contrary_of(argument_b.conclusion)
 
     def contrary_rebuts(self, argument_a: InstantiatedArgument, argument_b: InstantiatedArgument) -> bool:
         """
@@ -259,7 +253,7 @@ class ArgumentationTheory:
         :param argument_b: The supposedly attacked argument.
         :return: Boolean indicating whether argument_a undermines argument_b.
         """
-        return any([argument_a.conclusion in ordinary_premise_b.contraries_and_contradictories
+        return any([argument_a.conclusion.is_contrary_or_contradictory_of(ordinary_premise_b)
                     for ordinary_premise_b in argument_b.ordinary_premises])
 
     @staticmethod
@@ -273,7 +267,7 @@ class ArgumentationTheory:
         :param ordering: The ordering used to decide if argument_a is weaker than argument_b.
         :return: Boolean indicating whether argument_a undermines argument_b and is not weaker.
         """
-        return any([argument_a.conclusion in sub_argument_b.conclusion.contraries_and_contradictories and
+        return any([argument_a.conclusion.is_contrary_or_contradictory_of(sub_argument_b.conclusion) and
                     not ordering.argument_is_strictly_weaker_than(argument_a, sub_argument_b)
                     for sub_argument_b in argument_b.sub_arguments
                     if sub_argument_b.is_observation_based and sub_argument_b.is_plausible])
@@ -287,8 +281,7 @@ class ArgumentationTheory:
         :param argument_b: The supposedly attacked argument.
         :return: Boolean indicating whether argument_a contrary-undermines argument_b.
         """
-        return any([argument_a.conclusion in ordinary_premise_b.contraries_and_contradictories and
-                    ordinary_premise_b not in argument_a.conclusion.contraries_and_contradictories
+        return any([argument_a.conclusion.is_contrary_of(ordinary_premise_b)
                     for ordinary_premise_b in argument_b.ordinary_premises])
 
     def attacks(self, argument_a: InstantiatedArgument, argument_b: InstantiatedArgument):

@@ -30,12 +30,6 @@ class InstantiatedArgument(Argument):
                                 for sub_conclusion in dir_sub.sub_conclusions}
         self.sub_conclusions.add(self.conclusion)
 
-    # def __repr__(self):
-    #     return self.name
-    #
-    # def __lt__(self, other):
-    #     return str(self).__lt__(str(other))
-
     @classmethod
     def axiom_based(cls, conclusion: Literal):
         return cls(str(conclusion) + ' (axiom)', {conclusion}, set(), conclusion, set(), set(), set(), None)
@@ -102,7 +96,7 @@ class InstantiatedArgument(Argument):
 
     @property
     def is_strict(self) -> bool:
-        return len(self.defeasible_rules) == 0
+        return not self.defeasible_rules
 
     @property
     def is_defeasible(self) -> bool:
@@ -114,7 +108,7 @@ class InstantiatedArgument(Argument):
 
     @property
     def is_plausible(self) -> bool:
-        return len(self.ordinary_premises) > 0
+        return not self.is_firm
 
     @property
     def is_fallible(self) -> bool:
