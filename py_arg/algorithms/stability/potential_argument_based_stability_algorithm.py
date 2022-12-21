@@ -1,11 +1,11 @@
 from typing import Dict
 
-from py_arg.abstract_argumentation_classes.argument_incomplete_argumentation_framework import \
+from py_arg.incomplete_argumentation_classes.argument_incomplete_argumentation_framework import \
     ArgumentIncompleteArgumentationFramework
 from py_arg.aspic_classes.literal import Literal
 from py_arg.aspic_classes.orderings.ordering import Ordering
-from py_arg.dynamic_aspic_classes.potential_argument import PotentialArgument
-from py_arg.dynamic_aspic_classes.potential_argumentation_theory import PotentialArgumentationTheory
+from py_arg.incomplete_aspic_classes.potential_argument import PotentialArgument
+from py_arg.incomplete_aspic_classes.potential_argumentation_theory import PotentialArgumentationTheory
 from py_arg.labels.enum_stability_label import EnumStabilityLabel
 from py_arg.labels.potential_argument_label import PotentialArgumentLabel
 

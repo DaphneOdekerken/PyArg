@@ -5,11 +5,11 @@ from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering
 from py_arg.aspic_classes.literal import Literal
 from py_arg.aspic_classes.preference import Preference
-from py_arg.dynamic_aspic_classes.potential_argumentation_theory import PotentialArgumentationTheory
-from py_arg.dynamic_aspic_classes.queryable import Queryable
+from py_arg.incomplete_aspic_classes.potential_argumentation_theory import PotentialArgumentationTheory
+from py_arg.incomplete_aspic_classes.queryable import Queryable
 from py_arg.labels.enum_stability_label import EnumStabilityLabel
 from py_arg.labels.potential_argument_label import PotentialArgumentLabel
-from py_arg.stability.potential_argument_based_stability_algorithm import \
+from py_arg.algorithms.stability import \
     potential_argument_based_stability_algorithm_from_potential_argumentation_theory, \
     from_potential_argument_labels_to_literal_labels
 

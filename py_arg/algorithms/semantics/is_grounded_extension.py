@@ -3,7 +3,7 @@ from typing import List
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat
-from py_arg.semantics.get_grounded_extension import get_grounded_extension
+from py_arg.algorithms.semantics.get_grounded_extension import get_grounded_extension
 
 
 def is_grounded_extension(argument_set: List[Argument], argumentation_framework: AbstractArgumentationFramework) -> bool:

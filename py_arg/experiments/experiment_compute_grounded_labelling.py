@@ -1,8 +1,8 @@
 import time
 
-from py_arg.algorithms.compute_all_literal_grounded_justification_status_fast import \
+from py_arg.algorithms.justification.compute_all_literal_grounded_justification_status_fast import \
     compute_all_literal_grounded_justification_status_fast
-from py_arg.algorithms.compute_all_literal_grounded_justification_status_naive import \
+from py_arg.algorithms.justification.compute_all_literal_grounded_justification_status_naive import \
     compute_all_literal_grounded_justification_status_naive
 from py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
     LayeredArgumentationSystemGenerator

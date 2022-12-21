@@ -3,7 +3,6 @@ from typing import Optional, List
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering
 from py_arg.aspic_classes.orderings.ordering import Ordering
 from py_arg_tests.modgil_prakken_aij_tests import get_argumentation_theory
 

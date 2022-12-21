@@ -1,10 +1,10 @@
 import unittest
 
 from py_arg.abstract_argumentation_classes.argument import Argument
-from py_arg.abstract_argumentation_classes.argument_incomplete_argumentation_framework import \
+from py_arg.incomplete_argumentation_classes.argument_incomplete_argumentation_framework import \
     ArgumentIncompleteArgumentationFramework
 from py_arg.abstract_argumentation_classes.defeat import Defeat
-from py_arg.relevance.get_relevant_potential_arguments_for_adding_to_NG import \
+from py_arg.algorithms.relevance import \
     get_relevant_uncertain_arguments_for_adding_to_ng
 
 

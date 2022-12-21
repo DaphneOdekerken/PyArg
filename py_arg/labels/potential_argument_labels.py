@@ -1,6 +1,6 @@
 from typing import Dict
 
-from py_arg.dynamic_aspic_classes.potential_argument import PotentialArgument
+from py_arg.incomplete_aspic_classes.potential_argument import PotentialArgument
 from py_arg.labels.potential_argument_label import PotentialArgumentLabel
 
 

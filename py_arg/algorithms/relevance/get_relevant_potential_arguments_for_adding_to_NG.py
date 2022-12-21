@@ -1,7 +1,7 @@
 from typing import List
 
 from py_arg.abstract_argumentation_classes.argument import Argument
-from py_arg.abstract_argumentation_classes.argument_incomplete_argumentation_framework import \
+from py_arg.incomplete_argumentation_classes.argument_incomplete_argumentation_framework import \
     ArgumentIncompleteArgumentationFramework
 
 

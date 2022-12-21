@@ -8,8 +8,8 @@ from py_arg.aspic_classes.axiom import Axiom
 from py_arg.aspic_classes.literal import Literal
 from py_arg.aspic_classes.orderings.ordering import Ordering
 from py_arg.aspic_classes.ordinary_premise import OrdinaryPremise
-from py_arg.dynamic_aspic_classes.queryable import Queryable
-from py_arg.dynamic_aspic_classes.potential_argument import PotentialArgument
+from py_arg.incomplete_aspic_classes.queryable import Queryable
+from py_arg.incomplete_aspic_classes.potential_argument import PotentialArgument
 
 
 class PotentialArgumentationTheory(ArgumentationTheory):

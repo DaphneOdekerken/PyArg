@@ -4,7 +4,7 @@ from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat
 from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering
 from py_arg.aspic_classes.orderings.ordering import Ordering
-from py_arg.dynamic_aspic_classes.potential_argumentation_theory import PotentialArgumentationTheory
+from py_arg.incomplete_aspic_classes.potential_argumentation_theory import PotentialArgumentationTheory
 
 
 class ArgumentIncompleteArgumentationFramework:

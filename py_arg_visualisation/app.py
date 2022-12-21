@@ -21,17 +21,17 @@ from py_arg.aspic_classes.orderings.weakest_link_ordering import WeakestLinkElit
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat
-from py_arg.semantics.get_admissible_sets import get_admissible_sets
-from py_arg.semantics.get_complete_extensions import get_complete_extensions
-from py_arg.semantics.get_grounded_extension import get_grounded_extension
-from py_arg.semantics.get_preferred_extensions import get_preferred_extensions
-from py_arg.semantics.get_ideal_extension import get_ideal_extension
-from py_arg.semantics.get_stable_extensions import get_stable_extensions
-from py_arg.semantics.get_semistable_extensions import get_semistable_extensions
-from py_arg.semantics.get_eager_extension import get_eager_extension
-from py_arg.explanation.defending import get_defending, get_dir_defending
-from py_arg.explanation.not_defending import get_not_defending, get_no_self_defense, get_no_dir_defending
-from py_arg.explanation.suff_nec import get_suff_nec
+from py_arg.algorithms.semantics import get_admissible_sets
+from py_arg.algorithms.semantics.get_complete_extensions import get_complete_extensions
+from py_arg.algorithms.semantics.get_grounded_extension import get_grounded_extension
+from py_arg.algorithms.semantics import get_preferred_extensions
+from py_arg.algorithms.semantics import get_ideal_extension
+from py_arg.algorithms.semantics.get_stable_extensions import get_stable_extensions
+from py_arg.algorithms.semantics import get_semistable_extensions
+from py_arg.algorithms.semantics import get_eager_extension
+from py_arg.algorithms.explanation import get_defending, get_dir_defending
+from py_arg.algorithms.explanation import get_not_defending, get_no_self_defense, get_no_dir_defending
+from py_arg.algorithms.explanation import get_suff_nec
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.LUMEN])
 server = app.server

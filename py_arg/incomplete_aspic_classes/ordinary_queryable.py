@@ -1,4 +1,4 @@
-from py_arg.dynamic_aspic_classes.queryable import Queryable
+from py_arg.incomplete_aspic_classes.queryable import Queryable
 
 
 class OrdinaryQueryable(Queryable):

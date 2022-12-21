@@ -3,7 +3,7 @@ from typing import Set, Iterable
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat
-from py_arg.semantics.is_acceptable_with_respect_to import is_acceptable_with_respect_to
+from py_arg.algorithms.semantics.is_acceptable_with_respect_to import is_acceptable_with_respect_to
 
 
 def get_acceptable_with_respect_to(argument_set: Iterable[Argument],

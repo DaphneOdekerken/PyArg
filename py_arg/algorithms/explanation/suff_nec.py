@@ -1,7 +1,7 @@
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.argument import Argument
-from py_arg.semantics.get_admissible_sets import get_admissible_sets
-from py_arg.explanation.reach_and_dist import get_reach
+from py_arg.algorithms.semantics import get_admissible_sets
+from py_arg.algorithms.explanation.reach_and_dist import get_reach
 
 
 def get_suff_nec(argumentation_framework: AbstractArgumentationFramework, argument: Argument, function, expl_type):

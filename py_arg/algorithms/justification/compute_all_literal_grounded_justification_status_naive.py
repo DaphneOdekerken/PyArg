@@ -3,7 +3,7 @@ from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic_classes.orderings.ordering import Ordering
 from py_arg.labels.enum_justification_label import EnumJustificationLabel
 from py_arg.labels.literal_labels import LiteralLabels
-from py_arg.semantics.get_grounded_extension import get_grounded_extension
+from py_arg.algorithms.semantics.get_grounded_extension import get_grounded_extension
 
 
 def compute_all_literal_grounded_justification_status_naive(argumentation_theory: ArgumentationTheory,
