@@ -14,6 +14,11 @@ class TestArgumentationFrameworkFromArgumentationTheory(unittest.TestCase):
         af = arg_theory.create_abstract_argumentation_framework('af')
         self.assertEqual(len(af.defeats), 5)
 
+    def test_get_nr_of_attacks(self):
+        arg_theory = get_argumentation_theory(include_d=True, include_e=True)
+        saf = arg_theory.create_structured_argumentation_framework('af')
+        self.assertEqual(len(saf.attacks), 10)
+
     def test_get_argumentation_framework(self):
         arg_theory = get_argumentation_theory()
         af = arg_theory.create_abstract_argumentation_framework('af')

@@ -10,6 +10,7 @@ from py_arg.aspic_classes.orderings.ordering import Ordering
 from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
 from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
+from py_arg.aspic_classes.structured_argumentation_framework import StructuredArgumentationFramework
 
 
 class ArgumentationTheory:
@@ -339,6 +340,24 @@ class ArgumentationTheory:
             ordering = LastLinkElitistOrdering(self.argumentation_system.rule_preferences,
                                                self.ordinary_premise_preferences)
         return AbstractArgumentationFramework(name, self.all_arguments, self.recompute_all_defeats(ordering))
+
+    def create_structured_argumentation_framework(self, name: str, ordering: Optional[Ordering] = None):
+        """
+        Create an structured argumentation framework based on this argumentation theory. Note: if no ordering is given,
+        last link elitist ordering is chosen as default ordering.
+
+        :param name: The name of the argumentation framework.
+        :param ordering: Ordering that influences the argument preferences. Note: default is last link elitist.
+        :return: Structured argumentation framework based on this argumentation theory.
+
+        """
+        if ordering is None:
+            ordering = LastLinkElitistOrdering(self.argumentation_system.rule_preferences,
+                                               self.ordinary_premise_preferences)
+        return StructuredArgumentationFramework(name, self.all_arguments, self.all_attacks,
+                                                [(arg_a, arg_b)
+                                                 for arg_a in self.all_arguments for arg_b in self.all_arguments
+                                                 if ordering.argument_is_weaker_or_equal_than(arg_a, arg_b)])
 
 
 if __name__ == "__main__":

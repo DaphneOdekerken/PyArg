@@ -1,4 +1,4 @@
-from typing import Dict, Set
+from typing import Set
 
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.literal import Literal
