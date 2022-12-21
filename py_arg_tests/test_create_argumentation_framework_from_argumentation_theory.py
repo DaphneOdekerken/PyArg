@@ -17,14 +17,14 @@ class TestArgumentationFrameworkFromArgumentationTheory(unittest.TestCase):
     def test_get_argumentation_framework(self):
         arg_theory = get_argumentation_theory()
         af = arg_theory.create_abstract_argumentation_framework('af')
-        arg_for_r = af.get_argument('r')
-        self.assertEqual(arg_for_r.name, 'r')
+        arg_for_r = af.get_argument('r (ordinary premise)')
+        self.assertEqual(arg_for_r.name, 'r (ordinary premise)')
         defeaters_of_r = arg_for_r.get_ingoing_defeat_arguments
         self.assertEqual(len(defeaters_of_r), 1)
-        self.assertEqual(defeaters_of_r[0].name, '-r')
+        self.assertEqual(defeaters_of_r[0].name, '-r (ordinary premise)')
         defeated_by_r = arg_for_r.get_ingoing_defeat_arguments
         self.assertEqual(len(defeated_by_r), 1)
-        self.assertEqual(defeated_by_r[0].name, '-r')
-        arg_for_not_r = af.get_argument('-r')
+        self.assertEqual(defeated_by_r[0].name, '-r (ordinary premise)')
+        arg_for_not_r = af.get_argument('-r (ordinary premise)')
         defeated_by_not_r = arg_for_not_r.get_outgoing_defeat_arguments
         self.assertEqual(len(defeated_by_not_r), 3)

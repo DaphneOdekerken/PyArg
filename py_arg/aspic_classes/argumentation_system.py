@@ -1,8 +1,8 @@
 from typing import Dict, List, Optional, Set
 
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
 from py_arg.aspic_classes.strict_rule import StrictRule
-from py_arg.aspic_classes.preference import Preference
 from py_arg.aspic_classes.literal import Literal
 
 
@@ -12,7 +12,7 @@ class ArgumentationSystem:
                  contraries_and_contradictories: Dict[str, Set[Literal]],
                  strict_rules: List[StrictRule],
                  defeasible_rules: List[DefeasibleRule],
-                 defeasible_rule_preferences: Optional[List[Preference]] = None):
+                 defeasible_rule_preferences: Optional[PreferencePreorder] = None):
         # Language
         self.language = language
 
@@ -32,27 +32,18 @@ class ArgumentationSystem:
             language[str(defeasible_rule_literal_negation)] = defeasible_rule_literal_negation
 
         # Rule preferences
-        self.rule_preference_dict = \
-            {str(rule): {str(other_rule): Preference(str(rule), '?', str(other_rule))
-                         for other_rule in self.defeasible_rules}
-             for rule in self.defeasible_rules}
-        if defeasible_rule_preferences is not None:
-            for rule_preference in defeasible_rule_preferences:
-                self.add_rule_preference(rule_preference)
+        if defeasible_rule_preferences:
+            self.rule_preferences = defeasible_rule_preferences
+        else:
+            reflexive_order = [(rule_a, rule_a) for rule_a in self.defeasible_rules]
+            self.rule_preferences = PreferencePreorder(reflexive_order)
 
     def get_literal(self, defeasible_rule: DefeasibleRule) -> Literal:
         return self.language[defeasible_rule.id_str]
 
     def __eq__(self, other):
         return self.language == other.language and self.defeasible_rules == other.defeasible_rules and \
-               self.rule_preference_dict == other.rule_preference_dict
-
-    def add_rule_preference(self, rule_preference: Preference):
-        self.rule_preference_dict[str(rule_preference.object_a)][str(rule_preference.object_b)] = \
-            rule_preference
-        inverted_preference = Preference.inversion(rule_preference)
-        self.rule_preference_dict[str(inverted_preference.object_a)][str(inverted_preference.object_b)] = \
-            inverted_preference
+               self.rule_preferences == other.rule_preferences
 
 
 if __name__ == "__main__":

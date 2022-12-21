@@ -11,11 +11,11 @@ import visdcc
 from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
-from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering, LastLinkDemocraticOrdering
+from py_arg.aspic_classes.orderings.argument_orderings.last_link_ordering import LastLinkElitistOrdering, \
+    LastLinkDemocraticOrdering
 from py_arg.aspic_classes.literal import Literal
-from py_arg.aspic_classes.preference import Preference
 from py_arg.aspic_classes.strict_rule import StrictRule
-from py_arg.aspic_classes.orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
+from py_arg.aspic_classes.orderings.argument_orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
     WeakestLinkDemocraticOrdering
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.argument import Argument
@@ -547,12 +547,12 @@ def get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_prefe
     for preference in premise_preference_list:
         if preference.find('<') != -1:
             pref_items = preference.rsplit('<')
-            arg_theory.add_ordinary_premise_preference(Preference(language[pref_items[0]], '<',
-                                                                  language[pref_items[1]]))
+            arg_theory.ordinary_premise_preferences.append((language[pref_items[0]], language[pref_items[1]]))
+
         elif preference.find('>') != -1:
             pref_items = preference.rsplit('>')
-            arg_theory.add_ordinary_premise_preference(Preference(language[pref_items[1]], '<',
-                                                                  language[pref_items[0]]))
+            arg_theory.ordinary_premise_preferences.append((language[pref_items[1]], language[pref_items[0]]))
+
     for preference in rule_preference_list:
         if preference.find('<') != -1:
             pref_items = preference.rsplit('<')
@@ -562,7 +562,7 @@ def get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_prefe
             for def_rule in defrules:
                 if str(Literal.from_defeasible_rule(def_rule)) == pref_items[1]:
                     stronger_rule = def_rule
-            arg_theory.argumentation_system.add_rule_preference(Preference(weaker_rule, '<', stronger_rule))
+            arg_theory.argumentation_system.rule_preferences.append((weaker_rule, stronger_rule))
         elif preference.find('>') != -1:
             pref_items = preference.rsplit('>')
             for def_rule in defrules:
@@ -571,7 +571,7 @@ def get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_prefe
             for def_rule in defrules:
                 if str(Literal.from_defeasible_rule(def_rule)) == pref_items[0]:
                     stronger_rule = def_rule
-            arg_theory.argumentation_system.add_rule_preference(Preference(weaker_rule, '<', stronger_rule))
+            arg_theory.argumentation_system.rule_preferences.append((weaker_rule, stronger_rule))
 
     return arg_theory, error_statement
 

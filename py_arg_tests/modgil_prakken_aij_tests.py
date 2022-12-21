@@ -3,12 +3,12 @@ import unittest
 from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
-from py_arg.aspic_classes.orderings.elitist_ordering import ElitistOrdering
-from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering, LastLinkDemocraticOrdering
+from py_arg.aspic_classes.orderings.set_orderings.elitist_ordering import ElitistOrdering
+from py_arg.aspic_classes.orderings.argument_orderings.last_link_ordering import LastLinkElitistOrdering, \
+    LastLinkDemocraticOrdering
 from py_arg.aspic_classes.literal import Literal
-from py_arg.aspic_classes.preference import Preference
 from py_arg.aspic_classes.strict_rule import StrictRule
-from py_arg.aspic_classes.orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
+from py_arg.aspic_classes.orderings.argument_orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
     WeakestLinkDemocraticOrdering
 from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
 
@@ -157,10 +157,9 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
         d2 = DefeasibleRule(2, {language['r']}, language['q'])
         d3 = DefeasibleRule(3, {language['a']}, language['p'])
 
-        arg_theory.argumentation_system.add_rule_preference(Preference(d2, '<', d3))
-        arg_theory.add_ordinary_premise_preference(Preference(language['-r'], '<', language['r']))
-        # arg_theory.add_ordinary_queryable_preference(Preference(language['-a'], '=', language['r']))
-        arg_theory.add_ordinary_premise_preference(Preference(language['~s'], '<', language['-r']))
+        arg_theory.argumentation_system.rule_preferences.append((d2, d3))
+        arg_theory.ordinary_premise_preferences.append((language['-r'], language['r']))
+        arg_theory.ordinary_premise_preferences.append((language['~s'], language['-r']))
 
         self.assertSetEqual(arg_a.defeasible_rules, arg_a.last_defeasible_rules, {d3})
         self.assertSetEqual(arg_a.ordinary_premises, {language['a']})
@@ -173,23 +172,22 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
         self.assertSetEqual(arg_c.defeasible_rules, arg_c.last_defeasible_rules, set())
         self.assertSetEqual(arg_c.premises, {language['-r']})
 
-        eli = ElitistOrdering(arg_theory.argumentation_system.rule_preference_dict,
-                              arg_theory.ordinary_premise_preference_dict)
+        eli = ElitistOrdering(arg_theory.argumentation_system.rule_preferences, arg_theory.ordinary_premise_preferences)
         self.assertTrue(eli.rule_set_is_strictly_weaker_than(arg_b.last_defeasible_rules, arg_a.last_defeasible_rules))
-        ell = LastLinkElitistOrdering(arg_theory.argumentation_system.rule_preference_dict,
-                                      arg_theory.ordinary_premise_preference_dict)
+        ell = LastLinkElitistOrdering(arg_theory.argumentation_system.rule_preferences,
+                                      arg_theory.ordinary_premise_preferences)
         self.assertTrue(ell.argument_is_strictly_weaker_than(arg_b, arg_a))
         self.assertTrue(eli.rule_set_is_strictly_weaker_than(arg_b.defeasible_rules, arg_a.defeasible_rules))
         self.assertFalse(eli.ordinary_premise_set_is_strictly_weaker_than(arg_b.ordinary_premises,
                                                                           arg_a.ordinary_premises))
-        ewl = WeakestLinkElitistOrdering(arg_theory.argumentation_system.rule_preference_dict,
-                                         arg_theory.ordinary_premise_preference_dict)
+        ewl = WeakestLinkElitistOrdering(arg_theory.argumentation_system.rule_preferences,
+                                         arg_theory.ordinary_premise_preferences)
         self.assertFalse(ewl.argument_is_strictly_weaker_than(arg_b, arg_a))
-        dll = LastLinkDemocraticOrdering(arg_theory.argumentation_system.rule_preference_dict,
-                                         arg_theory.ordinary_premise_preference_dict)
+        dll = LastLinkDemocraticOrdering(arg_theory.argumentation_system.rule_preferences,
+                                         arg_theory.ordinary_premise_preferences)
         self.assertFalse(dll.argument_is_strictly_weaker_than(arg_b, arg_a))
-        dwl = WeakestLinkDemocraticOrdering(arg_theory.argumentation_system.rule_preference_dict,
-                                            arg_theory.ordinary_premise_preference_dict)
+        dwl = WeakestLinkDemocraticOrdering(arg_theory.argumentation_system.rule_preferences,
+                                            arg_theory.ordinary_premise_preferences)
         self.assertFalse(dwl.argument_is_strictly_weaker_than(arg_b, arg_a))
         self.assertTrue(ell.argument_is_strictly_weaker_than(arg_c, arg_b2))
         self.assertTrue(ewl.argument_is_strictly_weaker_than(arg_c, arg_b2))

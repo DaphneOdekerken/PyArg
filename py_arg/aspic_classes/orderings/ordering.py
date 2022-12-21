@@ -2,49 +2,29 @@ from typing import Dict, Set
 
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.literal import Literal
-from py_arg.aspic_classes.preference import Preference
 from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
 
 
 class Ordering:
-    def __init__(self, defeasible_rule_preference_dict: Dict[str, Dict[str, Preference]],
-                 ordinary_premise_preference_dict: Dict[str, Dict[str, Preference]]):
-        self.defeasible_rule_preference_dict = defeasible_rule_preference_dict
-        self.ordinary_premise_preference_dict = ordinary_premise_preference_dict
-
-    def _get_rule_preference(self, rule_a: DefeasibleRule, rule_b: DefeasibleRule) -> Preference:
-        return self.defeasible_rule_preference_dict[str(rule_a)][str(rule_b)]
+    def __init__(self, defeasible_rule_preferences: PreferencePreorder,
+                 ordinary_premise_preferences: PreferencePreorder):
+        self.defeasible_rule_preferences = defeasible_rule_preferences
+        self.ordinary_premise_preferences = ordinary_premise_preferences
 
     def rule_is_strictly_weaker_than(self, rule_a: DefeasibleRule, rule_b: DefeasibleRule) -> bool:
-        return self._get_rule_preference(rule_a, rule_b).is_strictly_weaker
-
-    def rule_is_strictly_stronger_than(self, rule_a: DefeasibleRule, rule_b: DefeasibleRule) -> bool:
-        return self._get_rule_preference(rule_a, rule_b).is_strictly_stronger
-
-    def rule_is_stronger_or_equal_than(self, rule_a: DefeasibleRule, rule_b: DefeasibleRule) -> bool:
-        return self._get_rule_preference(rule_a, rule_b).is_stronger_or_equal
+        return self.defeasible_rule_preferences.is_strictly_weaker_than(rule_a, rule_b)
 
     def rule_is_weaker_or_equal_than(self, rule_a: DefeasibleRule, rule_b: DefeasibleRule) -> bool:
-        return self._get_rule_preference(rule_a, rule_b).is_weaker_or_equal
-
-    def _get_premise_preference(self, ordinary_premise_a: Literal, ordinary_premise_b: Literal):
-        return self.ordinary_premise_preference_dict[str(ordinary_premise_a)][str(ordinary_premise_b)]
+        return self.defeasible_rule_preferences.is_weaker_than(rule_a, rule_b)
 
     def ordinary_premise_is_strictly_weaker_than(self, ordinary_premise_a: Literal,
                                                  ordinary_premise_b: Literal) -> bool:
-        return self._get_premise_preference(ordinary_premise_a, ordinary_premise_b).is_strictly_weaker
-
-    def ordinary_premise_is_strictly_stronger_than(self, ordinary_premise_a: Literal,
-                                                   ordinary_premise_b: Literal) -> bool:
-        return self._get_premise_preference(ordinary_premise_a, ordinary_premise_b).is_strictly_stronger
-
-    def ordinary_premise_is_stronger_or_equal_than(self, ordinary_premise_a: Literal,
-                                                   ordinary_premise_b: Literal) -> bool:
-        return self._get_premise_preference(ordinary_premise_a, ordinary_premise_b).is_stronger_or_equal
+        return self.ordinary_premise_preferences.is_strictly_weaker_than(ordinary_premise_a, ordinary_premise_b)
 
     def ordinary_premise_is_weaker_or_equal_than(self, ordinary_premise_a: Literal,
                                                  ordinary_premise_b: Literal) -> bool:
-        return self._get_premise_preference(ordinary_premise_a, ordinary_premise_b).is_weaker_or_equal
+        return self.ordinary_premise_preferences.is_weaker_than(ordinary_premise_a, ordinary_premise_b)
 
     def rule_set_is_strictly_weaker_than(self, rule_set_a: Set[DefeasibleRule], rule_set_b: Set[DefeasibleRule]):
         pass
@@ -61,15 +41,5 @@ class Ordering:
         return self.ordinary_premise_set_is_strictly_weaker_than(ordinary_premise_set_a, ordinary_premise_set_b) or \
                ordinary_premise_set_a == ordinary_premise_set_b
 
-    def rule_set_is_strictly_stronger_than(self, rule_set_a: Set[DefeasibleRule], rule_set_b: Set[DefeasibleRule]):
-        return self.rule_set_is_strictly_weaker_than(rule_set_b, rule_set_a)
-
-    def ordinary_premise_set_is_strictly_stronger_than(self, ordinary_premise_set_a: Set[Literal],
-                                                       ordinary_premise_set_b: Set[Literal]):
-        return self.ordinary_premise_set_is_strictly_weaker_than(ordinary_premise_set_b, ordinary_premise_set_a)
-
     def argument_is_strictly_weaker_than(self, argument_a: InstantiatedArgument, argument_b: InstantiatedArgument):
         pass
-
-    def argument_is_strictly_stronger_than(self, argument_a: InstantiatedArgument, argument_b: InstantiatedArgument):
-        return self.argument_is_strictly_weaker_than(argument_b, argument_a)

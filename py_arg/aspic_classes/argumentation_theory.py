@@ -5,11 +5,11 @@ from py_arg.abstract_argumentation_classes.abstract_argumentation_framework impo
 from py_arg.abstract_argumentation_classes.defeat import Defeat
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.literal import Literal
-from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering
+from py_arg.aspic_classes.orderings.argument_orderings.last_link_ordering import LastLinkElitistOrdering
 from py_arg.aspic_classes.orderings.ordering import Ordering
-from py_arg.aspic_classes.preference import Preference
 from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
 from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
 
 
 class ArgumentationTheory:
@@ -21,19 +21,17 @@ class ArgumentationTheory:
     def __init__(self, argumentation_system: ArgumentationSystem,
                  knowledge_base_axioms: List[Literal],
                  knowledge_base_ordinary_premises: List[Literal],
-                 ordinary_premise_preferences: Optional[List[Preference]] = None):
+                 ordinary_premise_preferences: Optional[PreferencePreorder] = None):
         self._argumentation_system = argumentation_system
         self._knowledge_base_axioms = knowledge_base_axioms
         self._knowledge_base_ordinary_premises = knowledge_base_ordinary_premises
 
         # Rule preferences
-        self.ordinary_premise_preference_dict = \
-            {str(premise): {str(other_premise): Preference(str(premise), '?', str(other_premise))
-                            for other_premise in self._knowledge_base_ordinary_premises}
-             for premise in self._knowledge_base_ordinary_premises}
-        if ordinary_premise_preferences is not None:
-            for ordinary_premise_preference in ordinary_premise_preferences:
-                self.add_ordinary_premise_preference(ordinary_premise_preference)
+        if ordinary_premise_preferences:
+            self.ordinary_premise_preferences = ordinary_premise_preferences
+        else:
+            reflexive_order = [(premise_a, premise_a) for premise_a in self._knowledge_base_ordinary_premises]
+            self.ordinary_premise_preferences = PreferencePreorder(reflexive_order)
 
         self._recompute_arguments()
 
@@ -141,16 +139,6 @@ class ArgumentationTheory:
                 for argument_a in self.all_arguments
                 for argument_b in self.all_arguments
                 if self.attacks(argument_a, argument_b)]
-
-    def add_ordinary_premise_preference(self, premise_preference: Preference):
-        """
-        Add a preference relation to the argumentation theory.
-
-        :param premise_preference: The new preference relation between ordinary premises that should be added.
-        """
-        a, b = str(premise_preference.object_a), str(premise_preference.object_b)
-        self.ordinary_premise_preference_dict[a][b] = premise_preference
-        self.ordinary_premise_preference_dict[b][a] = Preference.inversion(premise_preference)
 
     @staticmethod
     def rebuts_on_conclusion(argument_a: InstantiatedArgument, argument_b: InstantiatedArgument) -> bool:
@@ -348,8 +336,8 @@ class ArgumentationTheory:
 
         """
         if ordering is None:
-            ordering = LastLinkElitistOrdering(self.argumentation_system.rule_preference_dict,
-                                               self.ordinary_premise_preference_dict)
+            ordering = LastLinkElitistOrdering(self.argumentation_system.rule_preferences,
+                                               self.ordinary_premise_preferences)
         return AbstractArgumentationFramework(name, self.all_arguments, self.recompute_all_defeats(ordering))
 
 
