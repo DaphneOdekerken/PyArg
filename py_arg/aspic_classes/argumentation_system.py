@@ -9,7 +9,7 @@ from py_arg.aspic_classes.literal import Literal
 class ArgumentationSystem:
     def __init__(self,
                  language: Dict[str, Literal],
-                 contraries: Dict[str, Set[Literal]],
+                 contraries_and_contradictories: Dict[str, Set[Literal]],
                  strict_rules: List[StrictRule],
                  defeasible_rules: List[DefeasibleRule],
                  defeasible_rule_preferences: Optional[List[Preference]] = None):
@@ -17,7 +17,7 @@ class ArgumentationSystem:
         self.language = language
 
         # Contradiction function
-        for literal_str, literal_contraries in contraries.items():
+        for literal_str, literal_contraries in contraries_and_contradictories.items():
             language[literal_str].contraries_and_contradictories = literal_contraries
 
         # Rules
@@ -28,8 +28,8 @@ class ArgumentationSystem:
             defeasible_rule_literal_negation = Literal.from_defeasible_rule_negation(defeasible_rule)
             language[str(defeasible_rule_literal)] = defeasible_rule_literal
             language[str(defeasible_rule_literal_negation)] = defeasible_rule_literal_negation
-            contraries[str(defeasible_rule_literal)] = {defeasible_rule_literal_negation}
-            contraries[str(defeasible_rule_literal_negation)] = {defeasible_rule_literal}
+            contraries_and_contradictories[str(defeasible_rule_literal)] = {defeasible_rule_literal_negation}
+            contraries_and_contradictories[str(defeasible_rule_literal_negation)] = {defeasible_rule_literal}
 
         # Rule preferences
         self.rule_preference_dict = \

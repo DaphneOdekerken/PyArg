@@ -1,5 +1,4 @@
 from functools import total_ordering
-from typing import List
 
 
 @total_ordering
@@ -59,19 +58,27 @@ class Literal:
 
     def is_contrary_or_contradictory_of(self, other) -> bool:
         """
-        Boolean indicating if this Literal is a contrary of some other Literal.
+        Boolean indicating if this Literal is a contrary or contradictory of some other Literal.
 
-        :param other: Some other Literal that might be contrary.
+        :param other: Some other Literal that might be contrary or contradictory.
         """
         return other in self.contraries_and_contradictories
 
     def is_contradictory_of(self, other) -> bool:
+        """
+        Boolean indicating if this Literal is a contradictory of some other Literal.
+
+        :param other: Some other Literal that might be contradictory.
+        """
         return self.is_contrary_or_contradictory_of(other) and other.is_contrary_or_contradictory_of(self)
 
-    @property
-    def contradictories(self) -> List['Literal']:
-        return [contrary for contrary in self.contraries_and_contradictories
-                if self in contrary.contraries_and_contradictories]
+    def is_contrary_of(self, other) -> bool:
+        """
+        Boolean indicating if this Literal is a contrary of some other Literal.
+
+        :param other: Some other Literal that might be contrary.
+        """
+        return self.is_contrary_or_contradictory_of(other) and not other.is_contrary_or_contradictory_of(self)
 
     def __hash__(self):
         return self.s1_hash
