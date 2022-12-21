@@ -478,7 +478,7 @@ def get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_prefe
     #
     # literal_str_list = list(dict.fromkeys(literal_str_list))
 
-    language = {literal_str: Literal(literal_str, literal_str + ' is present', literal_str + ' is absent')
+    language = {literal_str: Literal(literal_str)
                 for literal_str in literal_str_list}
     contraries = {literal_str: [] for literal_str in language.keys()}
     for literal_str in language.keys():

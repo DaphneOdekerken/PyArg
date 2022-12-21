@@ -23,7 +23,7 @@ def get_argumentation_theory(include_d: bool = False, include_e: bool = False) -
     literal_str_list += ['-' + literal_str for literal_str in literal_str_list]
     literal_str_list += ['~' + literal_str for literal_str in literal_str_list]
 
-    language = {literal_str: Literal(literal_str, literal_str + ' is present', literal_str + ' is absent')
+    language = {literal_str: Literal(literal_str)
                 for literal_str in literal_str_list}
 
     contraries = {literal_str: [] for literal_str in language.keys()}
