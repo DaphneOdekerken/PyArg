@@ -5,13 +5,12 @@ from .literal import Literal
 
 class Rule:
     """
-    A Rule has a list of antecedents and a single consequent. Furthermore, it has a string rule description.
+    A Rule has a list of antecedents and a single consequent.
     """
-    def __init__(self, rule_id: int, antecedents: Set[Literal], consequent: Literal, rule_description: str):
+    def __init__(self, rule_id: int, antecedents: Set[Literal], consequent: Literal):
         self.id = rule_id
         self.antecedents = antecedents
         self.consequent = consequent
-        self.rule_description = rule_description
         self.rule_str = ','.join([str(antecedent) for antecedent in self.antecedents]) + '=>' + str(self.consequent)
         self.rule_hash = hash(self.rule_str)
 
@@ -25,7 +24,7 @@ class Rule:
         return literal == self.consequent
 
     def __eq__(self, other):
-        return list(self.antecedents) == list(other.antecedents) and self.consequent == other.consequent
+        return self.rule_hash == other.rule_hash
 
     def __str__(self):
         return self.rule_str

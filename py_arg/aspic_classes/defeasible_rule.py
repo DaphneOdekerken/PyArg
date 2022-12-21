@@ -5,8 +5,8 @@ from .rule import Rule
 
 
 class DefeasibleRule(Rule):
-    def __init__(self, rule_id: int, antecedents: Set[Literal], consequent: Literal, rule_description: str):
-        super().__init__(rule_id, antecedents, consequent, rule_description)
+    def __init__(self, rule_id: int, antecedents: Set[Literal], consequent: Literal):
+        super().__init__(rule_id, antecedents, consequent)
         self._stronger_rules = []
         self._equally_strong_rules = []
         self._weaker_rules = []

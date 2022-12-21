@@ -38,7 +38,7 @@ class Literal:
 
         :param other: Some other Literal that might be contrary or contradictory.
         """
-        return other in self.contraries_and_contradictories
+        return self in other.contraries_and_contradictories
 
     def is_contradictory_of(self, other) -> bool:
         """
