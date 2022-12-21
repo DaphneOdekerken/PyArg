@@ -52,7 +52,7 @@ def get_argumentation_theory(include_d: bool = False, include_e: bool = False) -
         contraries[str(defeasible_rule_literal_negation)] = [defeasible_rule_literal]
 
     if include_e:
-        strict_rules.append(StrictRule(2, {language['r']}, language['-d3'], 'r2'))
+        strict_rules.append(StrictRule(2, {language['r']}, language['-3'], 'r2'))
 
     arg_sys = ArgumentationSystem(language, contraries, strict_rules, defeasible_rules)
 
@@ -70,18 +70,22 @@ def get_argumentation_theory(include_d: bool = False, include_e: bool = False) -
 
 
 class TestModgilPrakkenAIJ(unittest.TestCase):
+    """
+    This class tests the running example from: S.J. Modgil & H. Prakken, A general account of argumentation with
+    preferences. Artificial Intelligence 195 (2013): 361-397.
+    """
     def test_contradiction_function(self):
         arg_theory = get_argumentation_theory()
         a = arg_theory.argumentation_system.language['a']
         naf_a = arg_theory.argumentation_system.language['~a']
         neg_a = arg_theory.argumentation_system.language['-a']
         naf_neg_a = arg_theory.argumentation_system.language['~-a']
-        self.assertIn(a, neg_a.contraries)
-        self.assertIn(a, naf_a.contraries)
-        self.assertIn(neg_a, a.contraries)
-        self.assertIn(neg_a, naf_neg_a.contraries)
-        self.assertNotIn(naf_a, a.contraries)
-        self.assertNotIn(naf_neg_a, neg_a.contraries)
+        self.assertIn(a, neg_a.contraries_and_contradictories)
+        self.assertIn(a, naf_a.contraries_and_contradictories)
+        self.assertIn(neg_a, a.contraries_and_contradictories)
+        self.assertIn(neg_a, naf_neg_a.contraries_and_contradictories)
+        self.assertNotIn(naf_a, a.contraries_and_contradictories)
+        self.assertNotIn(naf_neg_a, neg_a.contraries_and_contradictories)
 
     def test_arguments(self):
         arg_theory = get_argumentation_theory()

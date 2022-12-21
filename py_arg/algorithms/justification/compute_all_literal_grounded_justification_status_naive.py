@@ -1,4 +1,3 @@
-from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic_classes.orderings.ordering import Ordering
 from py_arg.labels.enum_justification_label import EnumJustificationLabel
@@ -10,7 +9,7 @@ def compute_all_literal_grounded_justification_status_naive(argumentation_theory
                                                             ordering: Ordering) -> LiteralLabels:
     result = {literal: EnumJustificationLabel.UNSATISFIABLE
               for literal in argumentation_theory.argumentation_system.language.values()}
-    arg_framework = AbstractArgumentationFramework.from_argumentation_theory('af', argumentation_theory, ordering)
+    arg_framework = argumentation_theory.create_abstract_argumentation_framework('af', ordering)
     for argument in arg_framework.arguments:
         result[argument.conclusion] = EnumJustificationLabel.BLOCKED
     grounded_extension = get_grounded_extension(arg_framework)

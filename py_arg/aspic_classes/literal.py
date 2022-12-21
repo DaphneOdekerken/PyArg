@@ -28,7 +28,7 @@ class Literal:
             description_if_not_present = 'NOT ' + description_if_present
         self.description_if_not_present = description_if_not_present
 
-        self.contraries = []
+        self.contraries_and_contradictories = []
         self.negation = None
         self.parents = []
         self.children = []
@@ -42,7 +42,7 @@ class Literal:
 
     @classmethod
     def from_defeasible_rule_negation(cls, defeasible_rule):
-        return cls('~' + defeasible_rule.id_str, defeasible_rule.id_str + ' is not applicable',
+        return cls('-' + defeasible_rule.id_str, defeasible_rule.id_str + ' is not applicable',
                    defeasible_rule.id_str + ' is applicable')
 
     def __str__(self):
@@ -57,20 +57,21 @@ class Literal:
     def __lt__(self, other):
         return str(self) < str(other)
 
-    def is_contrary_of(self, other) -> bool:
+    def is_contrary_or_contradictory_of(self, other) -> bool:
         """
         Boolean indicating if this Literal is a contrary of some other Literal.
 
         :param other: Some other Literal that might be contrary.
         """
-        return other in self.contraries
+        return other in self.contraries_and_contradictories
 
     def is_contradictory_of(self, other) -> bool:
-        return self.is_contrary_of(other) and other.is_contrary_of(self)
+        return self.is_contrary_or_contradictory_of(other) and other.is_contrary_or_contradictory_of(self)
 
     @property
     def contradictories(self) -> List['Literal']:
-        return [contrary for contrary in self.contraries if self in contrary.contraries]
+        return [contrary for contrary in self.contraries_and_contradictories
+                if self in contrary.contraries_and_contradictories]
 
     def __hash__(self):
         return self.s1_hash

@@ -628,7 +628,7 @@ def get_str_extensions(argumentation_theory, semantics, ordering_choice):
     else:
         ordering = None
 
-    abstractAF = AbstractArgumentationFramework.from_argumentation_theory('af', argumentation_theory, ordering)
+    abstractAF = argumentation_theory.create_abstract_argumentation_framework('af', ordering)
 
     if semantics == 'Adm':
         return get_admissible_sets(abstractAF)
@@ -738,7 +738,7 @@ def get_str_explanations(argumentation_theory, semantics, ordering_choice, exten
                                               argumentation_theory.ordinary_premise_preference_dict)
     else:
         ordering = None
-    abstractAF = AbstractArgumentationFramework.from_argumentation_theory('af', argumentation_theory, ordering)
+    abstractAF = argumentation_theory.create_abstract_argumentation_framework('af', ordering)
     abstr_explanation = {}
     if expl_type == 'Acc':
         for formula in accepted_formulas:

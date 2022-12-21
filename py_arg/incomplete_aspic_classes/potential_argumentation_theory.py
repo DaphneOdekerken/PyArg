@@ -25,7 +25,7 @@ class PotentialArgumentationTheory(ArgumentationTheory):
         for queryable in self.queryables:
             if all(queryable_contrary not in self.knowledge_base_axioms and
                    queryable_contrary not in self.knowledge_base_ordinary_premises
-                   for queryable_contrary in queryable.contraries):
+                   for queryable_contrary in queryable.contraries_and_contradictories):
                 arguments_per_conclusion[queryable].add(PotentialArgument.observation_based(queryable))
 
         change = True

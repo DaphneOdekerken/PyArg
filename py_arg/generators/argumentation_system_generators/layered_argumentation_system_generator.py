@@ -128,7 +128,7 @@ class LayeredArgumentationSystemGenerator:
                         for other_literal in other_literals:
                             if other_literal not in antecedents and other_literal != consequent and \
                                     all([contrary not in antecedents and contrary != consequent
-                                         for contrary in other_literal.contraries]):
+                                         for contrary in other_literal.contraries_and_contradictories]):
                                 antecedent_candidates.append(other_literal)
 
                 if not antecedent_candidates:
@@ -166,7 +166,7 @@ class LayeredArgumentationSystemGenerator:
                         for other_literal in other_literals:
                             if other_literal not in antecedents and other_literal != consequent and \
                                     all([contrary not in antecedents and contrary != consequent
-                                         for contrary in other_literal.contraries]):
+                                         for contrary in other_literal.contraries_and_contradictories]):
                                 antecedent_candidates.append(other_literal)
 
                 if not antecedent_candidates:

@@ -18,7 +18,7 @@ class ArgumentationSystem:
 
         # Contradiction function
         for literal_str, literal_contraries in contraries.items():
-            language[literal_str].contraries = literal_contraries
+            language[literal_str].contraries_and_contradictories = literal_contraries
 
         # Rules
         self.defeasible_rules = defeasible_rules

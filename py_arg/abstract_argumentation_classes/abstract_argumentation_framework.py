@@ -2,9 +2,6 @@ from typing import Optional, List
 
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat
-from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from py_arg.aspic_classes.orderings.ordering import Ordering
-from py_arg_tests.modgil_prakken_aij_tests import get_argumentation_theory
 
 
 class AbstractArgumentationFramework:
@@ -26,43 +23,6 @@ class AbstractArgumentationFramework:
         for defeat in defeats:
             defeat.from_argument.add_outgoing_defeat(defeat.to_argument)
             defeat.to_argument.add_ingoing_defeat(defeat.from_argument)
-
-    @classmethod
-    def from_argumentation_theory(cls, name: str, argumentation_theory: ArgumentationTheory,
-                                  ordering: Optional[Ordering] = None):
-        """
-        Create an abstract argumentation framework based on this argumentation theory. Note: if no ordering is given,
-        last link elitist ordering is chosen as default ordering.
-
-        :param name: The name of the argumentation framework.
-        :param argumentation_theory: The argumentation theory from which the argumentation framework should be inferred.
-        :param ordering: Ordering that influences which attacks are defeats. Note: default is last link elitist.
-        :return: Abstract argumentation framework based on this argumentation theory.
-
-        >>> arg_theory = get_argumentation_theory()
-        >>> af = AbstractArgumentationFramework.from_argumentation_theory('af', arg_theory)
-        >>> arg_for_r = af.get_argument('r')
-        >>> arg_for_r.name
-        'r'
-        >>> defeaters_of_r = arg_for_r.get_ingoing_defeat_arguments
-        >>> len(defeaters_of_r)
-        1
-        >>> defeaters_of_r[0].name
-        '-r'
-        >>> defeated_by_r = arg_for_r.get_ingoing_defeat_arguments
-        >>> len(defeated_by_r)
-        1
-        >>> defeated_by_r[0].name
-        '-r'
-        >>> arg_for_not_r = af.get_argument('-r')
-        >>> defeated_by_not_r = arg_for_not_r.get_outgoing_defeat_arguments
-        >>> len(defeated_by_not_r)
-        3
-        """
-#        if ordering is None:
-#            ordering = LastLinkElitistOrdering(argumentation_theory.argumentation_system.rule_preference_dict,
-#                                               argumentation_theory.ordinary_premise_preference_dict)
-        return cls(name, argumentation_theory.all_arguments, argumentation_theory.recompute_all_defeats(ordering))
 
     def get_incoming_defeat_arguments(self, argument: Argument) -> List[Argument]:
         """
@@ -170,11 +130,6 @@ class AbstractArgumentationFramework:
         Get a list of all arguments in this argumentation framework.
 
         :return: A list of all arguments in this argumentation framework.
-
-        >>> arg_theory = get_argumentation_theory()
-        >>> af = AbstractArgumentationFramework.from_argumentation_theory('af', arg_theory)
-        >>> len(af.arguments)
-        8
         """
         return list(self._arguments.values())
 
@@ -184,11 +139,6 @@ class AbstractArgumentationFramework:
         Get a list of all defeats in this argumentation framework.
 
         :return: A list of all defeats in this argumentation framework.
-
-        >>> arg_theory = get_argumentation_theory()
-        >>> af = AbstractArgumentationFramework.from_argumentation_theory('af', arg_theory)
-        >>> len(af.defeats)
-        5
         """
         return self._defeats
 

@@ -38,14 +38,14 @@ def compute_all_literal_grounded_justification_status_fast(argumentation_theory:
                      if literal in argumentation_theory.knowledge_base_axioms or
                      (result[literal] != EnumJustificationLabel.UNSATISFIABLE and
                       all(result[contrary_literal] == EnumJustificationLabel.UNSATISFIABLE
-                          for contrary_literal in literal.contraries))
+                          for contrary_literal in literal.contraries_and_contradictories))
                      ]
     todo_rules = set()
     for literal in todo_literals:
         result[literal] = EnumJustificationLabel.DEFENDED
         for rule in literal.parents:
             todo_rules.add(rule)
-        for contrary_literal in literal.contraries:
+        for contrary_literal in literal.contraries_and_contradictories:
             if result[contrary_literal] == EnumJustificationLabel.BLOCKED:
                 result[contrary_literal] = EnumJustificationLabel.OUT
                 for rule in literal.parents:
@@ -65,11 +65,11 @@ def compute_all_literal_grounded_justification_status_fast(argumentation_theory:
                                                                     EnumJustificationLabel.OUT]
                                     for contrary_antecedent in contrary_rule.antecedents)
                                 for contrary_rule in contrary_literal.children)
-                            for contrary_literal in todo_rule.consequent.contraries):
+                            for contrary_literal in todo_rule.consequent.contraries_and_contradictories):
                     result[todo_rule.consequent] = EnumJustificationLabel.DEFENDED
                     for parent_rule in todo_rule.consequent.parents:
                         todo_rules.add(parent_rule)
-                    for contrary_literal in todo_rule.consequent.contraries:
+                    for contrary_literal in todo_rule.consequent.contraries_and_contradictories:
                         result[contrary_literal] = EnumJustificationLabel.OUT
                         for contrary_parent_rule in contrary_literal.parents:
                             todo_rules.add(contrary_parent_rule)
@@ -77,7 +77,7 @@ def compute_all_literal_grounded_justification_status_fast(argumentation_theory:
                 result[todo_rule.consequent] = EnumJustificationLabel.OUT
                 for parent_rule in todo_rule.consequent.parents:
                     todo_rules.add(parent_rule)
-                for contrary_literal in todo_rule.consequent.contraries:
+                for contrary_literal in todo_rule.consequent.contraries_and_contradictories:
                     for contrary_parent_rule in contrary_literal.parents:
                         todo_rules.add(contrary_parent_rule)
 

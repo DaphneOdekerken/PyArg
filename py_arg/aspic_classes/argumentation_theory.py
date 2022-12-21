@@ -1,10 +1,12 @@
 import itertools
 from typing import List, Dict, Optional, Set, Tuple
 
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.defeat import Defeat
 from py_arg.aspic_classes.axiom import Axiom
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.orderings.last_link_ordering import LastLinkElitistOrdering
 from py_arg.aspic_classes.orderings.ordering import Ordering
 from py_arg.aspic_classes.ordinary_premise import OrdinaryPremise
 from py_arg.aspic_classes.preference import Preference
@@ -165,7 +167,7 @@ class ArgumentationTheory:
             return False
         if not isinstance(argument_b.top_rule, DefeasibleRule):
             return False
-        if argument_a.conclusion not in argument_b.conclusion.contraries:
+        if argument_a.conclusion not in argument_b.conclusion.contraries_and_contradictories:
             return False
         return True
 
@@ -207,9 +209,9 @@ class ArgumentationTheory:
             return False
         if not isinstance(argument_b.top_rule, DefeasibleRule):
             return False
-        if argument_a.conclusion not in argument_b.conclusion.contraries:
+        if argument_a.conclusion not in argument_b.conclusion.contraries_and_contradictories:
             return False
-        if argument_b.conclusion in argument_a.conclusion.contraries:
+        if argument_b.conclusion in argument_a.conclusion.contraries_and_contradictories:
             return False
         return True
 
@@ -237,9 +239,7 @@ class ArgumentationTheory:
         if not isinstance(argument_b.top_rule, DefeasibleRule):
             return False
         argument_b_top_rule_literal = self._argumentation_system.get_literal(argument_b.top_rule)
-        if argument_a.conclusion not in argument_b_top_rule_literal.contraries:
-            return False
-        return True
+        return argument_a.conclusion.is_contrary_or_contradictory_of(argument_b_top_rule_literal)
 
     def undercuts(self, argument_a: InstantiatedArgument, argument_b: InstantiatedArgument) -> bool:
         """
@@ -261,7 +261,7 @@ class ArgumentationTheory:
         :param argument_b: The supposedly attacked argument.
         :return: Boolean indicating whether argument_a undermines argument_b.
         """
-        return any([argument_a.conclusion in ordinary_premise_b.contraries
+        return any([argument_a.conclusion in ordinary_premise_b.contraries_and_contradictories
                     for ordinary_premise_b in argument_b.ordinary_premises])
 
     @staticmethod
@@ -275,7 +275,7 @@ class ArgumentationTheory:
         :param ordering: The ordering used to decide if argument_a is weaker than argument_b.
         :return: Boolean indicating whether argument_a undermines argument_b and is not weaker.
         """
-        return any([argument_a.conclusion in sub_argument_b.conclusion.contraries and
+        return any([argument_a.conclusion in sub_argument_b.conclusion.contraries_and_contradictories and
                     not ordering.argument_is_strictly_weaker_than(argument_a, sub_argument_b)
                     for sub_argument_b in argument_b.sub_arguments
                     if sub_argument_b.is_observation_based and sub_argument_b.is_plausible])
@@ -289,8 +289,8 @@ class ArgumentationTheory:
         :param argument_b: The supposedly attacked argument.
         :return: Boolean indicating whether argument_a contrary-undermines argument_b.
         """
-        return any([argument_a.conclusion in ordinary_premise_b.contraries and
-                    ordinary_premise_b not in argument_a.conclusion.contraries
+        return any([argument_a.conclusion in ordinary_premise_b.contraries_and_contradictories and
+                    ordinary_premise_b not in argument_a.conclusion.contraries_and_contradictories
                     for ordinary_premise_b in argument_b.ordinary_premises])
 
     def attacks(self, argument_a: InstantiatedArgument, argument_b: InstantiatedArgument):
@@ -345,6 +345,21 @@ class ArgumentationTheory:
                 for argument_a in self.all_arguments
                 for argument_b in self.all_arguments
                 if self.defeats(argument_a, argument_b, ordering)]
+
+    def create_abstract_argumentation_framework(self, name: str, ordering: Optional[Ordering] = None):
+        """
+        Create an abstract argumentation framework based on this argumentation theory. Note: if no ordering is given,
+        last link elitist ordering is chosen as default ordering.
+
+        :param name: The name of the argumentation framework.
+        :param ordering: Ordering that influences which attacks are defeats. Note: default is last link elitist.
+        :return: Abstract argumentation framework based on this argumentation theory.
+
+        """
+        if ordering is None:
+            ordering = LastLinkElitistOrdering(self.argumentation_system.rule_preference_dict,
+                                               self.ordinary_premise_preference_dict)
+        return AbstractArgumentationFramework(name, self.all_arguments, self.recompute_all_defeats(ordering))
 
 
 if __name__ == "__main__":

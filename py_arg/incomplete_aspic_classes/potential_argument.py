@@ -15,4 +15,4 @@ class PotentialArgument(InstantiatedArgument):
         super().__init__(name, premises, conclusion, direct_sub_arguments, def_rules, strict_rules, top_rule)
 
     def is_consistent(self) -> bool:
-        return all([not a.is_contrary_of(b) for a, b in itertools.combinations(list(self.premises), 2)])
+        return all([not a.is_contrary_or_contradictory_of(b) for a, b in itertools.combinations(list(self.premises), 2)])

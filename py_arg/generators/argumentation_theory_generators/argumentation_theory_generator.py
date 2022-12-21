@@ -33,7 +33,7 @@ class ArgumentationTheoryGenerator:
             new_knowledge = random.choice(knowledge_base_candidates)
             knowledge_base.append(new_knowledge)
             knowledge_base_candidates.remove(new_knowledge)
-            for new_knowledge_contrary in new_knowledge.contraries:
+            for new_knowledge_contrary in new_knowledge.contraries_and_contradictories:
                 knowledge_base_candidates.remove(new_knowledge_contrary)
 
         axiom_size = int(knowledge_base_size * self.axiom_knowledge_ratio)
