@@ -24,5 +24,3 @@ class StructuredArgumentationFramework:
             self.argument_preference_relation = [(argument, argument) for argument in self._arguments.values()]
         else:
             self.argument_preference_relation = argument_preference_relation
-
-
