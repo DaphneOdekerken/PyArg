@@ -3,30 +3,10 @@ from functools import total_ordering
 
 @total_ordering
 class Literal:
-    """
-    A literal has an absolute literal string (abs_literal_str) and two description strings (present or not).
-    Furthermore, a literal can be observable and/or a topic, indicated by boolean class variables.
-    Also, a literal has a list of contraries.
-    """
-
     def __init__(self, literal_str: str):
         self.s1 = literal_str
         self.s1_hash = hash(self.s1)
-
-        if literal_str[0] == '~':
-            self.negated = True
-            literal_str = literal_str[1:]
-        else:
-            self.negated = False
-
-        self.abs_literal_str = literal_str
-
         self.contraries_and_contradictories = []
-        self.negation = None
-        self.parents = []
-        self.children = []
-
-        self.position = None
 
     @classmethod
     def from_defeasible_rule(cls, defeasible_rule):
@@ -35,6 +15,10 @@ class Literal:
     @classmethod
     def from_defeasible_rule_negation(cls, defeasible_rule):
         return cls('-' + defeasible_rule.id_str)
+
+    @classmethod
+    def from_defeasible_rule_naf(cls, defeasible_rule):
+        return cls('~' + defeasible_rule.id_str)
 
     def __str__(self):
         return self.s1
