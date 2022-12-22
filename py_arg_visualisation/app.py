@@ -1,11 +1,21 @@
 import dash
+from dash import html
 import dash_bootstrap_components as dbc
 
 from dash.exceptions import PreventUpdate
 
 import dash.dependencies
 
-from py_arg_visualisation.functions import *
+from py_arg_visualisation.explanations_functions.get_af_explanations import get_argumentation_framework_explanations
+from py_arg_visualisation.explanations_functions.get_at_explanations import get_str_explanations
+from py_arg_visualisation.extensions_functions.get_accepted_formulas import get_accepted_formulas
+from py_arg_visualisation.extensions_functions.get_af_extensions import get_argumentation_framework_extensions
+from py_arg_visualisation.extensions_functions.get_at_extensions import get_argumentation_theory_extensions
+from py_arg_visualisation.explanations_functions.explanation_function_options import *
+from py_arg_visualisation.graph_data_functions.get_at_graph_data import get_argumentation_theory_graph_data
+from py_arg_visualisation.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
+from py_arg_visualisation.import_functions.read_argumentation_framework_functions import read_argumentation_framework
+from py_arg_visualisation.import_functions.read_argumentation_theory_functions import read_argumentation_theory
 from py_arg_visualisation.layout_elements import get_layout_elements
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.LUMEN])
@@ -66,7 +76,7 @@ def toggle_collapse(n, is_open):
     prevent_initial_call=True
 )
 def setting_choice(choice):
-    return [{'label': i, 'value': i} for i in expl_function_options[choice]]
+    return [{'label': i, 'value': i} for i in EXPLANATION_FUNCTION_OPTIONS[choice]]
 
 
 @app.callback(
@@ -108,7 +118,7 @@ def toggle_collapse(n, is_open):
     prevent_initial_call=True
 )
 def setting_choice(choice):
-    return [{'label': i, 'value': i} for i in expl_function_options[choice]]
+    return [{'label': i, 'value': i} for i in EXPLANATION_FUNCTION_OPTIONS[choice]]
 
 
 @app.callback(
@@ -122,8 +132,8 @@ def setting_choice(choice):
 def create_AF(click, arguments, attacks):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'abstrAF-Calc' in changed_id:
-        arg_framework = get_argumentation_framework(arguments, attacks)
-        data = get_abstr_graph_data(arg_framework)
+        arg_framework = read_argumentation_framework(arguments, attacks)
+        data = get_argumentation_framework_graph_data(arg_framework)
         return html.Div([html.H4('The arguments of the AF:', style={'color': '#152A47'}),
                          html.H6('\n {}'.format(arg_framework.arguments))]), data
     else:
@@ -143,8 +153,8 @@ def create_AF(click, arguments, attacks):
 def evaluate_abstrAF(click, arguments, attacks, semantics, strategy):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'AF-Eval' in changed_id:
-        arg_framework = get_argumentation_framework(arguments, attacks)
-        frozen_extensions = get_abstr_extensions(arg_framework, semantics)
+        arg_framework = read_argumentation_framework(arguments, attacks)
+        frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics)
         accepted = set()
         if semantics != 'Grd':
             extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
@@ -179,9 +189,9 @@ def derive_abstrExpl(click, arguments, attacks, semantics, function, expltype, s
             return html.Div([html.H4('Error', style={'color': 'red'}),
                              'Choose a semantics under "Evaluation" before deriving explanations.'])
         else:
-            arg_framework = get_argumentation_framework(arguments, attacks)
+            arg_framework = read_argumentation_framework(arguments, attacks)
             output_str = ''
-            frozen_extensions = get_abstr_extensions(arg_framework, semantics)
+            frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics)
             accepted = set()
             if semantics != 'Grd':
                 extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
@@ -189,11 +199,11 @@ def derive_abstrExpl(click, arguments, attacks, semantics, function, expltype, s
                     accepted = set.intersection(*extension)
                 elif strategy == 'Cred':
                     accepted = set.union(*extension)
-            elif semantics == 'Grd':
+            else:
                 extension = frozen_extensions
                 accepted = extension
-            explanations = get_abstr_explanations(arg_framework, semantics, extension, accepted, function, expltype,
-                                                  strategy)
+            explanations = get_argumentation_framework_explanations(arg_framework, semantics, extension, accepted, function, expltype,
+                                                                    strategy)
             return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
                              html.H6('\n {}'.format(str(explanations).replace('set()', '{}')))])
 
@@ -213,7 +223,7 @@ def derive_abstrExpl(click, arguments, attacks, semantics, function, expltype, s
 )
 def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, function, expltype):
     while selection is not None:
-        arg_framework = get_argumentation_framework(arguments, attacks)
+        arg_framework = read_argumentation_framework(arguments, attacks)
         for arg in arg_framework.arguments:
             if str(arg) == str(selection['nodes'][0]):
                 argument = arg
@@ -224,7 +234,7 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
         expl_output = ''
         output_evaluation = ''
         if semantics != '':
-            frozen_extensions = get_abstr_extensions(arg_framework, semantics)
+            frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics)
             if strategy != '':
                 skep_accept = False
                 cred_accept = False
@@ -250,10 +260,10 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
                 if skep_accept:
                     output_accept += str(argument) + ' is skeptically and credulously accepted.'
                     if function is not None and expltype == 'Acc':
-                        skep_expla = get_abstr_explanations(arg_framework, semantics, extensions, skep_accepted,
-                                                            function, expltype, 'Skep')
-                        cred_expla = get_abstr_explanations(arg_framework, semantics, extensions, cred_accepted,
-                                                            function, expltype, 'Cred')
+                        skep_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, skep_accepted,
+                                                                              function, expltype, 'Skep')
+                        cred_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, cred_accepted,
+                                                                              function, expltype, 'Cred')
                         expl_output = html.Div([html.H4(
                             'The skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
@@ -269,15 +279,15 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
                 elif cred_accept:
                     output_accept += str(argument) + ' is credulously but not skeptically accepted.'
                     if function is not None and expltype == 'Acc':
-                        cred_expla = get_abstr_explanations(arg_framework, semantics, extensions, cred_accepted,
-                                                            function, expltype, 'Cred')
+                        cred_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, cred_accepted,
+                                                                              function, expltype, 'Cred')
                         expl_output = html.Div(
                             [html.H4('The credulous acceptance explanation for {}:'.format(str(argument)),
                                      style={'color': '#152A47'}),
                              html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()', '{}')))])
                     elif function is not None and expltype == 'NonAcc':
-                        skep_expla = get_abstr_explanations(arg_framework, semantics, extensions, skep_accepted,
-                                                            function, expltype, 'Skep')
+                        skep_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, skep_accepted,
+                                                                              function, expltype, 'Skep')
                         expl_output = html.Div(
                             [html.H4('The not skeptical acceptance explanation for {}:'.format(str(argument)),
                                      style={'color': '#152A47'}),
@@ -285,10 +295,10 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
                 elif skep_accept == False and cred_accept == False:
                     output_accept += str(argument) + ' is neither  credulously nor skeptically accepted.'
                     if function is not None and expltype == 'NonAcc':
-                        skep_expla = get_abstr_explanations(arg_framework, semantics, extensions, skep_accepted,
-                                                            function, expltype, 'Skep')
-                        cred_expla = get_abstr_explanations(arg_framework, semantics, extensions, cred_accepted,
-                                                            function, expltype, 'Cred')
+                        skep_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, skep_accepted,
+                                                                              function, expltype, 'Skep')
+                        cred_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, cred_accepted,
+                                                                              function, expltype, 'Cred')
                         expl_output = html.Div([html.H4(
                             'The not skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
@@ -346,9 +356,9 @@ def create_AT(click, axioms, ordinary, strict, defeasible, premise_preferences, 
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'AF-Calc' in changed_id:
         ordering = choice + link
-        arg_theory, error_message = get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
-                                                             rule_preferences, ordering)
-        data = get_str_graph_data(arg_theory, ordering)
+        arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
+                                                              rule_preferences)
+        data = get_argumentation_theory_graph_data(arg_theory, ordering)
         if error_message != '':
             return error_message, data
         else:
@@ -380,11 +390,11 @@ def evaluate_strAF(click, axioms, ordinary, strict, defeasible, premise_preferen
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'AF-Eval' in changed_id:
         ordering = choice + link
-        arg_theory, error_message = get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
-                                                             rule_preferences, ordering)
+        arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
+                                                              rule_preferences)
         if error_message != '':
             return error_message
-        frozen_extensions = get_str_extensions(arg_theory, semantics, ordering)
+        frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics, ordering)
         accepted = set()
         if semantics != 'Grd':
             extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
@@ -425,11 +435,11 @@ def derive_strExpl(click, axioms, ordinary, strict, defeasible, premise_preferen
                              'Choose a semantics under "Evaluation" before deriving explanations.'])
         else:
             ordering = choice + link
-            arg_theory, error_message = get_argumentation_theory(axioms, ordinary, strict, defeasible,
-                                                                 premise_preferences, rule_preferences, ordering)
+            arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible,
+                                                                  premise_preferences, rule_preferences)
             if error_message != '':
                 return error_message
-            frozen_extensions = get_str_extensions(arg_theory, semantics, ordering)
+            frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics, ordering)
             accepted = set()
             if semantics != 'Grd':
                 extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
@@ -471,8 +481,8 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                           semantics, function, expltype, strategy, form):
     while selection is not None:
         ordering = choice + link
-        arg_theory, error_message = get_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
-                                                             rule_preferences, ordering)
+        arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
+                                                              rule_preferences)
         if error_message != '':
             return error_message
         select_id = selection['nodes'][0]
@@ -492,7 +502,7 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
         expl_output = ''
         output_evaluation = ''
         if semantics != '':
-            frozen_extensions = get_str_extensions(arg_theory, semantics, ordering)
+            frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics, ordering)
             if strategy != '':
                 skep_accept = False
                 wskep_accept = False

@@ -18,7 +18,7 @@ class ArgumentationSystem:
 
         # Contradiction function
         for literal_str, literal_contraries in contraries_and_contradictories.items():
-            language[literal_str].contraries_and_contradictories = literal_contraries
+            self.language[literal_str].contraries_and_contradictories = literal_contraries
 
         # Rules
         self.defeasible_rules = defeasible_rules
@@ -28,8 +28,8 @@ class ArgumentationSystem:
             defeasible_rule_literal_negation = Literal.from_defeasible_rule_negation(defeasible_rule)
             defeasible_rule_literal.contraries_and_contradictories = {defeasible_rule_literal_negation}
             defeasible_rule_literal_negation.contraries_and_contradictories = {defeasible_rule_literal}
-            language[str(defeasible_rule_literal)] = defeasible_rule_literal
-            language[str(defeasible_rule_literal_negation)] = defeasible_rule_literal_negation
+            self.language[str(defeasible_rule_literal)] = defeasible_rule_literal
+            self.language[str(defeasible_rule_literal_negation)] = defeasible_rule_literal_negation
 
         # Rule preferences
         if defeasible_rule_preferences:

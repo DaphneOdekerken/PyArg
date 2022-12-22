@@ -31,8 +31,8 @@ class ArgumentationTheory:
         if ordinary_premise_preferences:
             self.ordinary_premise_preferences = ordinary_premise_preferences
         else:
-            reflexive_order = [(premise_a, premise_a) for premise_a in self._knowledge_base_ordinary_premises]
-            self.ordinary_premise_preferences = PreferencePreorder(reflexive_order)
+            self.ordinary_premise_preferences = \
+                PreferencePreorder.create_reflexive_preorder(self._knowledge_base_ordinary_premises)
 
         self._recompute_arguments()
 
