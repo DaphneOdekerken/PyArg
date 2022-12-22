@@ -352,22 +352,26 @@ def choose_ordering(choice):
     dash.dependencies.State('ordering-link', 'value'),
     prevent_initial_call=True
 )
-def create_AT(click, axioms, ordinary, strict, defeasible, premise_preferences, rule_preferences, choice, link):
-    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-    if 'AF-Calc' in changed_id:
-        ordering = choice + link
-        arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
-                                                              rule_preferences)
-        data = get_argumentation_theory_graph_data(arg_theory, ordering)
-        if error_message != '':
-            return error_message, data
-        else:
-            return html.Div([html.H4('The generated argument(s):', style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(arg_theory.all_arguments))]), data
+def create_AT(click, axioms_str: str, ordinary_premises_str: str, strict_rules_str: str, defeasible_rules_str: str,
+              ordinary_premise_preferences_str: str, defeasible_rule_preferences_str: str,
+              ordering_choice_value: str, ordering_link_value: str):
+    # Read the ordering
+    ordering_specification = ordering_choice_value + ordering_link_value
 
-    else:
-        data = {'nodes': [], 'edges': []}
-        return 'No argumentation setting was provided', data
+    # Read the argumentation theory
+    arg_theory, error_message = read_argumentation_theory(
+        axioms_str, ordinary_premises_str, strict_rules_str, defeasible_rules_str, ordinary_premise_preferences_str,
+        defeasible_rule_preferences_str)
+
+    # Generate the graph data for this argumentation theory
+    data = get_argumentation_theory_graph_data(arg_theory, ordering_specification)
+
+    # Generate the list of arguments
+    generated_arguments_html_content = \
+        [html.H4('The generated argument(s):', style={'color': '#152A47'}),
+         html.Ul([html.Li(argument.short_name) for argument in arg_theory.all_arguments])
+         ]
+    return generated_arguments_html_content, data
 
 
 @app.callback(
@@ -385,27 +389,28 @@ def create_AT(click, axioms, ordinary, strict, defeasible, premise_preferences, 
     dash.dependencies.State('str-evaluation-strategy', 'value'),
     prevent_initial_call=True
 )
-def evaluate_strAF(click, axioms, ordinary, strict, defeasible, premise_preferences, rule_preferences, choice, link,
-                   semantics, strategy):
-    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-    if 'AF-Eval' in changed_id:
-        ordering = choice + link
-        arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
-                                                              rule_preferences)
-        if error_message != '':
-            return error_message
-        frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics, ordering)
-        accepted = set()
-        if semantics != 'Grd':
-            extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
-            accepted = get_accepted_formulas(extension, strategy)
-        elif semantics == 'Grd':
-            extension = frozen_extensions
-            accepted = extension
-        return html.Div([html.H4('The extension(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(str(extension).replace('set()','{}'))),
-                         html.H4('The accepted formula(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(str(accepted).replace('set()','{}')))])
+def evaluate_strAF(click, axioms_str: str, ordinary_premises_str: str, strict_rules_str: str, defeasible_rules_str: str,
+                   ordinary_premise_preferences_str: str, defeasible_rule_preferences_str: str,
+                   ordering_choice_value: str, ordering_link_value: str,
+                   semantics_specification: str, acceptance_strategy_specification: str):
+    # Read the ordering
+    ordering_specification = ordering_choice_value + ordering_link_value
+
+    # Read the argumentation theory
+    arg_theory, error_message = read_argumentation_theory(
+        axioms_str, ordinary_premises_str, strict_rules_str, defeasible_rules_str, ordinary_premise_preferences_str,
+        defeasible_rule_preferences_str)
+
+    frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics_specification, ordering_specification)
+
+    extensions = [set(frozen_extension) for frozen_extension in frozen_extensions]
+    accepted_formulas = get_accepted_formulas(extensions, acceptance_strategy_specification)
+
+    return [html.H4('The extension(s):', style={'color': '#152A47'}),
+            html.Ul([html.Li('{' + ', '.join(argument.short_name for argument in extension) + '}')
+                     for extension in extensions]),
+            html.H4('The accepted formula(s):', style={'color': '#152A47'}),
+            html.Ul([html.Li(accepted_formula.s1) for accepted_formula in sorted(accepted_formulas)])]
 
 
 @app.callback(

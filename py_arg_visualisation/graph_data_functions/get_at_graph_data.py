@@ -9,7 +9,7 @@ def get_argumentation_theory_graph_data(argumentation_theory: ArgumentationTheor
     :param argumentation_theory: The argumentation_theory that needs to be visualized.
     :param ordering_specification: The chosen ordering, combining both last/weakest link and democratic/elitist.
     """
-    argument_str_to_id = {str(argument): 'A' + str(argument_id + 1)
+    argument_str_to_id = {argument.short_name: 'A' + str(argument_id + 1)
                           for argument_id, argument in enumerate(argumentation_theory.all_arguments)}
 
     data_nodes = [{'id': argument_id, 'label': argument_str, 'color': '#6DCDE3'}
@@ -18,8 +18,8 @@ def get_argumentation_theory_graph_data(argumentation_theory: ArgumentationTheor
     ordering = get_ordering_by_specification(argumentation_theory, ordering_specification)
     data_edges = []
     for defeat in argumentation_theory.recompute_all_defeats(ordering):
-        argument_a_id = argument_str_to_id[str(defeat.from_argument)]
-        argument_b_id = argument_str_to_id[str(defeat.to_argument)]
+        argument_a_id = argument_str_to_id[defeat.from_argument.short_name]
+        argument_b_id = argument_str_to_id[defeat.to_argument.short_name]
 
         data_edges.append({'id': str(argument_a_id) + '-' + str(argument_b_id),
                            'from': argument_a_id, 'to': argument_b_id, 'arrows': 'to'})

@@ -29,6 +29,7 @@ class InstantiatedArgument(Argument):
         self.sub_conclusions = {sub_conclusion for dir_sub in self.direct_sub_arguments
                                 for sub_conclusion in dir_sub.sub_conclusions}
         self.sub_conclusions.add(self.conclusion)
+        self.short_name = self.name.replace(' (axiom)', '').replace(' (ordinary premise)', '')
 
     @classmethod
     def axiom_based(cls, conclusion: Literal):
