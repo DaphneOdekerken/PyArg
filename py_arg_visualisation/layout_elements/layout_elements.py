@@ -41,23 +41,16 @@ def get_app_layout(app):
             ], style={'padding': 10, 'flex': 5}),
 
             html.Div([
-                html.Img(src=app.get_asset_url('UU_logo_2021_EN_RGB.png'),
-                         style={'border': 'none', 'width': '30%', 'max-width': '500px', 'align': 'right',
-                                'margin-right': '20px'}),
+                html.Img(src=app.get_asset_url('UU_logo_2021_EN_RGB.png')),
                 html.P('Daphne Odekerken and AnneMarie Borg', style={'margin-right': '25px'}),
             ], style={'padding': 10, 'flex': 2, 'text-align': 'right'}),
-        ], style={'display': 'flex', 'flex-direction': 'row'}),
+        ], className='row-container'),
 
         html.Div([
             dcc.RadioItems(
                 id='arg-choice',
-                options=[
-                    {'label': 'Abstract', 'value': 'Abstract'},
-                    {'label': 'ASPIC+', 'value': 'ASPIC'}
-                ],
-                value='',
-                labelStyle={'display': 'inline-block', 'margin-left': '20px'},
-                inputStyle={'margin-right': '6px'}),
+                options=[{'label': 'Abstract', 'value': 'Abstract'}, {'label': 'ASPIC+', 'value': 'ASPIC'}],
+                value='', labelStyle={'display': 'inline-block', 'margin-left': '20px'}),
         ]),
         html.Div(id='arg-layout')
     ])

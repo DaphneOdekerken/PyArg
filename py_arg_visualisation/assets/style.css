@@ -52,13 +52,23 @@ h4.error {
 div.output {
     text-align: left;
     margin-left: 10px;
-    padding: 10;
+    padding: 10px;
     flex: 1;
 }
 
 div.row-container {
     display: flex;
     flex-direction: row;
+}
+
+div.padded-item {
+    padding: 10px;
+    flex: 1;
+}
+
+div.button-container {
+    text-align: left;
+    margin-left: 10px;
 }
 
 textarea.abstract-input {
@@ -69,6 +79,14 @@ textarea.abstract-input {
 textarea.aspic-input {
     height: 150px;
     margin-top: 10px;
+}
+
+img {
+    border: none;
+    width: 30%;
+    max-width: 500px;
+    align: right;
+    margin-right: 20px;
 }
 
 /* Table of contents, from https://codepen.io/chriddyp/pen/bWLwgP.css
@@ -211,6 +229,7 @@ fieldset {
 input[type="checkbox"],
 input[type="radio"] {
   display: inline;
+  margin-right: 6px;
 }
 label > .label-body {
   display: inline-block;

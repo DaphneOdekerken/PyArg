@@ -7,16 +7,16 @@ def get_aspic_layout(ASPIC_setting, structured_evaluation, structured_explanatio
     layout_ASPIC = html.Div([
         html.Div([
             html.Div([
-                dbc.CardHeader(dbc.Button("ASPIC Argumentation Setting", className='pyarg-button',
-                                          id="structured-arg-setting-button")),
-                dbc.Collapse(dbc.CardBody(ASPIC_setting), id="structured-arg-setting-collapse", is_open=False),
+                dbc.CardHeader(dbc.Button('ASPIC Argumentation Setting', className='pyarg-button',
+                                          id='structured-arg-setting-button')),
+                dbc.Collapse(dbc.CardBody(ASPIC_setting), id='structured-arg-setting-collapse', is_open=False),
 
-                dbc.CardHeader(dbc.Button("Evaluation", className='pyarg-button', id="structured-evaluation-button")),
-                dbc.Collapse(dbc.CardBody(structured_evaluation), id="structured-evaluation-collapse", is_open=False),
+                dbc.CardHeader(dbc.Button('Evaluation', className='pyarg-button', id='structured-evaluation-button')),
+                dbc.Collapse(dbc.CardBody(structured_evaluation), id='structured-evaluation-collapse', is_open=False),
 
-                dbc.CardHeader(dbc.Button("Explanation", className='pyarg-button', id="structured-explanation-button")),
-                dbc.Collapse(dbc.CardBody(structured_explanation), id="structured-explanation-collapse", is_open=False),
-            ], style={'padding': 10, 'flex': 1}),
+                dbc.CardHeader(dbc.Button('Explanation', className='pyarg-button', id='structured-explanation-button')),
+                dbc.Collapse(dbc.CardBody(structured_explanation), id='structured-explanation-collapse', is_open=False),
+            ], className='padded-item'),
 
             html.Div([
                 visdcc.Network(data={'nodes': [], 'edges': []},
@@ -37,7 +37,7 @@ def get_aspic_layout(ASPIC_setting, structured_evaluation, structured_explanatio
                         html.Div(id='structured-argumentation-graph-explanation', className='output')
                     ], className='row-container')
                 ])
-            ], style={'padding': 10, 'flex': 1}),
+            ], className='padded-item'),
         ], className='row-container')
     ])
     return layout_ASPIC
@@ -52,9 +52,7 @@ def get_structured_explanation():
                     dcc.RadioItems(
                         options=[{'label': 'Acceptance', 'value': 'Acceptance'},
                                  {'label': 'Non-Acceptance', 'value': 'NonAcceptance'}],
-                        value='', id='structured-explanation-type',
-                        style={'margin-top': '10px'},
-                        inputStyle={'margin-right': '6px'}
+                        value='', id='structured-explanation-type'
                     ),
                 ]),
 
@@ -65,20 +63,16 @@ def get_structured_explanation():
                             {'label': 'Credulous', 'value': 'Credulous'},
                             {'label': 'Skeptical', 'value': 'Skeptical'}
                         ],
-                        value='', id='structured-explanation-strategy',
-                        style={'margin-top': '10px'},
-                        inputStyle={'margin-right': '6px'}
+                        value='', id='structured-explanation-strategy'
                     ),
                 ], style={'margin-top': '20px'}),
-            ], style={'padding': 10, 'flex': 1}),
+            ], className='padded-item'),
 
             html.Div([
                 html.Div([
                     html.B('Explanation function'),
                     dcc.RadioItems(
-                        id='structured-explanation-function',
-                        style={'margin-top': '10px'},
-                        inputStyle={'margin-right': '6px'}
+                        id='structured-explanation-function'
                     ),
                 ]),
 
@@ -92,20 +86,16 @@ def get_structured_explanation():
                             {'label': 'Sub-arguments', 'value': 'SubArg'},
                             {'label': 'Sub-argument conclusions', 'value': 'SubArgConclusions'}
                         ],
-                        id='structured-explanation-form',
-                        style={'margin-top': '10px'},
-                        inputStyle={'margin-right': '6px'}
+                        id='structured-explanation-form'
                     ),
                 ], style={'margin-top': '20px'}),
-            ], style={'padding': 10, 'flex': 1})
+            ], className='padded-item')
 
         ], className='row-container'),
 
         html.Div(
             [html.Button('Derive Explanations', id='structured-explanation-button', n_clicks=0,
-                         className='pyarg-button')],
-            style={'text-align': 'left', 'margin-left': '10px'}
-        ),
+                         className='pyarg-button')], className='button-container'),
 
         html.Div(style={'whiteSpace': 'pre-line'}),
     ])
@@ -128,11 +118,9 @@ def get_structured_evaluation():
                         {'label': 'Semi-stable', 'value': 'SemiStable'},
                         {'label': 'Eager', 'value': 'Eager'},
                     ],
-                    value='', id='structured-evaluation-semantics',
-                    style={'margin-top': '10px'},
-                    inputStyle={'margin-right': '6px'}
+                    value='', id='structured-evaluation-semantics'
                 ),
-            ], style={'padding': 10, 'flex': 1}),
+            ], className='padded-item'),
 
             html.Div([
                 html.B('Evaluation strategy'),
@@ -142,18 +130,14 @@ def get_structured_evaluation():
                         {'label': 'Weakly Skeptical', 'value': 'WeaklySkeptical'},
                         {'label': 'Skeptical', 'value': 'Skeptical'}
                     ],
-                    value='', id='structured-evaluation-strategy',
-                    style={'margin-top': '10px'},
-                    inputStyle={'margin-right': '6px'}
+                    value='', id='structured-evaluation-strategy'
                 ),
-            ], style={'padding': 10, 'flex': 1}),
+            ], className='padded-item'),
         ], className='row-container'),
 
         html.Div(
             [html.Button('Evaluate AF', id='evaluate-structured-argumentation-theory-button',
-                         n_clicks=0, className='small-pyarg-button')],
-            style={'text-align': 'left', 'margin-left': '10px'}
-        ),
+                         n_clicks=0, className='small-pyarg-button')], className='button-container'),
         html.Div(style={'whiteSpace': 'pre-line'}),
     ])
     return structured_evaluation
@@ -167,7 +151,7 @@ def get_aspic_setting():
                 html.Br(),
                 dcc.Textarea(id='aspic-axioms', placeholder='Add one axiom per line. For example:\n p \n -q \n ~r',
                              value='', className='aspic-input'),
-            ], style={'padding': 10, 'flex': 1, 'margin-left': '10px'}),
+            ], className='padded-item'),
 
             html.Div([
                 html.B('Ordinary premises'),
@@ -175,7 +159,7 @@ def get_aspic_setting():
                 dcc.Textarea(id='aspic-ordinary-premises',
                              placeholder='Add one ordinary premise per line. For example:\n p \n -q \n ~r',
                              value='', className='aspic-input'),
-            ], style={'padding': 10, 'flex': 1}),
+            ], className='padded-item'),
 
             html.Div([
                 html.B('Ordinary premise preferences', style={'margin-left': '10px'}),
@@ -184,7 +168,7 @@ def get_aspic_setting():
                              placeholder='Add one preference between two premises per line. '
                                          'For example:\n p < -q \n -q > ~r',
                              value='', className='aspic-input'),
-            ], style={'padding': 10, 'flex': 1}),
+            ], className='padded-item'),
         ], className='row-container'),
 
         html.Div([
@@ -196,7 +180,7 @@ def get_aspic_setting():
                     placeholder='Add one strict rule per line. For example:\n p->q \n -q -> -r',
                     value='', className='aspic-input',
                 ),
-            ], style={'padding': 10, 'flex': 1}),
+            ], className='padded-item'),
 
             html.Div([
                 html.B('Defeasible rules'),
@@ -206,7 +190,7 @@ def get_aspic_setting():
                     placeholder='Add one defeasible rule per line, including the rule name. '
                                 'For example:\n d1: p=>q \n d2: -q => -r',
                     value='', className='aspic-input'),
-            ], style={'padding': 10, 'flex': 1}),
+            ], className='padded-item'),
 
             html.Div([
                 html.B('Defeasible rule preferences', style={'margin-left': '10px'}),
@@ -216,7 +200,7 @@ def get_aspic_setting():
                     placeholder='Add one preference between two rules per line. For example:\n d1 < d2',
                     value='', className='aspic-input',
                 ),
-            ], style={'padding': 10, 'flex': 1}),
+            ], className='padded-item'),
         ], className='row-container'),
 
         html.Div([
@@ -229,9 +213,7 @@ def get_aspic_setting():
                             {'label': 'Democratic', 'value': 'democratic'},
                             {'label': 'Elitist', 'value': 'elitist'}
                         ],
-                        value='democratic',
-                        id='ordering-choice',
-                        inputStyle={'margin-right': '6px'}
+                        value='democratic', id='ordering-choice'
                     ),
                 ], style={'padding': 5, 'flex': 1}),
 
@@ -241,9 +223,7 @@ def get_aspic_setting():
                             {'label': 'Last link', 'value': 'last_link'},
                             {'label': 'Weakest link', 'value': 'weakest_link'}
                         ],
-                        value='last_link',
-                        id='ordering-link',
-                        inputStyle={'margin-right': '6px'}
+                        value='last_link', id='ordering-link'
                     ),
                 ], style={'padding': 5, 'flex': 1}),
             ], className='row-container'),
@@ -251,9 +231,7 @@ def get_aspic_setting():
 
         html.Div(
             [html.Button('Create AF', id='create-argumentation-theory-button', n_clicks=0,
-                         className='small-pyarg-button')],
-            style={'text-align': 'left', 'margin-left': '10px'}
-        ),
+                         className='small-pyarg-button')], className='button-container'),
 
         html.Div(id='ASPIC-argumentation', style={'whiteSpace': 'pre-line'})
     ])
