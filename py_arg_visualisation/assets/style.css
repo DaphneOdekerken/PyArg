@@ -19,6 +19,58 @@ body {
     justify-content: center;
 }
 
+.pyarg-button {
+    color: #152A47;
+    text-align: left;
+    background-color: #7BE7FF;
+    border-color: #7BE7FF;
+    width: 100%;
+}
+
+.small-pyarg-button {
+    color: #FFFFFF;
+    text-align: center;
+    background-color: #152A47;
+    border-color: #152A47;
+    width: 40%;
+}
+
+h4 {
+    color: #152A47;
+}
+
+h4.error {
+    color: red;
+}
+
+.graph-style {
+    border-radius: 8px;
+    border: 2px solid #152A47;
+    margin-right: 25px;
+}
+
+div.output {
+    text-align: left;
+    margin-left: 10px;
+    padding: 10;
+    flex: 1;
+}
+
+div.row-container {
+    display: flex;
+    flex-direction: row;
+}
+
+textarea.abstract-input {
+    height: 300px;
+    margin-top: 10px;
+}
+
+textarea.aspic-input {
+    height: 150px;
+    margin-top: 10px;
+}
+
 /* Table of contents, from https://codepen.io/chriddyp/pen/bWLwgP.css
 ––––––––––––––––––––––––––––––––––––––––––––––––––
 - Plotly.js
@@ -103,7 +155,6 @@ input[type="button"].button-primary:focus {
   background-color: #1EAEDB;
   border-color: #1EAEDB; }
 
-
 /* Forms
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 input[type="email"],
@@ -115,7 +166,6 @@ input[type="url"],
 input[type="password"],
 textarea,
 select {
-  height: 38px;
   padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
   background-color: #fff;
   border: 1px solid #D1D1D1;
@@ -160,7 +210,8 @@ fieldset {
   border-width: 0; }
 input[type="checkbox"],
 input[type="radio"] {
-  display: inline; }
+  display: inline;
+}
 label > .label-body {
   display: inline-block;
   margin-left: .5rem;
