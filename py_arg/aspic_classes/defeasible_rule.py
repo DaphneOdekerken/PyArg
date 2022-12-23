@@ -1,11 +1,11 @@
-from typing import Set, List
+from typing import Set
 
 from .literal import Literal
 from .rule import Rule
 
 
 class DefeasibleRule(Rule):
-    def __init__(self, rule_id: int, antecedents: Set[Literal], consequent: Literal):
+    def __init__(self, rule_id: str, antecedents: Set[Literal], consequent: Literal):
         super().__init__(rule_id, antecedents, consequent)
 
     def __repr__(self):
@@ -13,4 +13,4 @@ class DefeasibleRule(Rule):
 
     @property
     def id_str(self) -> str:
-        return str(self.id)
+        return self.id

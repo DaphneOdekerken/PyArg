@@ -32,15 +32,15 @@ def get_argumentation_theory(include_d: bool = False, include_e: bool = False) -
         else:
             contraries_and_contradictories[literal_str].append(language['-' + literal_str])
 
-    strict_rules = [StrictRule(1, {language['t'], language['q']}, language['-p'])]
+    strict_rules = [StrictRule('s1', {language['t'], language['q']}, language['-p'])]
 
-    d1 = DefeasibleRule(1, {language['~s']}, language['t'])
-    d2 = DefeasibleRule(2, {language['r']}, language['q'])
-    d3 = DefeasibleRule(3, {language['a']}, language['p'])
+    d1 = DefeasibleRule('d1', {language['~s']}, language['t'])
+    d2 = DefeasibleRule('d2', {language['r']}, language['q'])
+    d3 = DefeasibleRule('d3', {language['a']}, language['p'])
     defeasible_rules = [d1, d2, d3]
 
     if include_d:
-        defeasible_rules.append(DefeasibleRule(4, {language['~d']}, language['s']))
+        defeasible_rules.append(DefeasibleRule('d4', {language['~d']}, language['s']))
 
     for defeasible_rule in defeasible_rules:
         defeasible_rule_literal = Literal.from_defeasible_rule(defeasible_rule)
@@ -51,7 +51,7 @@ def get_argumentation_theory(include_d: bool = False, include_e: bool = False) -
         contraries_and_contradictories[str(defeasible_rule_literal_negation)] = [defeasible_rule_literal]
 
     if include_e:
-        strict_rules.append(StrictRule(2, {language['r']}, language['-3']))
+        strict_rules.append(StrictRule('s2', {language['r']}, language['-d3']))
 
     arg_sys = ArgumentationSystem(language, contraries_and_contradictories, strict_rules, defeasible_rules)
 
@@ -107,15 +107,15 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
         all_args = set().union(*args_per_literal.values())
         arg_a_prime = InstantiatedArgument.ordinary_premise_based(language['a'])
         arg_a = InstantiatedArgument.defeasible_rule_based(
-            DefeasibleRule(3, {language['a']}, language['p']), {arg_a_prime})
+            DefeasibleRule('d3', {language['a']}, language['p']), {arg_a_prime})
         arg_b1 = InstantiatedArgument.ordinary_premise_based(language['~s'])
         arg_b1_prime = InstantiatedArgument.defeasible_rule_based(
-            DefeasibleRule(1, {language['~s']}, language['t']), {arg_b1})
+            DefeasibleRule('d1', {language['~s']}, language['t']), {arg_b1})
         arg_b2 = InstantiatedArgument.ordinary_premise_based(language['r'])
         arg_b2_prime = InstantiatedArgument.defeasible_rule_based(
-            DefeasibleRule(2, {language['r']}, language['q']), {arg_b2})
+            DefeasibleRule('d2', {language['r']}, language['q']), {arg_b2})
         arg_b = InstantiatedArgument.strict_rule_based(
-            StrictRule(1, {language['t'], language['q']}, language['-p']), {arg_b2_prime, arg_b1_prime})
+            StrictRule('s1', {language['t'], language['q']}, language['-p']), {arg_b2_prime, arg_b1_prime})
         arg_c = InstantiatedArgument.ordinary_premise_based(language['-r'])
 
         self.assertListEqual(sorted(all_args),
@@ -124,12 +124,12 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
         self.assertEqual(arg_b.conclusion, language['-p'])
         # Note: incorrect in paper!
         self.assertSetEqual(arg_b.sub_arguments, {arg_b1, arg_b2, arg_b1_prime, arg_b2_prime, arg_b})
-        self.assertEqual(arg_b.top_rule, StrictRule(1, {language['t'], language['q']}, language['-p']))
+        self.assertEqual(arg_b.top_rule, StrictRule('s1', {language['t'], language['q']}, language['-p']))
         self.assertSetEqual(arg_b.defeasible_rules, {
-            DefeasibleRule(1, {language['~s']}, language['t']),
-            DefeasibleRule(2, {language['r']}, language['q'])
+            DefeasibleRule('d1', {language['~s']}, language['t']),
+            DefeasibleRule('d2', {language['r']}, language['q'])
         })
-        self.assertSetEqual(arg_b.strict_rules, {StrictRule(1, {language['t'], language['q']}, language['-p'])})
+        self.assertSetEqual(arg_b.strict_rules, {StrictRule('s1', {language['t'], language['q']}, language['-p'])})
 
         # Test attacks
         self.assertTrue(arg_theory.rebuts(arg_b, arg_a))
@@ -142,7 +142,7 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
         arg_theory = get_argumentation_theory(include_d=True)
         language = arg_theory.argumentation_system.language
         arg_d1 = InstantiatedArgument.ordinary_premise_based(language['~d'])
-        arg_d2 = InstantiatedArgument.defeasible_rule_based(DefeasibleRule(4, {language['~d']}, language['s']),
+        arg_d2 = InstantiatedArgument.defeasible_rule_based(DefeasibleRule('d4', {language['~d']}, language['s']),
                                                             {arg_d1})
         self.assertTrue(arg_theory.contrary_undermines(arg_d2, arg_b))
         self.assertTrue(arg_theory.contrary_undermines(arg_d2, arg_b1))
@@ -153,9 +153,9 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
         self.assertTrue(arg_theory.undercuts(arg_e, arg_a))
 
         # Test defeats
-        d1 = DefeasibleRule(1, {language['~s']}, language['t'])
-        d2 = DefeasibleRule(2, {language['r']}, language['q'])
-        d3 = DefeasibleRule(3, {language['a']}, language['p'])
+        d1 = DefeasibleRule('d1', {language['~s']}, language['t'])
+        d2 = DefeasibleRule('d2', {language['r']}, language['q'])
+        d3 = DefeasibleRule('d3', {language['a']}, language['p'])
 
         arg_theory.argumentation_system.rule_preferences.append((d2, d3))
         arg_theory.ordinary_premise_preferences.append((language['-r'], language['r']))
@@ -200,7 +200,7 @@ class TestModgilPrakkenAIJ(unittest.TestCase):
         self.assertTrue(arg_theory.defeats(arg_b2, arg_c, ell))
 
         arg_d1 = InstantiatedArgument.ordinary_premise_based(language['~d'])
-        arg_d2 = InstantiatedArgument.defeasible_rule_based(DefeasibleRule(4, {language['~d']}, language['s']),
+        arg_d2 = InstantiatedArgument.defeasible_rule_based(DefeasibleRule('d4', {language['~d']}, language['s']),
                                                             {arg_d1})
         arg_e = InstantiatedArgument.strict_rule_based(arg_theory.argumentation_system.strict_rules[1], {arg_b2})
 

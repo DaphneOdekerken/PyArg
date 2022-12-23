@@ -7,7 +7,7 @@ class Rule:
     """
     A Rule has a list of antecedents and a single consequent.
     """
-    def __init__(self, rule_id: int, antecedents: Set[Literal], consequent: Literal):
+    def __init__(self, rule_id: str, antecedents: Set[Literal], consequent: Literal):
         self.id = rule_id
         self.antecedents = antecedents
         self.consequent = consequent

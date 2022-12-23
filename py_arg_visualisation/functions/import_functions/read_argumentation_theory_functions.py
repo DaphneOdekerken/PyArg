@@ -12,8 +12,8 @@ def _read_axioms_and_ordinary_premises(axioms_or_ordinary_premises_str) -> List[
     return [literal_str.strip() for literal_str in axioms_or_ordinary_premises_str.split()]
 
 
-def _read_strict_rules(strict_rules_str) -> List[Tuple[int, Set[str], str]]:
-    def read_strict_rule(rule_id, strict_rule_str) -> Tuple[int, Set[str], str]:
+def _read_strict_rules(strict_rules_str) -> List[Tuple[str, Set[str], str]]:
+    def read_strict_rule(rule_id, strict_rule_str) -> Tuple[str, Set[str], str]:
         if '->' not in strict_rule_str:
             raise ValueError('Each strict rule should contain -> at least once.')
         before_rule, after_rule = strict_rule_str.split('->', 1)
@@ -23,7 +23,7 @@ def _read_strict_rules(strict_rules_str) -> List[Tuple[int, Set[str], str]]:
         consequent = after_rule.strip()
         return rule_id, antecedents, consequent
 
-    return [read_strict_rule(rule_id, strict_rule_str)
+    return [read_strict_rule(str(rule_id), strict_rule_str)
             for rule_id, strict_rule_str in enumerate(strict_rules_str.splitlines())]
 
 

@@ -5,7 +5,7 @@ from .rule import Rule
 
 
 class StrictRule(Rule):
-    def __init__(self, rule_id: int, antecedents: Set[Literal], consequent: Literal):
+    def __init__(self, rule_id: str, antecedents: Set[Literal], consequent: Literal):
         super().__init__(rule_id, antecedents, consequent)
 
     def __repr__(self):
