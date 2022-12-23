@@ -1,7 +1,7 @@
 from py_arg.algorithms.explanation.defending import get_defending, get_dir_defending
 from py_arg.algorithms.explanation.not_defending import get_not_defending, get_no_dir_defending, get_no_self_defense
 from py_arg.algorithms.explanation.suff_nec import get_suff_nec
-from py_arg_visualisation.ordering_functions.get_ordering_by_specification import get_ordering_by_specification
+from py_arg_visualisation.functions.ordering_functions.get_ordering_by_specification import get_ordering_by_specification
 
 
 def get_str_explanations(argumentation_theory, semantics, ordering_specification, extensions, accepted_formulas, function, expl_type, strategy, form):

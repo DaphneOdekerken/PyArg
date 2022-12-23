@@ -29,7 +29,8 @@ def get_layout_elements(app):
         ], style={'display': 'flex', 'flex-direction': 'row'}),
 
         html.Div(
-            [html.Button('Create AF', id='abstrAF-Calc', n_clicks=0)], style={'text-align': 'left', 'margin-left': '10px'}
+            [html.Button('Create AF', id='abstrAF-Calc', n_clicks=0)],
+            style={'text-align': 'left', 'margin-left': '10px'}
         ),
 
         html.Div(id='abstract-argumentation', style={'whiteSpace': 'pre-line'})
@@ -62,7 +63,7 @@ def get_layout_elements(app):
                 html.Br(),
                 dcc.Textarea(
                     id='ordinary-prem-preferences',
-                    placeholder='Add one preferece between two premises per line. For example:\n p < -q \n -q > ~r',
+                    placeholder='Add one preference between two premises per line. For example:\n p < -q \n -q > ~r',
                     value='',
                     style={'height': 150, 'margin-left': '10px', 'margin-top': '10px'},
                 ),

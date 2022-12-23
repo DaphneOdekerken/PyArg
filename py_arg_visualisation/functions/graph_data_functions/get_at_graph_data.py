@@ -1,5 +1,5 @@
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from py_arg_visualisation.ordering_functions.get_ordering_by_specification import get_ordering_by_specification
+from py_arg_visualisation.functions.ordering_functions.get_ordering_by_specification import get_ordering_by_specification
 
 
 def get_argumentation_theory_graph_data(argumentation_theory: ArgumentationTheory, ordering_specification: str):
