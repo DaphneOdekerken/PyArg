@@ -22,7 +22,7 @@ def get_str_explanations(argumentation_theory, semantics, ordering_specification
     ordering = get_ordering_by_specification(argumentation_theory, ordering_specification)
     argumentation_framework = argumentation_theory.create_abstract_argumentation_framework('af', ordering)
     abstract_explanation = {}
-    if expl_type == 'Acc':
+    if expl_type == 'Acceptance':
         for formula in accepted_formulas:
             form_arg = argumentation_theory.arguments[formula]
             arg_expl = []
@@ -55,7 +55,7 @@ def get_str_explanations(argumentation_theory, semantics, ordering_specification
                                         set_expl.append(rules)
                                 elif form == 'SubArg' and arg.sub_arguments not in form_expl:
                                     set_expl.append(arg.sub_arguments)
-                                elif form == 'SubArgConc':
+                                elif form == 'SubArgConclusions':
                                     subargconc = set()
                                     for subarg in arg.sub_arguments:
                                         if subarg.conclusion not in subargconc:
@@ -93,7 +93,7 @@ def get_str_explanations(argumentation_theory, semantics, ordering_specification
         if function == 'MinSuff' or function == 'Nec':
             return abstract_explanation
 
-    elif expl_type == 'NonAcc':
+    elif expl_type == 'NonAcceptance':
         formulas = set()
         for arg in argumentation_framework.arguments:
             for subarg in arg.sub_arguments:
@@ -131,7 +131,7 @@ def get_str_explanations(argumentation_theory, semantics, ordering_specification
 #                                form_expl.append(arg.top_rule)
                     elif form == 'SubArg' and arg.sub_arguments not in form_expl:
                         form_expl.append(arg.sub_arguments)
-                    elif form == 'SubArgConc':
+                    elif form == 'SubArgConclusions':
                         subargconc = set()
                         for subarg in arg.sub_arguments:
                             if subarg.conclusion not in subargconc:

@@ -15,12 +15,12 @@ def get_abstract_layout(abstract_evaluation, abstract_explanation, abstract_sett
                                'background-color': '#7BE7FF',
                                'border-color': '#7BE7FF',
                                'width': '100%'},
-                        id="abstr-arg-setting-button",
+                        id="abstract-arg-setting-button",
                     )
                 ),
                 dbc.Collapse(
                     dbc.CardBody(abstract_setting),
-                    id="abstr-arg-setting-collapse", is_open=False
+                    id="abstract-arg-setting-collapse", is_open=False
                 ),
 
                 dbc.CardHeader(
@@ -31,12 +31,12 @@ def get_abstract_layout(abstract_evaluation, abstract_explanation, abstract_sett
                                'background-color': '#7BE7FF',
                                'border-color': '#7BE7FF',
                                'width': '100%'},
-                        id="abstr-evaluation-button",
+                        id="abstract-evaluation-button",
                     )
                 ),
                 dbc.Collapse(
                     dbc.CardBody(abstract_evaluation),
-                    id="abstr-evaluation-collapse", is_open=False
+                    id="abstract-evaluation-collapse", is_open=False
                 ),
 
                 dbc.CardHeader(
@@ -47,18 +47,18 @@ def get_abstract_layout(abstract_evaluation, abstract_explanation, abstract_sett
                                'background-color': '#7BE7FF',
                                'border-color': '#7BE7FF',
                                'width': '100%'},
-                        id="abstr-explanation-button",
+                        id="abstract-explanation-button",
                     )
                 ),
                 dbc.Collapse(
                     dbc.CardBody(abstract_explanation),
-                    id="abstr-explanation-collapse", is_open=False
+                    id="abstract-explanation-collapse", is_open=False
                 ),
             ], style={'padding': 10, 'flex': 1}),
 
             html.Div([
                 visdcc.Network(data={'nodes': [], 'edges': []},
-                               id='abstrnet',
+                               id='abstract-argumentation-graph',
                                options=dict(height='600px'),
                                style={'border-radius': '8px',
                                       'border': '2px solid #152A47',
@@ -66,32 +66,32 @@ def get_abstract_layout(abstract_evaluation, abstract_explanation, abstract_sett
                 html.Div([
                     html.Div([
                         html.Div(
-                            id='abstr-output',
+                            id='abstract-arguments-output',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}),
 
                         html.Div(
-                            id='abstr-evaluation',
+                            id='abstract-evaluation',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
                         ),
 
                         html.Div(
-                            id='abstr-explanation',
+                            id='abstract-explanation',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
                         )
                     ], style={'display': 'flex', 'flex-direction': 'row'}),
 
                     html.Div([
                         html.Div(
-                            id='abstrnet-output',
+                            id='abstract-argumentation-graph-output',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}),
 
                         html.Div(
-                            id='abstrnet-evaluation',
+                            id='abstract-argumentation-graph-evaluation',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
                         ),
 
                         html.Div(
-                            id='abstrnet-explanation',
+                            id='abstract-argumentation-graph-explanation',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
                         )
 
@@ -112,11 +112,11 @@ def get_abstract_explanation():
 
                     dcc.RadioItems(
                         options=[
-                            {'label': 'Acceptance', 'value': 'Acc'},
-                            {'label': 'Non-Acceptance', 'value': 'NonAcc'}
+                            {'label': 'Acceptance', 'value': 'Acceptance'},
+                            {'label': 'Non-Acceptance', 'value': 'NonAcceptance'}
                         ],
                         value='',
-                        id='abstr-explanation-type',
+                        id='abstract-explanation-type',
                         style={'margin-top': '10px'},
                         inputStyle={'margin-right': '6px'}
                     ),
@@ -127,11 +127,11 @@ def get_abstract_explanation():
 
                     dcc.RadioItems(
                         options=[
-                            {'label': 'Credulous', 'value': 'Cred'},
-                            {'label': 'Skeptical', 'value': 'Skep'}
+                            {'label': 'Credulous', 'value': 'Credulous'},
+                            {'label': 'Skeptical', 'value': 'Skeptical'}
                         ],
                         value='',
-                        id='abstr-explanation-strategy',
+                        id='abstract-explanation-strategy',
                         style={'margin-top': '10px'},
                         inputStyle={'margin-right': '6px'}
                     ),
@@ -142,7 +142,7 @@ def get_abstract_explanation():
                 html.B('Explanation function'),
 
                 dcc.RadioItems(
-                    id='abstr-explanation-function',
+                    id='abstract-explanation-function',
                     style={'margin-top': '10px'},
                     inputStyle={'margin-right': '6px'}
                 ),
@@ -151,11 +151,11 @@ def get_abstract_explanation():
         ], style={'display': 'flex', 'flex-direction': 'row'}),
 
         html.Div(
-            [html.Button('Derive Explanations', id='abstrAF-Expl', n_clicks=0)], style={'text-align': 'left',
-                                                                                        'margin-left': '10px'}
+            [html.Button('Derive Explanations', id='abstract_explanation_button', n_clicks=0)],
+            style={'text-align': 'left', 'margin-left': '10px'}
         ),
 
-        html.Div(id='abstrAF-explanation', style={'whiteSpace': 'pre-line'}),
+        html.Div(style={'whiteSpace': 'pre-line'}),
     ])
     return abstract_explanation
 
@@ -168,17 +168,17 @@ def get_abstract_evaluation():
 
                 dcc.RadioItems(
                     options=[
-                        {'label': 'Admissible', 'value': 'Adm'},
-                        {'label': 'Complete', 'value': 'Cmp'},
-                        {'label': 'Grounded', 'value': 'Grd'},
-                        {'label': 'Preferred', 'value': 'Prf'},
-                        {'label': 'Ideal', 'value': 'Idl'},
-                        {'label': 'Stable', 'value': 'Stb'},
-                        {'label': 'Semi-stable', 'value': 'Sstb'},
-                        {'label': 'Eager', 'value': 'Egr'},
+                        {'label': 'Admissible', 'value': 'Admissible'},
+                        {'label': 'Complete', 'value': 'Complete'},
+                        {'label': 'Grounded', 'value': 'Grounded'},
+                        {'label': 'Preferred', 'value': 'Preferred'},
+                        {'label': 'Ideal', 'value': 'Ideal'},
+                        {'label': 'Stable', 'value': 'Stable'},
+                        {'label': 'Semi-stable', 'value': 'SemiStable'},
+                        {'label': 'Eager', 'value': 'Eager'},
                     ],
-                    value='',
-                    id='abstr-evaluation-semantics',
+                    value='Complete',
+                    id='abstract-evaluation-semantics',
                     style={'margin-top': '10px'},
                     inputStyle={'margin-right': '6px'}
                 ),
@@ -189,11 +189,11 @@ def get_abstract_evaluation():
 
                 dcc.RadioItems(
                     options=[
-                        {'label': 'Credulous', 'value': 'Cred'},
-                        {'label': 'Skeptical', 'value': 'Skep'}
+                        {'label': 'Credulous', 'value': 'Credulous'},
+                        {'label': 'Skeptical', 'value': 'Skeptical'}
                     ],
-                    value='',
-                    id='abstr-evaluation-strategy',
+                    value='Credulous',
+                    id='abstract-evaluation-strategy',
                     style={'margin-top': '10px'},
                     inputStyle={'margin-right': '6px'}
                 ),
@@ -201,11 +201,11 @@ def get_abstract_evaluation():
         ], style={'display': 'flex', 'flex-direction': 'row'}),
 
         html.Div(
-            [html.Button('Evaluate AF', id='abstrAF-Eval', n_clicks=0)],
+            [html.Button('Evaluate AF', id='evaluate-argumentation-framework-button', n_clicks=0)],
             style={'text-align': 'left', 'margin-left': '10px'}
         ),
 
-        html.Div(id='abstrAF-evaluation', style={'whiteSpace': 'pre-line'}),
+        html.Div(style={'whiteSpace': 'pre-line'}),
     ])
     return abstract_evaluation
 
@@ -235,7 +235,7 @@ def get_abstract_setting():
         ], style={'display': 'flex', 'flex-direction': 'row'}),
 
         html.Div(
-            [html.Button('Create AF', id='abstrAF-Calc', n_clicks=0)],
+            [html.Button('Create AF', id='create-argumentation-framework-button', n_clicks=0)],
             style={'text-align': 'left', 'margin-left': '10px'}
         ),
 

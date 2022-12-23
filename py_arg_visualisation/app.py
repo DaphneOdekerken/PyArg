@@ -34,198 +34,192 @@ app.validation_layout = app_validation_layout
     dash.dependencies.Output('arg-layout', 'children'),
     [dash.dependencies.Input('arg-choice', 'value')]
 )
-def setting_choice(choice):
-    if choice == 'Abstr':
+def setting_choice(choice: str):
+    if choice == 'Abstract':
         return layout_abstract
     elif choice == 'ASPIC':
         return layout_ASPIC
 
 
 @app.callback(
-    dash.dependencies.Output('abstr-arg-setting-collapse', 'is_open'),
-    [dash.dependencies.Input('abstr-arg-setting-button', 'n_clicks')],
-    [dash.dependencies.State('abstr-arg-setting-collapse', 'is_open')],
+    dash.dependencies.Output('abstract-arg-setting-collapse', 'is_open'),
+    [dash.dependencies.Input('abstract-arg-setting-button', 'n_clicks')],
+    [dash.dependencies.State('abstract-arg-setting-collapse', 'is_open')],
 )
-def toggle_collapse(n, is_open):
+def toggle_collapse(n: int, is_open: bool):
     if n:
         return not is_open
     return is_open
 
 
 @app.callback(
-    dash.dependencies.Output('abstr-evaluation-collapse', 'is_open'),
-    [dash.dependencies.Input('abstr-evaluation-button', 'n_clicks')],
-    [dash.dependencies.State('abstr-evaluation-collapse', 'is_open')],
+    dash.dependencies.Output('abstract-evaluation-collapse', 'is_open'),
+    [dash.dependencies.Input('abstract-evaluation-button', 'n_clicks')],
+    [dash.dependencies.State('abstract-evaluation-collapse', 'is_open')],
 )
-def toggle_collapse(n, is_open):
+def toggle_collapse(n: int, is_open: bool):
     if n:
         return not is_open
     return is_open
 
 
 @app.callback(
-    dash.dependencies.Output('abstr-explanation-collapse', 'is_open'),
-    [dash.dependencies.Input('abstr-explanation-button', 'n_clicks')],
-    [dash.dependencies.State('abstr-explanation-collapse', 'is_open')],
+    dash.dependencies.Output('abstract-explanation-collapse', 'is_open'),
+    [dash.dependencies.Input('abstract-explanation-button', 'n_clicks')],
+    [dash.dependencies.State('abstract-explanation-collapse', 'is_open')],
 )
-def toggle_collapse(n, is_open):
+def toggle_collapse(n: int, is_open: bool):
     if n:
         return not is_open
     return is_open
 
 
 @app.callback(
-    dash.dependencies.Output('abstr-explanation-function', 'options'),
-    [dash.dependencies.Input('abstr-explanation-type', 'value')],
+    dash.dependencies.Output('abstract-explanation-function', 'options'),
+    [dash.dependencies.Input('abstract-explanation-type', 'value')],
     prevent_initial_call=True
 )
-def setting_choice(choice):
+def setting_choice(choice: str):
     return [{'label': i, 'value': i} for i in EXPLANATION_FUNCTION_OPTIONS[choice]]
 
 
 @app.callback(
-    dash.dependencies.Output('str-arg-setting-collapse', 'is_open'),
-    [dash.dependencies.Input('str-arg-setting-button', 'n_clicks')],
-    [dash.dependencies.State('str-arg-setting-collapse', 'is_open')],
+    dash.dependencies.Output('structured-arg-setting-collapse', 'is_open'),
+    [dash.dependencies.Input('structured-arg-setting-button', 'n_clicks')],
+    [dash.dependencies.State('structured-arg-setting-collapse', 'is_open')],
 )
-def toggle_collapse(n, is_open):
+def toggle_collapse(n: int, is_open: bool):
     if n:
         return not is_open
     return is_open
 
 
 @app.callback(
-    dash.dependencies.Output('str-evaluation-collapse', 'is_open'),
-    [dash.dependencies.Input('str-evaluation-button', 'n_clicks')],
-    [dash.dependencies.State('str-evaluation-collapse', 'is_open')],
+    dash.dependencies.Output('structured-evaluation-collapse', 'is_open'),
+    [dash.dependencies.Input('structured-evaluation-button', 'n_clicks')],
+    [dash.dependencies.State('structured-evaluation-collapse', 'is_open')],
 )
-def toggle_collapse(n, is_open):
+def toggle_collapse(n: int, is_open: bool):
     if n:
         return not is_open
     return is_open
 
 
 @app.callback(
-    dash.dependencies.Output('str-explanation-collapse', 'is_open'),
-    [dash.dependencies.Input('str-explanation-button', 'n_clicks')],
-    [dash.dependencies.State('str-explanation-collapse', 'is_open')],
+    dash.dependencies.Output('structured-explanation-collapse', 'is_open'),
+    [dash.dependencies.Input('structured-explanation-button', 'n_clicks')],
+    [dash.dependencies.State('structured-explanation-collapse', 'is_open')],
 )
-def toggle_collapse(n, is_open):
+def toggle_collapse(n: int, is_open: bool):
     if n:
         return not is_open
     return is_open
 
 
 @app.callback(
-    dash.dependencies.Output('str-explanation-function', 'options'),
-    [dash.dependencies.Input('str-explanation-type', 'value')],
+    dash.dependencies.Output('structured-explanation-function', 'options'),
+    [dash.dependencies.Input('structured-explanation-type', 'value')],
     prevent_initial_call=True
 )
-def setting_choice(choice):
+def setting_choice(choice: str):
     return [{'label': i, 'value': i} for i in EXPLANATION_FUNCTION_OPTIONS[choice]]
 
 
 @app.callback(
-    dash.dependencies.Output('abstr-output', 'children'),
-    dash.dependencies.Output('abstrnet', 'data'),
-    dash.dependencies.Input('abstrAF-Calc', 'n_clicks'),
+    dash.dependencies.Output('abstract-arguments-output', 'children'),
+    dash.dependencies.Output('abstract-argumentation-graph', 'data'),
+    dash.dependencies.Input('create-argumentation-framework-button', 'n_clicks'),
     dash.dependencies.State('abstract-arguments', 'value'),
     dash.dependencies.State('abstract-attacks', 'value'),
     prevent_initial_call=True
 )
-def create_AF(click, arguments, attacks):
-    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-    if 'abstrAF-Calc' in changed_id:
-        arg_framework = read_argumentation_framework(arguments, attacks)
-        data = get_argumentation_framework_graph_data(arg_framework)
-        return html.Div([html.H4('The arguments of the AF:', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(arg_framework.arguments))]), data
+def create_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str, attacks: str):
+    arg_framework = read_argumentation_framework(arguments, attacks)
+    data = get_argumentation_framework_graph_data(arg_framework)
+    return html.Div([html.H4('The arguments of the AF:', style={'color': '#152A47'}),
+                     html.Ul([html.Li(argument.name) for argument in arg_framework.arguments])]), data
+
+
+@app.callback(
+    dash.dependencies.Output('abstract-evaluation', 'children'),
+    dash.dependencies.Input('evaluate-argumentation-framework-button', 'n_clicks'),
+    dash.dependencies.State('abstract-arguments', 'value'),
+    dash.dependencies.State('abstract-attacks', 'value'),
+    dash.dependencies.State('abstract-evaluation-semantics', 'value'),
+    dash.dependencies.State('abstract-evaluation-strategy', 'value'),
+    prevent_initial_call=True
+)
+def evaluate_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str, attacks: str, semantics: str,
+                                              strategy: str):
+    arg_framework = read_argumentation_framework(arguments, attacks)
+    frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics)
+    extensions = [set(frozen_extension) for frozen_extension in frozen_extensions]
+    if strategy == 'Skeptical':
+        accepted = set.intersection(*extensions)
+    elif strategy == 'Credulous':
+        accepted = set.union(*extensions)
     else:
-        data = {'nodes': [], 'edges': []}
-        return 'No argumentation setting was provided', data
+        raise NotImplementedError
+
+    return html.Div([html.H4('The extension(s):', style={'color': '#152A47'}),
+                     html.Ul([html.Li('{' + ', '.join([argument.name for argument in extension]) + '}')
+                              for extension in extensions]),
+                     html.H4('The accepted argument(s):', style={'color': '#152A47'}),
+                     html.Ul([html.Li(argument.name) for argument in accepted])
+                     ])
 
 
 @app.callback(
-    dash.dependencies.Output('abstr-evaluation', 'children'),
-    dash.dependencies.Input('abstrAF-Eval', 'n_clicks'),
+    dash.dependencies.Output('abstract-explanation', 'children'),
+    dash.dependencies.Input('abstract_explanation_button', 'n_clicks'),
     dash.dependencies.State('abstract-arguments', 'value'),
     dash.dependencies.State('abstract-attacks', 'value'),
-    dash.dependencies.State('abstr-evaluation-semantics', 'value'),
-    dash.dependencies.State('abstr-evaluation-strategy', 'value'),
+    dash.dependencies.State('abstract-evaluation-semantics', 'value'),
+    dash.dependencies.State('abstract-explanation-function', 'value'),
+    dash.dependencies.State('abstract-explanation-type', 'value'),
+    dash.dependencies.State('abstract-explanation-strategy', 'value'),
     prevent_initial_call=True
 )
-def evaluate_abstrAF(click, arguments, attacks, semantics, strategy):
-    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-    if 'AF-Eval' in changed_id:
+def derive_explanations_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str, attacks: str,
+                                                         semantics: str, explanation_function: str,
+                                                         explanation_type: str, explanation_strategy: str):
+    if semantics == '':
+        return html.Div([html.H4('Error', style={'color': 'red'}),
+                         'Choose a semantics under "Evaluation" before deriving explanations.'])
+    else:
         arg_framework = read_argumentation_framework(arguments, attacks)
         frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics)
-        accepted = set()
-        if semantics != 'Grd':
-            extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
-            if strategy == 'Skep':
-                accepted = set.intersection(*extension)
-            elif strategy == 'Cred':
-                accepted = set.union(*extension)
-        elif semantics == 'Grd':
-            extension = frozen_extensions
-            accepted = extension
-        return html.Div([html.H4('The extension(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(str(extension).replace('set()', '{}'))),
-                         html.H4('The accepted argument(s):', style={'color': '#152A47'}),
-                         html.H6('\n {}'.format(str(accepted).replace('set()', '{}')))])
-
-
-@app.callback(
-    dash.dependencies.Output('abstr-explanation', 'children'),
-    dash.dependencies.Input('abstrAF-Expl', 'n_clicks'),
-    dash.dependencies.State('abstract-arguments', 'value'),
-    dash.dependencies.State('abstract-attacks', 'value'),
-    dash.dependencies.State('abstr-evaluation-semantics', 'value'),
-    dash.dependencies.State('abstr-explanation-function', 'value'),
-    dash.dependencies.State('abstr-explanation-type', 'value'),
-    dash.dependencies.State('abstr-explanation-strategy', 'value'),
-    prevent_initial_call=True
-)
-def derive_abstrExpl(click, arguments, attacks, semantics, function, expltype, strategy):
-    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-    if 'AF-Expl' in changed_id:
-        if semantics == '':
-            return html.Div([html.H4('Error', style={'color': 'red'}),
-                             'Choose a semantics under "Evaluation" before deriving explanations.'])
+        extensions = [set(frozen_extension) for frozen_extension in frozen_extensions]
+        if explanation_strategy == 'Skeptical':
+            accepted_arguments = set.intersection(*extensions)
+        elif explanation_strategy == 'Credulous':
+            accepted_arguments = set.union(*extensions)
         else:
-            arg_framework = read_argumentation_framework(arguments, attacks)
-            output_str = ''
-            frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics)
-            accepted = set()
-            if semantics != 'Grd':
-                extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
-                if strategy == 'Skep':
-                    accepted = set.intersection(*extension)
-                elif strategy == 'Cred':
-                    accepted = set.union(*extension)
-            else:
-                extension = frozen_extensions
-                accepted = extension
-            explanations = get_argumentation_framework_explanations(arg_framework, semantics, extension, accepted, function, expltype,
-                                                                    strategy)
-            return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(str(explanations).replace('set()', '{}')))])
+            raise NotImplementedError
+
+        explanations = get_argumentation_framework_explanations(
+            arg_framework, semantics, extensions, accepted_arguments,
+            explanation_function, explanation_type, explanation_strategy)
+
+        return html.Div([html.H4('The explanation(s):', style={'color': '#152A47'}),
+                         html.Ul([html.Li(str(explanation)) for explanation in explanations])])
 
 
 @app.callback(
-    dash.dependencies.Output('abstrnet-output', 'children'),
-    dash.dependencies.Output('abstrnet-evaluation', 'children'),
-    dash.dependencies.Output('abstrnet-explanation', 'children'),
-    dash.dependencies.Input('abstrnet', 'selection'),
+    dash.dependencies.Output('abstract-argumentation-graph-output', 'children'),
+    dash.dependencies.Output('abstract-argumentation-graph-evaluation', 'children'),
+    dash.dependencies.Output('abstract-argumentation-graph-explanation', 'children'),
+    dash.dependencies.Input('abstract-argumentation-graph', 'selection'),
     dash.dependencies.State('abstract-arguments', 'value'),
     dash.dependencies.State('abstract-attacks', 'value'),
-    dash.dependencies.State('abstr-evaluation-semantics', 'value'),
-    dash.dependencies.State('abstr-evaluation-strategy', 'value'),
-    dash.dependencies.State('abstr-explanation-function', 'value'),
-    dash.dependencies.State('abstr-explanation-type', 'value'),
+    dash.dependencies.State('abstract-evaluation-semantics', 'value'),
+    dash.dependencies.State('abstract-evaluation-strategy', 'value'),
+    dash.dependencies.State('abstract-explanation-function', 'value'),
+    dash.dependencies.State('abstract-explanation-type', 'value'),
     prevent_initial_call=True
 )
-def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, function, expltype):
+def handle_selection_in_abstract_argumentation_graph(selection, arguments, attacks, semantics, strategy, function,
+                                                     explanation_type):
     while selection is not None:
         arg_framework = read_argumentation_framework(arguments, attacks)
         for arg in arg_framework.arguments:
@@ -235,116 +229,106 @@ def interactive_abstr_graph(selection, arguments, attacks, semantics, strategy, 
         output_arg = html.Div(
             [html.H4('The selected argument:', style={'color': '#152A47'}), html.H6('{}'.format(str(argument)))])
         output_accept = ''
-        expl_output = ''
+        explanation_output = ''
         output_evaluation = ''
         if semantics != '':
             frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics)
             if strategy != '':
-                skep_accept = False
-                cred_accept = False
+                skeptically_accepted = False
+                credulously_accepted = False
                 if semantics != 'Grd':
                     extensions = [set(frozen_extension) for frozen_extension in frozen_extensions]
-                    skep_accepted = set.intersection(*extensions)
-                    cred_accepted = set.union(*extensions)
+                    skeptically_accepted_arguments = set.intersection(*extensions)
+                    credulously_accepted_arguments = set.union(*extensions)
                     for ext in extensions:
                         if argument in ext:
                             arg_ext.append(ext)
                     if arg_ext == extensions:
-                        skep_accept = True
-                    if arg_ext != []:
-                        cred_accept = True
+                        skeptically_accepted = True
+                    if arg_ext:
+                        credulously_accepted = True
                 elif semantics == 'Grd':
                     extensions = frozen_extensions
                     if argument in extensions:
                         arg_ext.append(extensions)
-                        skep_accepted = extensions
-                        cred_accepted = extensions
-                        skep_accept = True
-                        cred_accept = True
-                if skep_accept:
+                        skeptically_accepted_arguments = extensions
+                        credulously_accepted_arguments = extensions
+                        skeptically_accepted = True
+                        credulously_accepted = True
+                if skeptically_accepted:
                     output_accept += str(argument) + ' is skeptically and credulously accepted.'
-                    if function is not None and expltype == 'Acc':
-                        skep_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, skep_accepted,
-                                                                              function, expltype, 'Skep')
-                        cred_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, cred_accepted,
-                                                                              function, expltype, 'Cred')
-                        expl_output = html.Div([html.H4(
+                    if function is not None and explanation_type == 'Acceptance':
+                        skeptical_explanation = get_argumentation_framework_explanations(
+                            arg_framework, semantics, extensions, skeptically_accepted_arguments,
+                            function, explanation_type, 'Skeptical')
+                        credulous_explanation = get_argumentation_framework_explanations(
+                            arg_framework, semantics, extensions, credulously_accepted_arguments,
+                            function, explanation_type, 'Credulous')
+                        explanation_output = html.Div([html.H4(
                             'The skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()', '{}'))), html.H4(
+                            html.H6('\n {}'.format(
+                                str(skeptical_explanation.get(str(argument))).replace('set()', '{}'))), html.H4(
                                 'The credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()', '{}')))])
-                    elif function is not None and expltype == 'NonAcc':
-                        expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
-                                                'There is no non-acceptance explanation for argument {}, since it is '
-                                                'skeptically accepted.'.format(
-                                                    argument)])
-                elif cred_accept:
+                            html.H6('\n {}'.format(
+                                str(credulous_explanation.get(str(argument))).replace('set()', '{}')))])
+                    elif function is not None and explanation_type == 'NonAcceptance':
+                        explanation_output = html.Div(
+                            [html.H4('Error', style={'color': 'red'}),
+                             'There is no non-acceptance explanation for argument {}, since it is '
+                             'skeptically accepted.'.format(argument)])
+                elif credulously_accepted:
                     output_accept += str(argument) + ' is credulously but not skeptically accepted.'
-                    if function is not None and expltype == 'Acc':
-                        cred_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, cred_accepted,
-                                                                              function, expltype, 'Cred')
-                        expl_output = html.Div(
+                    if function is not None and explanation_type == 'Acceptance':
+                        credulous_explanation = get_argumentation_framework_explanations(
+                            arg_framework, semantics, extensions, credulously_accepted_arguments,
+                            function, explanation_type, 'Credulous')
+                        explanation_output = html.Div(
                             [html.H4('The credulous acceptance explanation for {}:'.format(str(argument)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()', '{}')))])
-                    elif function is not None and expltype == 'NonAcc':
-                        skep_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, skep_accepted,
-                                                                              function, expltype, 'Skep')
-                        expl_output = html.Div(
+                             html.H6('\n {}'.format(
+                                 str(credulous_explanation.get(str(argument))).replace('set()', '{}')))])
+                    elif function is not None and explanation_type == 'NonAcceptance':
+                        skeptical_explanation = get_argumentation_framework_explanations(
+                            arg_framework, semantics, extensions, skeptically_accepted_arguments,
+                            function, explanation_type, 'Skeptical')
+                        explanation_output = html.Div(
                             [html.H4('The not skeptical acceptance explanation for {}:'.format(str(argument)),
                                      style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()', '{}')))])
-                elif skep_accept == False and cred_accept == False:
+                             html.H6('\n {}'.format(
+                                 str(skeptical_explanation.get(str(argument))).replace('set()', '{}')))])
+                elif not skeptically_accepted and not credulously_accepted:
                     output_accept += str(argument) + ' is neither  credulously nor skeptically accepted.'
-                    if function is not None and expltype == 'NonAcc':
-                        skep_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, skep_accepted,
-                                                                              function, expltype, 'Skep')
-                        cred_expla = get_argumentation_framework_explanations(arg_framework, semantics, extensions, cred_accepted,
-                                                                              function, expltype, 'Cred')
-                        expl_output = html.Div([html.H4(
+                    if function is not None and explanation_type == 'NonAcceptance':
+                        skeptical_explanation = get_argumentation_framework_explanations(
+                            arg_framework, semantics, extensions, skeptically_accepted_arguments,
+                            function, explanation_type, 'Skeptical')
+                        credulous_explanation = get_argumentation_framework_explanations(
+                            arg_framework, semantics, extensions, credulously_accepted_arguments,
+                            function, explanation_type, 'Credulous')
+                        explanation_output = html.Div([html.H4(
                             'The not skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()', '{}'))), html.H4(
+                            html.H6('\n {}'.format(str(skeptical_explanation.get(str(argument))).replace('set()', '{}'))), html.H4(
                                 'The not credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
-                            html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()', '{}')))])
-                    elif function is not None and expltype == 'Acc':
-                        expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
-                                                'There is no acceptance explanation for argument {}, since it is not '
-                                                'credulously accepted.'.format(
-                                                    argument)])
+                            html.H6('\n {}'.format(str(credulous_explanation.get(str(argument))).replace('set()', '{}')))])
+                    elif function is not None and explanation_type == 'Acceptance':
+                        explanation_output = html.Div(
+                            [html.H4('Error', style={'color': 'red'}),
+                             'There is no acceptance explanation for argument {}, since it is not '
+                             'credulously accepted.'.format(argument)])
             output_evaluation = html.Div(
                 [html.H4('The extensions with argument {}:'.format(str(argument)), style={'color': '#152A47'}),
                  html.H6('{}'.format(arg_ext)), html.H6('{}'.format(output_accept))])
-        return output_arg, output_evaluation, expl_output
+        return output_arg, output_evaluation, explanation_output
     raise PreventUpdate
 
 
 @app.callback(
-    dash.dependencies.Output('ordering-link', 'children'),
-    dash.dependencies.Output('ordering-link', 'value'),
-    dash.dependencies.Input('ordering-choice', 'value'),
-)
-def choose_ordering(choice):
-    if choice == 'nochoice':
-        options = [{'label': 'None', 'value': 'nolink'},
-                   {'label': 'Last link', 'value': 'lastl', 'disabled': True},
-                   {'label': 'Weakest link', 'value': 'weakl', 'disabled': True}
-                   ]
-        return options, 'nolink'
-    else:
-        options = [{'label': 'None', 'value': 'nolink', 'state': 'disabled'},
-                   {'label': 'Last link', 'value': 'lastl'},
-                   {'label': 'Weakest link', 'value': 'weakl'}
-                   ]
-        return options, 'lastl'
-
-
-@app.callback(
-    dash.dependencies.Output('str-output', 'children'),
-    dash.dependencies.Output('strnet', 'data'),
+    dash.dependencies.Output('structured-output', 'children'),
+    dash.dependencies.Output('structured-argumentation-graph', 'data'),
     dash.dependencies.Input('strAF-Calc', 'n_clicks'),
     dash.dependencies.State('aspic-axioms', 'value'),
     dash.dependencies.State('aspic-ordinary-premises', 'value'),
@@ -356,9 +340,10 @@ def choose_ordering(choice):
     dash.dependencies.State('ordering-link', 'value'),
     prevent_initial_call=True
 )
-def create_AT(click, axioms_str: str, ordinary_premises_str: str, strict_rules_str: str, defeasible_rules_str: str,
-              ordinary_premise_preferences_str: str, defeasible_rule_preferences_str: str,
-              ordering_choice_value: str, ordering_link_value: str):
+def create_argumentation_theory(_nr_of_clicks: int, axioms_str: str, ordinary_premises_str: str, strict_rules_str: str,
+                                defeasible_rules_str: str,
+                                ordinary_premise_preferences_str: str, defeasible_rule_preferences_str: str,
+                                ordering_choice_value: str, ordering_link_value: str):
     # Read the ordering
     ordering_specification = ordering_choice_value + ordering_link_value
 
@@ -379,7 +364,7 @@ def create_AT(click, axioms_str: str, ordinary_premises_str: str, strict_rules_s
 
 
 @app.callback(
-    dash.dependencies.Output('str-evaluation', 'children'),
+    dash.dependencies.Output('structured-evaluation', 'children'),
     dash.dependencies.Input('strAF-Eval', 'n_clicks'),
     dash.dependencies.State('aspic-axioms', 'value'),
     dash.dependencies.State('aspic-ordinary-premises', 'value'),
@@ -389,14 +374,16 @@ def create_AT(click, axioms_str: str, ordinary_premises_str: str, strict_rules_s
     dash.dependencies.State('defeasible-rule-preferences', 'value'),
     dash.dependencies.State('ordering-choice', 'value'),
     dash.dependencies.State('ordering-link', 'value'),
-    dash.dependencies.State('str-evaluation-semantics', 'value'),
-    dash.dependencies.State('str-evaluation-strategy', 'value'),
+    dash.dependencies.State('structured-evaluation-semantics', 'value'),
+    dash.dependencies.State('structured-evaluation-strategy', 'value'),
     prevent_initial_call=True
 )
-def evaluate_strAF(click, axioms_str: str, ordinary_premises_str: str, strict_rules_str: str, defeasible_rules_str: str,
-                   ordinary_premise_preferences_str: str, defeasible_rule_preferences_str: str,
-                   ordering_choice_value: str, ordering_link_value: str,
-                   semantics_specification: str, acceptance_strategy_specification: str):
+def evaluate_structured_argumentation_framework(_nr_of_clicks: int, axioms_str: str, ordinary_premises_str: str,
+                                                strict_rules_str: str, defeasible_rules_str: str,
+                                                ordinary_premise_preferences_str: str,
+                                                defeasible_rule_preferences_str: str,
+                                                ordering_choice_value: str, ordering_link_value: str,
+                                                semantics_specification: str, acceptance_strategy_specification: str):
     # Read the ordering
     ordering_specification = ordering_choice_value + ordering_link_value
 
@@ -418,8 +405,8 @@ def evaluate_strAF(click, axioms_str: str, ordinary_premises_str: str, strict_ru
 
 
 @app.callback(
-    dash.dependencies.Output('str-explanation', 'children'),
-    dash.dependencies.Input('strAF-Expl', 'n_clicks'),
+    dash.dependencies.Output('structured-explanation', 'children'),
+    dash.dependencies.Input('structured_explanation_button', 'n_clicks'),
     dash.dependencies.State('aspic-axioms', 'value'),
     dash.dependencies.State('aspic-ordinary-premises', 'value'),
     dash.dependencies.State('aspic-strict-rules', 'value'),
@@ -428,48 +415,46 @@ def evaluate_strAF(click, axioms_str: str, ordinary_premises_str: str, strict_ru
     dash.dependencies.State('defeasible-rule-preferences', 'value'),
     dash.dependencies.State('ordering-choice', 'value'),
     dash.dependencies.State('ordering-link', 'value'),
-    dash.dependencies.State('str-evaluation-semantics', 'value'),
-    dash.dependencies.State('str-explanation-function', 'value'),
-    dash.dependencies.State('str-explanation-type', 'value'),
-    dash.dependencies.State('str-explanation-strategy', 'value'),
-    dash.dependencies.State('str-explanation-form', 'value'),
+    dash.dependencies.State('structured-evaluation-semantics', 'value'),
+    dash.dependencies.State('structured-explanation-function', 'value'),
+    dash.dependencies.State('structured-explanation-type', 'value'),
+    dash.dependencies.State('structured-explanation-strategy', 'value'),
+    dash.dependencies.State('structured-explanation-form', 'value'),
     prevent_initial_call=True
 )
-def derive_strExpl(click, axioms, ordinary, strict, defeasible, premise_preferences, rule_preferences, choice, link,
-                   semantics, function, expltype, strategy, form):
-    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-    if 'AF-Expl' in changed_id:
-        if semantics == '':
-            return html.Div([html.H4('Error', style={'color': 'red'}),
-                             'Choose a semantics under "Evaluation" before deriving explanations.'])
-        else:
-            ordering = choice + link
-            arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible,
-                                                                  premise_preferences, rule_preferences)
-            if error_message != '':
-                return error_message
-            frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics, ordering)
-            accepted = set()
-            if semantics != 'Grd':
-                extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
-                accepted = get_accepted_formulas(extension, strategy)
-            elif semantics == 'Grd':
-                extension = frozen_extensions
-                accepted = extension
-            explanations = get_str_explanations(arg_theory, semantics, ordering, extension, accepted, function,
-                                                expltype,
-                                                strategy, form)
+def derive_explanation_structured(_nr_of_clicks: int, axioms, ordinary, strict, defeasible, premise_preferences, rule_preferences,
+                                  choice, link, semantics, function, explanation_type, strategy, form):
+    if semantics == '':
+        return html.Div([html.H4('Error', style={'color': 'red'}),
+                         'Choose a semantics under "Evaluation" before deriving explanations.'])
+    else:
+        ordering = choice + '_' + link
+        arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible,
+                                                              premise_preferences, rule_preferences)
+        if error_message != '':
+            return error_message
+        frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics, ordering)
+        accepted = set()
+        if semantics != 'Grd':
+            extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
+            accepted = get_accepted_formulas(extension, strategy)
+        elif semantics == 'Grd':
+            extension = frozen_extensions
+            accepted = extension
+        explanations = get_str_explanations(arg_theory, semantics, ordering, extension, accepted, function,
+                                            explanation_type,
+                                            strategy, form)
 
-            return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
-                             html.H6('\n {}'.format(str(explanations).replace('set()','{}')))])
+        return html.Div([html.H4('The Explanation(s):', style={'color': '#152A47'}),
+                         html.H6('\n {}'.format(str(explanations).replace('set()','{}')))])
 
 
 @app.callback(
-    dash.dependencies.Output('strnet-output', 'children'),
-    dash.dependencies.Output('strnet-evaluation', 'children'),
-    dash.dependencies.Output('strnet-explanation', 'children'),
-    dash.dependencies.Input('strnet', 'selection'),
-    dash.dependencies.Input('strnet', 'data'),
+    dash.dependencies.Output('structured-argumentation-graph-output', 'children'),
+    dash.dependencies.Output('structured-argumentation-graph-evaluation', 'children'),
+    dash.dependencies.Output('structured-argumentation-graph-explanation', 'children'),
+    dash.dependencies.Input('structured-argumentation-graph', 'selection'),
+    dash.dependencies.Input('structured-argumentation-graph', 'data'),
     dash.dependencies.Input('aspic-axioms', 'value'),
     dash.dependencies.Input('aspic-ordinary-premises', 'value'),
     dash.dependencies.Input('aspic-strict-rules', 'value'),
@@ -478,18 +463,18 @@ def derive_strExpl(click, axioms, ordinary, strict, defeasible, premise_preferen
     dash.dependencies.Input('defeasible-rule-preferences', 'value'),
     dash.dependencies.Input('ordering-choice', 'value'),
     dash.dependencies.Input('ordering-link', 'value'),
-    dash.dependencies.Input('str-evaluation-semantics', 'value'),
-    dash.dependencies.Input('str-explanation-function', 'value'),
-    dash.dependencies.Input('str-explanation-type', 'value'),
-    dash.dependencies.Input('str-evaluation-strategy', 'value'),
-    dash.dependencies.Input('str-explanation-form', 'value'),
+    dash.dependencies.Input('structured-evaluation-semantics', 'value'),
+    dash.dependencies.Input('structured-explanation-function', 'value'),
+    dash.dependencies.Input('structured-explanation-type', 'value'),
+    dash.dependencies.Input('structured-evaluation-strategy', 'value'),
+    dash.dependencies.Input('structured-explanation-form', 'value'),
     prevent_initial_call=True
 )
 def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible, premise_preferences, rule_preferences,
                           choice, link,
-                          semantics, function, expltype, strategy, form):
+                          semantics, function, explanation_type, strategy, form):
     while selection is not None:
-        ordering = choice + link
+        ordering = choice + '_' + link
         arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
                                                               rule_preferences)
         if error_message != '':
@@ -518,9 +503,9 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                 cred_accept = False
                 if semantics != 'Grd':
                     extensions = [set(frozen_extension) for frozen_extension in frozen_extensions]
-                    skep_accepted = get_accepted_formulas(extensions, 'Skep')
-                    wskep_accepted = get_accepted_formulas(extensions, 'WSkep')
-                    cred_accepted = get_accepted_formulas(extensions, 'Cred')
+                    skep_accepted = get_accepted_formulas(extensions, 'Skeptical')
+                    wskep_accepted = get_accepted_formulas(extensions, 'WeaklySkeptical')
+                    cred_accepted = get_accepted_formulas(extensions, 'Credulous')
                     for ext in extensions:
                         if argument in ext:
                             arg_ext.append(ext)
@@ -541,11 +526,11 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                         cred_accept = True
                 if skep_accept:
                     output_accept += str(formula) + ' is (weakly) skeptically and credulously accepted.'
-                    if function is not None and expltype == 'Acc':
+                    if function is not None and explanation_type == 'Acceptance':
                         skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
-                                                          function, expltype, 'Skep', form)
+                                                          function, explanation_type, 'Skeptical', form)
                         cred_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, cred_accepted,
-                                                          function, expltype, 'Cred', form)
+                                                          function, explanation_type, 'Credulous', form)
                         expl_output = html.Div([html.H4(
                             'The skeptical acceptance explanation for {}:'.format(str(formula)),
                             style={'color': '#152A47'}),
@@ -553,7 +538,7 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                                 'The credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
                             html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
-                    elif function is not None and expltype == 'NonAcc':
+                    elif function is not None and explanation_type == 'NonAcceptance':
                         expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
                                                 'There is no non-acceptance explanation for formula {}, since it is '
                                                 'skeptically accepted.'.format(
@@ -561,43 +546,43 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                 elif wskep_accept:
                     output_accept += str(
                         formula) + ' is weakly skeptically and credulously accepted, but not skeptically accepted.'
-                    if function is not None and expltype == 'Acc':
+                    if function is not None and explanation_type == 'Acceptance':
                         cred_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, cred_accepted,
-                                                          function, expltype, 'Cred', form)
+                                                          function, explanation_type, 'Credulous', form)
                         expl_output = html.Div(
                             [html.H4('The credulous acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
                              html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
-                    elif function is not None and expltype == 'NonAcc':
+                    elif function is not None and explanation_type == 'NonAcceptance':
                         skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
-                                                          function, expltype, 'Skep', form)
+                                                          function, explanation_type, 'Skeptical', form)
                         expl_output = html.Div(
                             [html.H4('The not skeptical acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
                              html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}')))])
                 elif cred_accept:
                     output_accept += str(formula) + ' is credulously but not (weakly) skeptically accepted.'
-                    if function is not None and expltype == 'Acc':
+                    if function is not None and explanation_type == 'Acceptance':
                         cred_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, cred_accepted,
-                                                          function, expltype, 'Cred', form)
+                                                          function, explanation_type, 'Credulous', form)
                         expl_output = html.Div(
                             [html.H4('The credulous acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
                              html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
-                    elif function is not None and expltype == 'NonAcc':
+                    elif function is not None and explanation_type == 'NonAcceptance':
                         skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
-                                                          function, expltype, 'Skep', form)
+                                                          function, explanation_type, 'Skeptical', form)
                         expl_output = html.Div(
                             [html.H4('The not skeptical acceptance explanation for {}:'.format(str(formula)),
                                      style={'color': '#152A47'}),
                              html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}')))])
                 elif skep_accept == False and cred_accept == False:
                     output_accept += str(argument) + ' is neither credulously nor (weakly) skeptically accepted.'
-                    if function is not None and expltype == 'NonAcc':
+                    if function is not None and explanation_type == 'NonAcceptance':
                         skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
-                                                          function, expltype, 'Skep', form)
+                                                          function, explanation_type, 'Skeptical', form)
                         cred_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, cred_accepted,
-                                                          function, expltype, 'Cred', form)
+                                                          function, explanation_type, 'Credulous', form)
                         expl_output = html.Div([html.H4(
                             'The not skeptical acceptance explanation for {}:'.format(str(argument)),
                             style={'color': '#152A47'}),
@@ -605,7 +590,7 @@ def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible,
                                 'The not credulous acceptance explanation for {}:'.format(str(argument)),
                                 style={'color': '#152A47'}),
                             html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()','{}')))])
-                    elif function is not None and expltype == 'Acc':
+                    elif function is not None and explanation_type == 'Acceptance':
                         expl_output = html.Div([html.H4('Error', style={'color': 'red'}),
                                                 'There is no acceptance explanation for formula {}, since it is not '
                                                 'credulously accepted.'.format(

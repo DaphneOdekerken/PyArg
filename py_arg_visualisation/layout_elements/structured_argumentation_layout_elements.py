@@ -15,12 +15,12 @@ def get_aspic_layout(ASPIC_setting, structured_evaluation, structured_explanatio
                                'background-color': '#7BE7FF',
                                'border-color': '#7BE7FF',
                                'width': '100%'},
-                        id="str-arg-setting-button",
+                        id="structured-arg-setting-button",
                     )
                 ),
                 dbc.Collapse(
                     dbc.CardBody(ASPIC_setting),
-                    id="str-arg-setting-collapse", is_open=False
+                    id="structured-arg-setting-collapse", is_open=False
                 ),
 
                 dbc.CardHeader(
@@ -31,12 +31,12 @@ def get_aspic_layout(ASPIC_setting, structured_evaluation, structured_explanatio
                                'background-color': '#7BE7FF',
                                'border-color': '#7BE7FF',
                                'width': '100%'},
-                        id="str-evaluation-button",
+                        id="structured-evaluation-button",
                     )
                 ),
                 dbc.Collapse(
                     dbc.CardBody(structured_evaluation),
-                    id="str-evaluation-collapse", is_open=False
+                    id="structured-evaluation-collapse", is_open=False
                 ),
 
                 dbc.CardHeader(
@@ -47,18 +47,18 @@ def get_aspic_layout(ASPIC_setting, structured_evaluation, structured_explanatio
                                'background-color': '#7BE7FF',
                                'border-color': '#7BE7FF',
                                'width': '100%'},
-                        id="str-explanation-button",
+                        id="structured-explanation-button",
                     )
                 ),
                 dbc.Collapse(
                     dbc.CardBody(structured_explanation),
-                    id="str-explanation-collapse", is_open=False
+                    id="structured-explanation-collapse", is_open=False
                 ),
             ], style={'padding': 10, 'flex': 1}),
 
             html.Div([
                 visdcc.Network(data={'nodes': [], 'edges': []},
-                               id='strnet',
+                               id='structured-argumentation-graph',
                                options=dict(height='600px'),
                                style={'border-radius': '8px',
                                       'border': '2px solid #152A47',
@@ -66,32 +66,32 @@ def get_aspic_layout(ASPIC_setting, structured_evaluation, structured_explanatio
                 html.Div([
                     html.Div([
                         html.Div(
-                            id='str-output',
+                            id='structured-output',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}),
 
                         html.Div(
-                            id='str-evaluation',
+                            id='structured-evaluation',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
                         ),
 
                         html.Div(
-                            id='str-explanation',
+                            id='structured-explanation',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
                         )
                     ], style={'display': 'flex', 'flex-direction': 'row'}),
 
                     html.Div([
                         html.Div(
-                            id='strnet-output',
+                            id='structured-argumentation-graph-output',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}),
 
                         html.Div(
-                            id='strnet-evaluation',
+                            id='structured-argumentation-graph-evaluation',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
                         ),
 
                         html.Div(
-                            id='strnet-explanation',
+                            id='structured-argumentation-graph-explanation',
                             style={'text-align': 'left', 'margin-left': '10px', 'padding': 10, 'flex': 1}
                         )
 
@@ -112,11 +112,11 @@ def get_structured_explanation():
 
                     dcc.RadioItems(
                         options=[
-                            {'label': 'Acceptance', 'value': 'Acc'},
-                            {'label': 'Non-Acceptance', 'value': 'NonAcc'}
+                            {'label': 'Acceptance', 'value': 'Acceptance'},
+                            {'label': 'Non-Acceptance', 'value': 'NonAcceptance'}
                         ],
                         value='',
-                        id='str-explanation-type',
+                        id='structured-explanation-type',
                         style={'margin-top': '10px'},
                         inputStyle={'margin-right': '6px'}
                     ),
@@ -127,11 +127,11 @@ def get_structured_explanation():
 
                     dcc.RadioItems(
                         options=[
-                            {'label': 'Credulous', 'value': 'Cred'},
-                            {'label': 'Skeptical', 'value': 'Skep'}
+                            {'label': 'Credulous', 'value': 'Credulous'},
+                            {'label': 'Skeptical', 'value': 'Skeptical'}
                         ],
                         value='',
-                        id='str-explanation-strategy',
+                        id='structured-explanation-strategy',
                         style={'margin-top': '10px'},
                         inputStyle={'margin-right': '6px'}
                     ),
@@ -144,7 +144,7 @@ def get_structured_explanation():
 
                     dcc.RadioItems(
 
-                        id='str-explanation-function',
+                        id='structured-explanation-function',
                         style={'margin-top': '10px'},
                         inputStyle={'margin-right': '6px'}
                     ),
@@ -159,9 +159,9 @@ def get_structured_explanation():
                             {'label': 'Premises', 'value': 'Prem'},
                             {'label': 'Rules', 'value': 'Rule'},
                             {'label': 'Sub-arguments', 'value': 'SubArg'},
-                            {'label': 'Sub-argument conclusions', 'value': 'SubArgConc'}
+                            {'label': 'Sub-argument conclusions', 'value': 'SubArgConclusions'}
                         ],
-                        id='str-explanation-form',
+                        id='structured-explanation-form',
                         style={'margin-top': '10px'},
                         inputStyle={'margin-right': '6px'}
                     ),
@@ -172,8 +172,8 @@ def get_structured_explanation():
         ], style={'display': 'flex', 'flex-direction': 'row'}),
 
         html.Div(
-            [html.Button('Derive Explanations', id='strAF-Expl', n_clicks=0)], style={'text-align': 'left',
-                                                                                      'margin-left': '10px'}
+            [html.Button('Derive Explanations', id='structured_explanation_button', n_clicks=0)],
+            style={'text-align': 'left', 'margin-left': '10px'}
         ),
 
         html.Div(id='strAF-explanation', style={'whiteSpace': 'pre-line'}),
@@ -189,17 +189,17 @@ def get_structured_evaluation():
 
                 dcc.RadioItems(
                     options=[
-                        {'label': 'Admissible', 'value': 'Adm'},
-                        {'label': 'Complete', 'value': 'Cmp'},
-                        {'label': 'Grounded', 'value': 'Grd'},
-                        {'label': 'Preferred', 'value': 'Prf'},
-                        {'label': 'Ideal', 'value': 'Idl'},
-                        {'label': 'Stable', 'value': 'Stb'},
-                        {'label': 'Semi-stable', 'value': 'Sstb'},
-                        {'label': 'Eager', 'value': 'Egr'},
+                        {'label': 'Admissible', 'value': 'Admissible'},
+                        {'label': 'Complete', 'value': 'Complete'},
+                        {'label': 'Grounded', 'value': 'Grounded'},
+                        {'label': 'Preferred', 'value': 'Preferred'},
+                        {'label': 'Ideal', 'value': 'Ideal'},
+                        {'label': 'Stable', 'value': 'Stable'},
+                        {'label': 'Semi-stable', 'value': 'SemiStable'},
+                        {'label': 'Eager', 'value': 'Eager'},
                     ],
                     value='',
-                    id='str-evaluation-semantics',
+                    id='structured-evaluation-semantics',
                     style={'margin-top': '10px'},
                     inputStyle={'margin-right': '6px'}
                 ),
@@ -210,12 +210,12 @@ def get_structured_evaluation():
 
                 dcc.RadioItems(
                     options=[
-                        {'label': 'Credulous', 'value': 'Cred'},
-                        {'label': 'Weakly Skeptical', 'value': 'WSkep'},
-                        {'label': 'Skeptical', 'value': 'Skep'}
+                        {'label': 'Credulous', 'value': 'Credulous'},
+                        {'label': 'Weakly Skeptical', 'value': 'WeaklySkeptical'},
+                        {'label': 'Skeptical', 'value': 'Skeptical'}
                     ],
                     value='',
-                    id='str-evaluation-strategy',
+                    id='structured-evaluation-strategy',
                     style={'margin-top': '10px'},
                     inputStyle={'margin-right': '6px'}
                 ),
@@ -309,11 +309,10 @@ def get_aspic_setting():
                 html.Div([
                     dcc.RadioItems(
                         options=[
-                            {'label': 'None', 'value': 'nochoice'},
-                            {'label': 'Democratic', 'value': 'dem'},
-                            {'label': 'Elitist', 'value': 'eli'}
+                            {'label': 'Democratic', 'value': 'democratic'},
+                            {'label': 'Elitist', 'value': 'elitist'}
                         ],
-                        value='nochoice',
+                        value='democratic',
                         id='ordering-choice',
                         inputStyle={'margin-right': '6px'}
                     ),
@@ -322,11 +321,10 @@ def get_aspic_setting():
                 html.Div([
                     dcc.RadioItems(
                         options=[
-                            {'label': 'None', 'value': 'nolink'},
-                            {'label': 'Last link', 'value': 'lastl'},
-                            {'label': 'Weakest link', 'value': 'weakl'}
+                            {'label': 'Last link', 'value': 'last_link'},
+                            {'label': 'Weakest link', 'value': 'weakest_link'}
                         ],
-                        value='nolink',
+                        value='last_link',
                         id='ordering-link',
                         inputStyle={'margin-right': '6px'}
                     ),

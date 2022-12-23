@@ -19,7 +19,7 @@ def get_argumentation_framework_explanations(arg_framework: AbstractArgumentatio
     """
     explanation = {}
     not_accepted = [arg for arg in arg_framework.arguments if arg not in accepted]
-    if expl_type == 'Acc':
+    if expl_type == 'Acceptance':
         for arg in accepted:
             if function == 'Defending':
                 explanation[str(arg)] = get_defending(arg_framework, arg, extensions)
@@ -29,7 +29,7 @@ def get_argumentation_framework_explanations(arg_framework: AbstractArgumentatio
                 explanation[str(arg)] = get_suff_nec(arg_framework, arg, function, expl_type)
         return explanation
 
-    elif expl_type == 'NonAcc':
+    elif expl_type == 'NonAcceptance':
         for arg in not_accepted:
             if function == 'NoDefAgainst':
                 explanation[str(arg)] = get_not_defending(arg_framework, arg, extensions)

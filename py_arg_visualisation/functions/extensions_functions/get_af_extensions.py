@@ -17,19 +17,19 @@ def get_argumentation_framework_extensions(argumentation_framework: AbstractArgu
     :param argumentation_framework: The abstract argumentation framework.
     :param semantics_specification: The chosen semantics.
     """
-    if semantics_specification == 'Adm':
+    if semantics_specification == 'Admissible':
         return get_admissible_sets(argumentation_framework)
-    if semantics_specification == 'Cmp':
+    if semantics_specification == 'Complete':
         return get_complete_extensions(argumentation_framework)
-    if semantics_specification == 'Grd':
-        return get_grounded_extension(argumentation_framework)
-    if semantics_specification == 'Prf':
+    if semantics_specification == 'Grounded':
+        return [get_grounded_extension(argumentation_framework)]
+    if semantics_specification == 'Preferred':
         return get_preferred_extensions(argumentation_framework)
-    if semantics_specification == 'Idl':
+    if semantics_specification == 'Ideal':
         return get_ideal_extension(argumentation_framework)
-    if semantics_specification == 'Stb':
+    if semantics_specification == 'Stable':
         return get_stable_extensions(argumentation_framework)
-    if semantics_specification == 'Sstb':
+    if semantics_specification == 'SemiStable':
         return get_semistable_extensions(argumentation_framework)
-    if semantics_specification == 'Egr':
+    if semantics_specification == 'Eager':
         return get_eager_extension(argumentation_framework)

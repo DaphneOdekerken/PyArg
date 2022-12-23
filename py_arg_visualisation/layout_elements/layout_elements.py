@@ -52,7 +52,7 @@ def get_app_layout(app):
             dcc.RadioItems(
                 id='arg-choice',
                 options=[
-                    {'label': 'Abstract', 'value': 'Abstr'},
+                    {'label': 'Abstract', 'value': 'Abstract'},
                     {'label': 'ASPIC+', 'value': 'ASPIC'}
                 ],
                 value='',
