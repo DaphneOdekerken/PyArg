@@ -1,3 +1,5 @@
+from typing import Optional
+
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic_classes.orderings.ordering import Ordering
 from py_arg.labels.enum_justification_label import EnumJustificationLabel
@@ -5,7 +7,7 @@ from py_arg.labels.literal_labels import LiteralLabels
 
 
 def compute_all_literal_grounded_justification_status_fast(argumentation_theory: ArgumentationTheory,
-                                                           ordering: Ordering) -> LiteralLabels:
+                                                           ordering: Optional[Ordering] = None) -> LiteralLabels:
     # Connect parents and children
     all_rules = argumentation_theory.argumentation_system.defeasible_rules + \
                 argumentation_theory.argumentation_system.strict_rules

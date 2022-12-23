@@ -141,11 +141,10 @@ class LayeredArgumentationSystemGenerator:
             rule_will_be_strict = random.choices([True, False],
                                                  weights=[self.strict_rule_ratio, 1 - self.strict_rule_ratio])[0]
             if rule_will_be_strict:
-                new_rule = StrictRule(len(strict_rules), set(antecedents), consequent, 'r' + str(len(strict_rules)))
+                new_rule = StrictRule('r' + str(len(strict_rules)), set(antecedents), consequent)
                 strict_rules.append(new_rule)
             else:
-                new_rule = DefeasibleRule(len(defeasible_rules), set(antecedents), consequent,
-                                          'd' + str(len(defeasible_rules)))
+                new_rule = DefeasibleRule('d' + str(len(defeasible_rules)), set(antecedents), consequent)
                 defeasible_rules.append(new_rule)
 
         # Add additional rules
@@ -179,11 +178,10 @@ class LayeredArgumentationSystemGenerator:
             rule_will_be_strict = random.choices([True, False],
                                                  weights=[self.strict_rule_ratio, 1 - self.strict_rule_ratio])[0]
             if rule_will_be_strict:
-                new_rule = StrictRule(len(strict_rules), set(antecedents), consequent, 'r' + str(len(strict_rules)))
+                new_rule = StrictRule('r' + str(len(strict_rules)), set(antecedents), consequent)
                 strict_rules.append(new_rule)
             else:
-                new_rule = DefeasibleRule(len(defeasible_rules), set(antecedents), consequent,
-                                          'd' + str(len(defeasible_rules)))
+                new_rule = DefeasibleRule('d' + str(len(defeasible_rules)), set(antecedents), consequent)
                 defeasible_rules.append(new_rule)
 
         return strict_rules, defeasible_rules
