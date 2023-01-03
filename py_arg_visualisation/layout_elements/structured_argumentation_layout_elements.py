@@ -118,7 +118,7 @@ def get_structured_evaluation():
                         {'label': 'Semi-stable', 'value': 'SemiStable'},
                         {'label': 'Eager', 'value': 'Eager'},
                     ],
-                    value='', id='structured-evaluation-semantics'
+                    value='Complete', id='structured-evaluation-semantics'
                 ),
             ], className='padded-item'),
 
@@ -130,7 +130,7 @@ def get_structured_evaluation():
                         {'label': 'Weakly Skeptical', 'value': 'WeaklySkeptical'},
                         {'label': 'Skeptical', 'value': 'Skeptical'}
                     ],
-                    value='', id='structured-evaluation-strategy'
+                    value='Credulous', id='structured-evaluation-strategy'
                 ),
             ], className='padded-item'),
         ], className='row-container'),
@@ -145,6 +145,7 @@ def get_structured_evaluation():
 
 def get_aspic_setting():
     ASPIC_setting = html.Div(children=[
+        dcc.Store(id='selected-argument-store-structured'),
         html.Div([html.Button('Generate random', id='generate-random-arg-theory-button', n_clicks=0,
                               className='small-pyarg-button')], className='padded-item'),
         # html.Div([html.Button('Generate layered', id='generate-layered-arg-theory-button', n_clicks=0,

@@ -1,3 +1,6 @@
+import json
+from typing import List
+
 from dash import html
 import dash_bootstrap_components as dbc
 
@@ -392,12 +395,14 @@ def generate_random_argumentation_theory(nr_of_clicks: int):
     dash.dependencies.State('defeasible-rule-preferences', 'value'),
     dash.dependencies.State('ordering-choice', 'value'),
     dash.dependencies.State('ordering-link', 'value'),
+    dash.dependencies.Input('selected-argument-store-structured', 'data'),
     prevent_initial_call=True
 )
 def create_argumentation_theory(_nr_of_clicks: int, axioms_str: str, ordinary_premises_str: str, strict_rules_str: str,
                                 defeasible_rules_str: str,
                                 ordinary_premise_preferences_str: str, defeasible_rule_preferences_str: str,
-                                ordering_choice_value: str, ordering_link_value: str):
+                                ordering_choice_value: str, ordering_link_value: str,
+                                selected_arguments: List[str]):
     # Read the ordering
     ordering_specification = ordering_choice_value + ordering_link_value
 
@@ -407,7 +412,7 @@ def create_argumentation_theory(_nr_of_clicks: int, axioms_str: str, ordinary_pr
         defeasible_rule_preferences_str)
 
     # Generate the graph data for this argumentation theory
-    data = get_argumentation_theory_graph_data(arg_theory, ordering_specification)
+    data = get_argumentation_theory_graph_data(arg_theory, ordering_specification, selected_arguments)
 
     # Generate the list of arguments
     generated_arguments_html_content = \
@@ -445,17 +450,44 @@ def evaluate_structured_argumentation_framework(_nr_of_clicks: int, axioms_str: 
     arg_theory, error_message = read_argumentation_theory(
         axioms_str, ordinary_premises_str, strict_rules_str, defeasible_rules_str, ordinary_premise_preferences_str,
         defeasible_rule_preferences_str)
+    if not arg_theory.all_arguments:
+        raise PreventUpdate
 
     frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics_specification, ordering_specification)
 
     extensions = [set(frozen_extension) for frozen_extension in frozen_extensions]
     accepted_formulas = get_accepted_formulas(extensions, acceptance_strategy_specification)
 
+    extension_list_items = []
+    for extension in extensions:
+        extension_readable_str = '{' + ', '.join(argument.short_name for argument in extension) + '}'
+        extension_long_str = '+'.join(argument.name for argument in extension)
+        extension_with_link = html.A(children=extension_readable_str,
+                                     id={'type': 'extension-button', 'index': extension_long_str})
+        extension_list_items.append(html.Li(extension_with_link))
+
     return [html.H4('The extension(s):'),
-            html.Ul([html.Li('{' + ', '.join(argument.short_name for argument in extension) + '}')
-                     for extension in extensions]),
+            html.Ul(extension_list_items),
             html.H4('The accepted formula(s):'),
             html.Ul([html.Li(accepted_formula.s1) for accepted_formula in sorted(accepted_formulas)])]
+
+
+@app.callback(
+    dash.dependencies.Output('selected-argument-store-structured', 'data'),
+    dash.dependencies.Input({'type': 'extension-button', 'index': dash.dependencies.ALL}, 'n_clicks'),
+    dash.dependencies.State('selected-argument-store-structured', 'data'),
+)
+def mark_extension_in_graph(nr_of_clicks_values,
+                            old_selected_data: List[str]):
+    button_clicked_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
+    if button_clicked_id == '':
+        return old_selected_data
+    if nr_of_clicks_values[0] is None:
+        raise PreventUpdate
+    button_clicked_id_content = json.loads(button_clicked_id)
+    button_clicked_id_index = button_clicked_id_content['index']
+    extension_arguments = button_clicked_id_index.split('+')
+    return extension_arguments
 
 
 @app.callback(
