@@ -20,10 +20,12 @@ class ArgumentationTheoryGenerator:
         self.axiom_knowledge_ratio = axiom_knowledge_ratio
 
     def generate(self) -> ArgumentationTheory:
-        nr_of_literals = len(self.argumentation_system.language)
+        normal_literals = [literal for literal_str, literal in self.argumentation_system.language.items()
+                           if 'd' not in literal_str]
+        nr_of_literals = len(normal_literals)
         knowledge_base_size = int(self.knowledge_literal_ratio * nr_of_literals)
 
-        knowledge_base_candidates = list(self.argumentation_system.language.values())
+        knowledge_base_candidates = normal_literals
         knowledge_base = []
         for _ in range(knowledge_base_size):
             if not knowledge_base_candidates:

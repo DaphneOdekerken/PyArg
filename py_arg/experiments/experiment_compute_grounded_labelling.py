@@ -4,7 +4,6 @@ from py_arg.algorithms.justification.compute_all_literal_grounded_justification_
     compute_all_literal_grounded_justification_status_fast
 from py_arg.algorithms.justification.compute_all_literal_grounded_justification_status_naive import \
     compute_all_literal_grounded_justification_status_naive
-from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
 from py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
     LayeredArgumentationSystemGenerator
 from py_arg.generators.argumentation_theory_generators.argumentation_theory_generator import \
@@ -13,12 +12,12 @@ from py_arg.labels.literal_labels import LiteralLabels
 
 
 def instantiate_argumentation_theory_generator():
-    nr_of_literals = 800
-    nr_of_rules = 500
+    nr_of_literals = 8
+    nr_of_rules = 5
     layered_argumentation_system_generator = \
         LayeredArgumentationSystemGenerator(nr_of_literals, nr_of_rules,
-                                            rule_antecedent_distribution={1: 200, 2: 100, 3: 100, 4: 100},
-                                            literal_layer_distribution={0: 300, 1: 200, 2: 100, 3: 100, 4: 100},
+                                            rule_antecedent_distribution={1: 2, 2: 1, 3: 1, 4: 1},
+                                            literal_layer_distribution={0: 3, 1: 2, 2: 1, 3: 1, 4: 1},
                                             strict_rule_ratio=0.4)
     arg_sys = layered_argumentation_system_generator.generate()
     knowledge_literal_ratio = 0.3
@@ -39,15 +38,15 @@ def execute_grounded_labelling_experiment(argumentation_theory_generator: Argume
             grounded_labelling_naive_time = end_time - start_time
             print(f'Runtime naive: {grounded_labelling_naive_time}')
 
-        # for i in range(10):
-        #     start_time = time.time()
-        #     grounded_labelling_fast = compute_all_literal_grounded_justification_status_fast(arg_theory)
-        #     end_time = time.time()
-        #     grounded_labelling_fast_time = end_time - start_time
-        #     print(f'Runtime fast: {grounded_labelling_fast_time}')
+        for i in range(10):
+            start_time = time.time()
+            grounded_labelling_fast = compute_all_literal_grounded_justification_status_fast(arg_theory)
+            end_time = time.time()
+            grounded_labelling_fast_time = end_time - start_time
+            print(f'Runtime fast: {grounded_labelling_fast_time}')
 
-        # if grounded_labelling_naive != grounded_labelling_fast:
-        #     print('ERROR')
+        if grounded_labelling_naive != grounded_labelling_fast:
+            print('ERROR')
 
 
 if __name__ == "__main__":

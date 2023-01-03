@@ -75,7 +75,7 @@ class LayeredArgumentationSystemGenerator:
 
         for pos_literal_index in range(positive_language_size):
             literal_str_positive = 'l' + str(pos_literal_index)
-            literal_str_negative = '~l' + str(pos_literal_index)
+            literal_str_negative = '-l' + str(pos_literal_index)
 
             # Get layer and update layers for future random layer choices
             new_literal_positive_layer = random.choices(list(layers.keys()), list(layers.values()), k=1)[0]

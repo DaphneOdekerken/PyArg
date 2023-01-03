@@ -1,5 +1,6 @@
 from typing import Optional
 
+from py_arg.algorithms.justification.connected_literal import ConnectedLiteral
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic_classes.orderings.ordering import Ordering
 from py_arg.labels.enum_justification_label import EnumJustificationLabel
@@ -9,8 +10,11 @@ from py_arg.labels.literal_labels import LiteralLabels
 def compute_all_literal_grounded_justification_status_fast(argumentation_theory: ArgumentationTheory,
                                                            ordering: Optional[Ordering] = None) -> LiteralLabels:
     # Connect parents and children
+    for literal in argumentation_theory.argumentation_system.language.values():
+        literal.__class__ = ConnectedLiteral
+        literal.init_connected_literal()
     all_rules = argumentation_theory.argumentation_system.defeasible_rules + \
-                argumentation_theory.argumentation_system.strict_rules
+        argumentation_theory.argumentation_system.strict_rules
     for rule in all_rules:
         for antecedent in rule.antecedents:
             antecedent.parents.append(rule)
@@ -35,9 +39,13 @@ def compute_all_literal_grounded_justification_status_fast(argumentation_theory:
                     todo_rules.add(rule)
 
     # Phase 2: DEFENDED / OUT labelling
-    # Start with all literals for which there is an unattacked argument
+    # Start with all literals for which there is an undefeated argument
     todo_literals = [literal for literal in argumentation_theory.argumentation_system.language.values()
                      if literal in argumentation_theory.knowledge_base_axioms or
+                     (literal in argumentation_theory.knowledge_base_ordinary_premises and
+                      all(contrary_literal not in argumentation_theory.knowledge_base_ordinary_premises
+                          or ordering.ordinary_premise_is_strictly_weaker_than(contrary_literal, literal)
+                          for contrary_literal in literal.contraries_and_contradictories)) or
                      (result[literal] != EnumJustificationLabel.UNSATISFIABLE and
                       all(result[contrary_literal] == EnumJustificationLabel.UNSATISFIABLE
                           for contrary_literal in literal.contraries_and_contradictories))
