@@ -154,11 +154,13 @@ def generate_abstract_argumentation_framework(nr_of_clicks: int):
     dash.dependencies.Input('create-argumentation-framework-button', 'n_clicks'),
     dash.dependencies.State('abstract-arguments', 'value'),
     dash.dependencies.State('abstract-attacks', 'value'),
+    dash.dependencies.Input('selected-argument-store-abstract', 'data'),
     prevent_initial_call=True
 )
-def create_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str, attacks: str):
+def create_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str, attacks: str,
+                                            selected_arguments: List[str]):
     arg_framework = read_argumentation_framework(arguments, attacks)
-    data = get_argumentation_framework_graph_data(arg_framework)
+    data = get_argumentation_framework_graph_data(arg_framework, selected_arguments)
     return html.Div([html.H4('The arguments of the AF:'),
                      html.Ul([html.Li(argument.name) for argument in arg_framework.arguments])]), data
 
@@ -184,9 +186,16 @@ def evaluate_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str
     else:
         raise NotImplementedError
 
+    extension_list_items = []
+    for extension in extensions:
+        extension_readable_str = '{' + ', '.join(argument.name for argument in extension) + '}'
+        extension_long_str = '+'.join(argument.name for argument in extension)
+        extension_with_link = html.A(children=extension_readable_str,
+                                     id={'type': 'extension-button-abstract', 'index': extension_long_str})
+        extension_list_items.append(html.Li(extension_with_link))
+
     return html.Div([html.H4('The extension(s):'),
-                     html.Ul([html.Li('{' + ', '.join([argument.name for argument in extension]) + '}')
-                              for extension in extensions]),
+                     html.Ul(extension_list_items),
                      html.H4('The accepted argument(s):'),
                      html.Ul([html.Li(argument.name) for argument in accepted])
                      ])
@@ -476,6 +485,24 @@ def evaluate_structured_argumentation_framework(_nr_of_clicks: int, axioms_str: 
     dash.dependencies.Output('selected-argument-store-structured', 'data'),
     dash.dependencies.Input({'type': 'extension-button', 'index': dash.dependencies.ALL}, 'n_clicks'),
     dash.dependencies.State('selected-argument-store-structured', 'data'),
+)
+def mark_extension_in_graph(nr_of_clicks_values,
+                            old_selected_data: List[str]):
+    button_clicked_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
+    if button_clicked_id == '':
+        return old_selected_data
+    if nr_of_clicks_values[0] is None:
+        raise PreventUpdate
+    button_clicked_id_content = json.loads(button_clicked_id)
+    button_clicked_id_index = button_clicked_id_content['index']
+    extension_arguments = button_clicked_id_index.split('+')
+    return extension_arguments
+
+
+@app.callback(
+    dash.dependencies.Output('selected-argument-store-abstract', 'data'),
+    dash.dependencies.Input({'type': 'extension-button-abstract', 'index': dash.dependencies.ALL}, 'n_clicks'),
+    dash.dependencies.State('selected-argument-store-abstract', 'data'),
 )
 def mark_extension_in_graph(nr_of_clicks_values,
                             old_selected_data: List[str]):
