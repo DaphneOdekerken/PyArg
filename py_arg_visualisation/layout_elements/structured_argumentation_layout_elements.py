@@ -145,6 +145,10 @@ def get_structured_evaluation():
 
 def get_aspic_setting():
     ASPIC_setting = html.Div(children=[
+        html.Div([html.Button('Generate random', id='generate-random-arg-theory-button', n_clicks=0,
+                              className='small-pyarg-button')], className='padded-item'),
+        # html.Div([html.Button('Generate layered', id='generate-layered-arg-theory-button', n_clicks=0,
+        #                       className='small-pyarg-button')], className='padded-item'),
         html.Div([
             html.Div([
                 html.B('Axioms'),

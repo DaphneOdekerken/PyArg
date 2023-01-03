@@ -5,6 +5,12 @@ from dash.exceptions import PreventUpdate
 
 import dash.dependencies
 
+from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
+    AbstractArgumentationFrameworkGenerator
+from py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
+    LayeredArgumentationSystemGenerator
+from py_arg.generators.argumentation_theory_generators.argumentation_theory_generator import \
+    ArgumentationTheoryGenerator
 from py_arg_visualisation.functions.explanations_functions.explanation_function_options import \
     EXPLANATION_FUNCTION_OPTIONS
 from py_arg_visualisation.functions.explanations_functions.get_af_explanations import \
@@ -122,6 +128,21 @@ def toggle_collapse(n: int, is_open: bool):
 )
 def setting_choice(choice: str):
     return [{'label': i, 'value': i} for i in EXPLANATION_FUNCTION_OPTIONS[choice]]
+
+
+@app.callback(
+    dash.dependencies.Output('abstract-arguments', 'value'),
+    dash.dependencies.Output('abstract-attacks', 'value'),
+    dash.dependencies.Input('generate-random-af-button', 'n_clicks')
+)
+def generate_abstract_argumentation_framework(nr_of_clicks: int):
+    if nr_of_clicks > 0:
+        random_af = AbstractArgumentationFrameworkGenerator(8, 8, True).generate()
+        abstract_arguments_value = '\n'.join((str(arg) for arg in random_af.arguments))
+        abstract_attacks_value = '\n'.join((f'({str(defeat.from_argument)},{str(defeat.to_argument)})'
+                                            for defeat in random_af.defeats))
+        return abstract_arguments_value, abstract_attacks_value
+    return '', ''
 
 
 @app.callback(
@@ -317,6 +338,46 @@ def handle_selection_in_abstract_argumentation_graph(selection, arguments, attac
                  html.H6('{}'.format(arg_ext)), html.H6('{}'.format(output_accept))])
         return output_arg, output_evaluation, explanation_output
     raise PreventUpdate
+
+
+@app.callback(
+    dash.dependencies.Output('aspic-axioms', 'value'),
+    dash.dependencies.Output('aspic-ordinary-premises', 'value'),
+    dash.dependencies.Output('aspic-strict-rules', 'value'),
+    dash.dependencies.Output('aspic-defeasible-rules', 'value'),
+    dash.dependencies.Output('ordinary-prem-preferences', 'value'),
+    dash.dependencies.Output('defeasible-rule-preferences', 'value'),
+    dash.dependencies.Input('generate-random-arg-theory-button', 'n_clicks')
+)
+def generate_random_argumentation_theory(nr_of_clicks: int):
+    if nr_of_clicks > 0:
+        argumentation_system_generator = LayeredArgumentationSystemGenerator(
+            nr_of_literals=10, nr_of_rules=5,
+            rule_antecedent_distribution={1: 4, 2: 1},
+            literal_layer_distribution={0: 5, 1: 3, 2: 2},
+            strict_rule_ratio=0.3
+        )
+        argumentation_system = argumentation_system_generator.generate()
+        argumentation_theory_generator = ArgumentationTheoryGenerator(argumentation_system,
+                                                                      knowledge_literal_ratio=0.4,
+                                                                      axiom_knowledge_ratio=0.5)
+        argumentation_theory = argumentation_theory_generator.generate()
+        aspic_axioms_value = '\n'.join(str(axiom) for axiom in argumentation_theory.knowledge_base_axioms)
+        aspic_ordinary_premises_value = '\n'.join(str(premise)
+                                                  for premise in argumentation_theory.knowledge_base_ordinary_premises)
+        aspic_strict_rule = '\n'.join(str(strict_rule)
+                                      for strict_rule in argumentation_system.strict_rules)
+        aspic_defeasible_rule = '\n'.join(f'{defeasible_rule.id}: {str(defeasible_rule)}'
+                                          for defeasible_rule in argumentation_system.defeasible_rules)
+        aspic_ordinary_premise_preference_value = \
+            '\n'.join(f'{str(preference[0])} < {str(preference[1])}'
+                      for preference in argumentation_theory.ordinary_premise_preferences.preference_tuples)
+        aspic_defeasible_rule_preference_vale = \
+            '\n'.join(f'{preference[0].id} < {preference[1].id}'
+                      for preference in argumentation_system.rule_preferences.preference_tuples)
+        return aspic_axioms_value, aspic_ordinary_premises_value, aspic_strict_rule, aspic_defeasible_rule, \
+            aspic_ordinary_premise_preference_value, aspic_defeasible_rule_preference_vale
+    return '', '', '', '', '', ''
 
 
 @app.callback(

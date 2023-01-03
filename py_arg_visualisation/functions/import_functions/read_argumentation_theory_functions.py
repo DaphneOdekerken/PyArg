@@ -59,7 +59,7 @@ def _read_preferences(preferences_str: str) -> List[Tuple[str]]:
         else:
             more, less = preference_str.split('>', 1)
         return less.strip(), more.strip()
-    return [read_preference_rule(preference_str_rule) for preference_str_rule in preferences_str]
+    return [read_preference_rule(preference_str_rule) for preference_str_rule in preferences_str.splitlines()]
 
 
 def read_argumentation_theory(axioms_str: str, ordinary_premises_str: str,

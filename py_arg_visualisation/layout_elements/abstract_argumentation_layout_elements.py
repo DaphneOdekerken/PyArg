@@ -116,6 +116,8 @@ def get_abstract_evaluation():
 
 def get_abstract_setting():
     abstract_setting = html.Div(children=[
+        html.Div([html.Button('Generate random', id='generate-random-af-button', n_clicks=0,
+                              className='small-pyarg-button')], className='padded-item'),
         html.Div([
             html.Div([
                 html.B('Arguments'),
