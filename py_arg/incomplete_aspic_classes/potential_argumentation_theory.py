@@ -67,3 +67,36 @@
 #                 for argument_a in self.all_potential_arguments
 #                 for argument_b in self.all_potential_arguments
 #                 if self.defeats(argument_a, argument_b, ordering)]
+
+# TODO: deze verwerken
+# @classmethod
+# def from_potential_argumentation_theory(cls, name: str,
+#                                         potential_argumentation_theory: PotentialArgumentationTheory,
+#                                         ordering: Optional[Ordering] = None):
+#     if ordering is None:
+#         ordering = LastLinkElitistOrdering(potential_argumentation_theory.argumentation_system.rule_preference_dict,
+#                                            potential_argumentation_theory.ordinary_premise_preference_dict)
+#     arguments = potential_argumentation_theory.all_arguments
+#     uncertain_arguments = [pot_arg for pot_arg in potential_argumentation_theory.all_potential_arguments
+#                            if pot_arg not in arguments]
+#     defeats = potential_argumentation_theory.get_all_potential_defeats(ordering)
+#     return cls(name, arguments, uncertain_arguments, defeats)
+#
+# def get_necessary_grounded_extension(self) -> Tuple[Set[Argument], Set[Argument]]:
+#     ng = {argument for argument in self._arguments.values() if not argument.get_ingoing_defeat_arguments}
+#     ang = {argument for ng_argument in ng for argument in ng_argument.get_outgoing_defeat_arguments}
+#
+#     change = True
+#     while change:
+#         new_in_ng = {argument for argument in self._arguments.values()
+#                      if argument not in ng and
+#                      all(attacking_argument in ang
+#                          for attacking_argument in argument.get_ingoing_defeat_arguments)}
+#         if new_in_ng:
+#             change = True
+#             ng = ng | new_in_ng
+#             ang = ang | {argument for ng_argument in ng for argument in ng_argument.get_outgoing_defeat_arguments}
+#         else:
+#             change = False
+#
+#     return ng, ang
