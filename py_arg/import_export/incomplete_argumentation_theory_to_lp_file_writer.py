@@ -1,8 +1,8 @@
-from py_arg.import_export.incomplete_argumentation_theory_writer import IncompleteArgumentationTheoryWriter
+from py_arg.import_export.incomplete_argumentation_theory_writer import Writer
 from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 
-class IncompleteArgumentationTheoryToLPFileWriter(IncompleteArgumentationTheoryWriter):
+class IncompleteArgumentationTheoryToLPFileWriter(Writer):
     def __init__(self):
         super().__init__()
 

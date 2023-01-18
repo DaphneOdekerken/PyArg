@@ -3,7 +3,7 @@ import pathlib
 from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 
-class IncompleteArgumentationTheoryWriter:
+class Writer:
     def __init__(self):
         self.data_folder = pathlib.Path(__file__).parent.parent / 'experiments' / 'generated_data'
         if not self.data_folder.is_dir():

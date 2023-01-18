@@ -2,6 +2,7 @@ from py_arg.generators.argumentation_system_generators.layered_argumentation_sys
     LayeredArgumentationSystemGenerator
 from py_arg.generators.incomplete_argumentation_theory_generators.incomplete_argumentation_theory_generator import \
     IncompleteArgumentationTheoryGenerator
+from py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
 from py_arg.import_export.incomplete_argumentation_theory_to_lp_file_writer import \
     IncompleteArgumentationTheoryToLPFileWriter
 
@@ -31,3 +32,5 @@ iat_generator = instantiate_incomplete_argumentation_theory_generator()
 iat = iat_generator.generate()
 iat_writer = IncompleteArgumentationTheoryToLPFileWriter()
 iat_writer.write(iat, 'generated_iat.lp')
+as_writer = ArgumentationSystemToJSONWriter()
+as_writer.write(iat.argumentation_system, 'generated_as.json')
