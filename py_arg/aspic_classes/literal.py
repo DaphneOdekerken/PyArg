@@ -32,6 +32,10 @@ class Literal:
     def __lt__(self, other):
         return str(self) < str(other)
 
+    @property
+    def is_positive(self):
+        return self.s1[0] not in '~-'
+
     def is_contrary_or_contradictory_of(self, other) -> bool:
         """
         Boolean indicating if this Literal is a contrary or contradictory of some other Literal.
