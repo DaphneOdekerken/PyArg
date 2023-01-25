@@ -19,9 +19,9 @@ class IncompleteArgumentationTheory:
                  knowledge_base_ordinary_premises: List[Literal],
                  ordinary_premise_preferences: Optional[PreferencePreorder] = None):
         self._argumentation_system = argumentation_system
-        self._queryables = queryables
-        self._knowledge_base_axioms = knowledge_base_axioms
-        self._knowledge_base_ordinary_premises = knowledge_base_ordinary_premises
+        self._queryables = sorted(queryables)
+        self._knowledge_base_axioms = sorted(knowledge_base_axioms)
+        self._knowledge_base_ordinary_premises = sorted(knowledge_base_ordinary_premises)
 
         # Rule preferences
         if ordinary_premise_preferences:
@@ -94,8 +94,14 @@ class IncompleteArgumentationTheory:
                   for queryable_value_combination in queryable_value_combinations)
         return result
 
+    def __eq__(self, other):
+        return isinstance(other, IncompleteArgumentationTheory) and \
+                self.argumentation_system == other.argumentation_system and self.queryables == other.queryables and \
+                self.knowledge_base_axioms == other.knowledge_base_axioms and \
+                self.knowledge_base_ordinary_premises == other.knowledge_base_ordinary_premises and \
+                self.ordinary_premise_preferences == other.ordinary_premise_preferences
+
 
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod()

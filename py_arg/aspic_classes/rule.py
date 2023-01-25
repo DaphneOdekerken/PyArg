@@ -9,7 +9,7 @@ class Rule:
     """
     def __init__(self, rule_id: str, antecedents: Set[Literal], consequent: Literal):
         self.id = rule_id
-        self.antecedents = antecedents
+        self.antecedents = sorted(antecedents)
         self.consequent = consequent
         self.rule_str = ','.join([str(antecedent) for antecedent in self.antecedents]) + '=>' + str(self.consequent)
         self.rule_hash = hash(self.rule_str)
@@ -31,6 +31,9 @@ class Rule:
 
     def __hash__(self):
         return self.rule_hash
+
+    def __lt__(self, other):
+        return self.rule_hash < other.rule_hash
 
 
 if __name__ == "__main__":

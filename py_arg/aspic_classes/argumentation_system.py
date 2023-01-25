@@ -42,11 +42,14 @@ class ArgumentationSystem:
         return self.language[defeasible_rule.id_str]
 
     def __eq__(self, other):
-        return self.language == other.language and self.defeasible_rules == other.defeasible_rules and \
-               self.rule_preferences == other.rule_preferences
+        return isinstance(other, ArgumentationSystem) and self.language == other.language and \
+            all(literal.contraries_and_contradictories == other.language[lit_str].contraries_and_contradictories
+                for lit_str, literal in self.language.items()) and \
+            self.defeasible_rules == other.defeasible_rules and \
+            self.strict_rules == other.strict_rules and \
+            self.rule_preferences == other.rule_preferences
 
 
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod()

@@ -1,4 +1,4 @@
-from py_arg.import_export.incomplete_argumentation_theory_writer import Writer
+from py_arg.import_export.writer import Writer
 from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 
@@ -9,8 +9,12 @@ class IncompleteArgumentationTheoryToLPFileWriter(Writer):
     def write(self, incomplete_argumentation_theory: IncompleteArgumentationTheory, file_name: str):
         write_path = self.data_folder / file_name
         with open(write_path, 'w') as write_file:
+            for queryable in incomplete_argumentation_theory.positive_queryables:
+                write_file.write(f'queryable({queryable.s1}).\n')
+            write_file.write('\n')
+
             for axiom in incomplete_argumentation_theory.knowledge_base_axioms:
-                write_file.write(f'queryable({axiom.s1.replace("-", "")}).\n')
+                write_file.write(f'axiom({axiom.s1}).\n')
             write_file.write('\n')
 
             for literal in incomplete_argumentation_theory.argumentation_system.language.values():
@@ -19,7 +23,8 @@ class IncompleteArgumentationTheoryToLPFileWriter(Writer):
                         write_file.write(f'neg({literal.s1}, {contrary.s1}).\n')
             write_file.write('\n')
 
-            for id_rule, rule in enumerate(incomplete_argumentation_theory.argumentation_system.defeasible_rules):
+            for rule in incomplete_argumentation_theory.argumentation_system.defeasible_rules:
+                id_rule = rule.id
                 for antecedent in rule.antecedents:
                     write_file.write(f'body({str(id_rule)}, {antecedent.s1}).\n')
                 write_file.write(f'head({str(id_rule)}, {rule.consequent.s1}).\n')
