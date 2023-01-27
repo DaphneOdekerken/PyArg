@@ -1,5 +1,5 @@
 import itertools
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
@@ -22,6 +22,10 @@ class IncompleteArgumentationTheory:
         self._queryables = sorted(queryables)
         self._knowledge_base_axioms = sorted(knowledge_base_axioms)
         self._knowledge_base_ordinary_premises = sorted(knowledge_base_ordinary_premises)
+
+        self._is_queryable_dict = {lit_str: False for lit_str in self.argumentation_system.language.keys()}
+        for queryable in self._queryables:
+            self._is_queryable_dict[queryable.s1] = True
 
         # Rule preferences
         if ordinary_premise_preferences:
@@ -46,9 +50,18 @@ class IncompleteArgumentationTheory:
     def queryables(self, queryables_input):
         self._queryables = queryables_input
 
+    def is_queryable(self, literal: Union[Literal, str]):
+        if isinstance(literal, str):
+            return self._is_queryable_dict[literal]
+        return self._is_queryable_dict[literal.s1]
+
     @property
     def positive_queryables(self):
         return [queryable for queryable in self._queryables if queryable.is_positive]
+
+    @property
+    def knowledge_base(self):
+        return self._knowledge_base_axioms + self._knowledge_base_ordinary_premises
 
     @property
     def knowledge_base_axioms(self):

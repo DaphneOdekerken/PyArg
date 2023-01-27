@@ -1,5 +1,7 @@
 import pathlib
 
+from py_arg.algorithms.stability.satisfiability_labeler import SatisfiabilityLabeler
+from py_arg.algorithms.stability.stability_labeler import StabilityLabeler
 from py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
     LayeredArgumentationSystemGenerator
 from py_arg.generators.incomplete_argumentation_theory_generators.incomplete_argumentation_theory_generator import \
@@ -54,3 +56,9 @@ read_iat = iat_reader.read_from_json(str(pathlib.Path('generated_data') / 'gener
 print(read_as == iat.argumentation_system)
 print(read_iat == iat)
 print(read_iat_lp == iat)
+
+satisfiability_labeler = SatisfiabilityLabeler()
+satisfiability_labels = satisfiability_labeler.label(iat)
+
+stability_labeler = StabilityLabeler()
+stability_labels = stability_labeler.label(iat)

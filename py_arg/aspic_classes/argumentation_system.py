@@ -2,6 +2,7 @@ from typing import Dict, List, Optional, Set
 
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
+from py_arg.aspic_classes.rule import Rule
 from py_arg.aspic_classes.strict_rule import StrictRule
 from py_arg.aspic_classes.literal import Literal
 
@@ -37,6 +38,11 @@ class ArgumentationSystem:
         else:
             reflexive_order = [(rule_a, rule_a) for rule_a in self.defeasible_rules]
             self.rule_preferences = PreferencePreorder(reflexive_order)
+
+    @property
+    def rules(self):
+        rules: List[Rule] = self.defeasible_rules + self.defeasible_rules
+        return rules
 
     def get_literal(self, defeasible_rule: DefeasibleRule) -> Literal:
         return self.language[defeasible_rule.id_str]

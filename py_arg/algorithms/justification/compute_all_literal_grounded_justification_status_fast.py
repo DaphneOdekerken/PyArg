@@ -1,6 +1,6 @@
 from typing import Optional
 
-from py_arg.algorithms.justification.connected_literal import ConnectedLiteral
+from py_arg.algorithms.classes.connected_literal import connect_parents_and_children
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic_classes.orderings.ordering import Ordering
 from py_arg.labels.enum_justification_label import EnumJustificationLabel
@@ -10,15 +10,7 @@ from py_arg.labels.literal_labels import LiteralLabels
 def compute_all_literal_grounded_justification_status_fast(argumentation_theory: ArgumentationTheory,
                                                            ordering: Optional[Ordering] = None) -> LiteralLabels:
     # Connect parents and children
-    for literal in argumentation_theory.argumentation_system.language.values():
-        literal.__class__ = ConnectedLiteral
-        literal.init_connected_literal()
-    all_rules = argumentation_theory.argumentation_system.defeasible_rules + \
-        argumentation_theory.argumentation_system.strict_rules
-    for rule in all_rules:
-        for antecedent in rule.antecedents:
-            antecedent.parents.append(rule)
-        rule.consequent.children.append(rule)
+    connect_parents_and_children(argumentation_theory)
 
     # Phase 1: UNSATISFIABLE / BLOCKED labelling
     result = {literal: EnumJustificationLabel.UNSATISFIABLE

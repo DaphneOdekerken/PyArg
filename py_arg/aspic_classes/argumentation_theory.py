@@ -46,6 +46,10 @@ class ArgumentationTheory:
         self._recompute_arguments()
 
     @property
+    def knowledge_base(self):
+        return self._knowledge_base_axioms + self._knowledge_base_ordinary_premises
+
+    @property
     def knowledge_base_axioms(self):
         return self._knowledge_base_axioms
 
