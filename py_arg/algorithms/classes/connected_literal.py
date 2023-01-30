@@ -14,6 +14,12 @@ class ConnectedLiteral(Literal):
         self.children = []
         self.parents = []
 
+    def __eq__(self, other):
+        return self.s1 == other.s1
+
+    def __hash__(self):
+        return self.s1_hash
+
 
 def connect_parents_and_children(argumentation_theory: Union[ArgumentationTheory, IncompleteArgumentationTheory]):
     for literal in argumentation_theory.argumentation_system.language.values():

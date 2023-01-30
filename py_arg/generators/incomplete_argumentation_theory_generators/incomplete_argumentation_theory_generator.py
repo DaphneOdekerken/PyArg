@@ -61,7 +61,7 @@ class IncompleteArgumentationTheoryGenerator:
 
         # Sample the axioms from the set of queryables, making sure that the axioms are consistent.
         axioms = []
-        axiom_candidates = queryables
+        axiom_candidates = queryables.copy()
         for _ in range(self.axiom_size):
             if not axiom_candidates:
                 raise ValueError('Could not construct such a large knowledge base given the contradictories.')

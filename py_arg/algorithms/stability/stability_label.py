@@ -15,6 +15,18 @@ class StabilityLabel:
                                                    str(self.blocked))
         return s1
 
+    @property
+    def stability_str(self):
+        if self.is_stable:
+            if self.unsatisfiable:
+                return 'STABLE-UNSATISFIABLE'
+            if self.defended:
+                return 'STABLE-DEFENDED'
+            if self.out:
+                return 'STABLE-OUT'
+            return 'STABLE-BLOCKED'
+        return 'UNSTABLE'
+
     def __repr__(self):
         return self.__str__()
 
