@@ -60,7 +60,8 @@ class LayeredArgumentationSystemGenerator:
                 strict_rules, defeasible_rules = self._generate_rules(layered_language)
                 language = {str(literal): literal for literals in layered_language.values() for literal in literals}
 
-                argumentation_system = ArgumentationSystem(language, contraries, strict_rules, defeasible_rules)
+                argumentation_system = ArgumentationSystem(language, contraries, strict_rules, defeasible_rules,
+                                                           add_defeasible_rule_literals=False)
                 if return_layered_language:
                     return argumentation_system, layered_language
                 return argumentation_system

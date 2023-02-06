@@ -13,7 +13,8 @@ class ArgumentationSystem:
                  contraries_and_contradictories: Dict[str, Set[Literal]],
                  strict_rules: List[StrictRule],
                  defeasible_rules: List[DefeasibleRule],
-                 defeasible_rule_preferences: Optional[PreferencePreorder] = None):
+                 defeasible_rule_preferences: Optional[PreferencePreorder] = None,
+                 add_defeasible_rule_literals: bool = True):
         # Language
         self.language = language
 
@@ -24,13 +25,14 @@ class ArgumentationSystem:
         # Rules
         self.defeasible_rules = defeasible_rules
         self.strict_rules = strict_rules
-        for defeasible_rule in defeasible_rules:
-            defeasible_rule_literal = Literal.from_defeasible_rule(defeasible_rule)
-            defeasible_rule_literal_negation = Literal.from_defeasible_rule_negation(defeasible_rule)
-            defeasible_rule_literal.contraries_and_contradictories = {defeasible_rule_literal_negation}
-            defeasible_rule_literal_negation.contraries_and_contradictories = {defeasible_rule_literal}
-            self.language[str(defeasible_rule_literal)] = defeasible_rule_literal
-            self.language[str(defeasible_rule_literal_negation)] = defeasible_rule_literal_negation
+        if add_defeasible_rule_literals:
+            for defeasible_rule in defeasible_rules:
+                defeasible_rule_literal = Literal.from_defeasible_rule(defeasible_rule)
+                defeasible_rule_literal_negation = Literal.from_defeasible_rule_negation(defeasible_rule)
+                defeasible_rule_literal.contraries_and_contradictories = {defeasible_rule_literal_negation}
+                defeasible_rule_literal_negation.contraries_and_contradictories = {defeasible_rule_literal}
+                self.language[str(defeasible_rule_literal)] = defeasible_rule_literal
+                self.language[str(defeasible_rule_literal_negation)] = defeasible_rule_literal_negation
 
         # Rule preferences
         if defeasible_rule_preferences:

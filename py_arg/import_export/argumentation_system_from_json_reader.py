@@ -40,7 +40,8 @@ class ArgumentationSystemFromJsonReader:
         for rule_preference in json_object['rule_preferences']:
             rule_preferences.append((def_rules_lookup[rule_preference[0]], def_rules_lookup[rule_preference[1]]))
 
-        return ArgumentationSystem(language, contraries, strict_rules, defeasible_rules, rule_preferences)
+        return ArgumentationSystem(language, contraries, strict_rules, defeasible_rules, rule_preferences,
+                                   add_defeasible_rule_literals=False)
 
     def read_from_json(self, file_path: str) -> ArgumentationSystem:
         with open(file_path, 'r') as reader:

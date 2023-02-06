@@ -48,7 +48,8 @@ class IncompleteArgumentationTheoryFromLPFileReader:
                                              language[rule_head])
             defeasible_rules.append(defeasible_rule)
 
-        argumentation_system = ArgumentationSystem(language, contraries_and_contradictories, [], defeasible_rules)
+        argumentation_system = ArgumentationSystem(language, contraries_and_contradictories, [], defeasible_rules,
+                                                   add_defeasible_rule_literals=False)
 
         negative_queryable_strs = ['-' + queryable for queryable in positive_queryable_strs]
         queryables = [language[queryable] for queryable in positive_queryable_strs + negative_queryable_strs]

@@ -3,22 +3,23 @@ from functools import total_ordering
 
 @total_ordering
 class Literal:
-    def __init__(self, literal_str: str):
+    def __init__(self, literal_str: str, defeasible_rule_based: bool = False):
         self.s1 = literal_str
         self.s1_hash = hash(self.s1)
         self.contraries_and_contradictories = []
+        self.defeasible_rule_based = defeasible_rule_based
 
     @classmethod
     def from_defeasible_rule(cls, defeasible_rule):
-        return cls(defeasible_rule.id_str)
+        return cls(defeasible_rule.id_str, True)
 
     @classmethod
     def from_defeasible_rule_negation(cls, defeasible_rule):
-        return cls('-' + defeasible_rule.id_str)
+        return cls('-' + defeasible_rule.id_str, True)
 
     @classmethod
     def from_defeasible_rule_naf(cls, defeasible_rule):
-        return cls('~' + defeasible_rule.id_str)
+        return cls('~' + defeasible_rule.id_str, True)
 
     def __str__(self):
         return self.s1

@@ -75,7 +75,8 @@ class IncompleteArgumentationTheoryFromXLSXFileReader:
 
             argumentation_system = ArgumentationSystem(language=language,
                                                        contraries_and_contradictories=contraries_and_contradictories,
-                                                       strict_rules=[], defeasible_rules=rules)
+                                                       strict_rules=[], defeasible_rules=rules,
+                                                       add_defeasible_rule_literals=False)
             return IncompleteArgumentationTheory(argumentation_system=argumentation_system,
                                                  queryables=queryables,
                                                  knowledge_base_axioms=[],
