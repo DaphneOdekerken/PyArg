@@ -16,6 +16,18 @@ class StabilityLabeler:
         # Connect literals, so we can ask for their children and parents
         connect_parents_and_children(incomplete_argumentation_theory)
 
+        # TODO remove again: compute argument height
+        literal_height = {lit_str: 0
+                          for lit_str in set(incomplete_argumentation_theory.argumentation_system.language.keys())}
+        change = True
+        while change:
+            change = False
+            for rule in incomplete_argumentation_theory.argumentation_system.defeasible_rules:
+                max_antecedent_height = max(literal_height[lit_str.s1] for lit_str in rule.antecedents)
+                if max_antecedent_height + 1 > literal_height[rule.consequent.s1]:
+                    literal_height[rule.consequent.s1] = max_antecedent_height + 1
+                    change = True
+
         # Start by coloring leaves (literals for which there is no rule) and observables
         leaves_and_observables = [literal
                                   for literal in incomplete_argumentation_theory.argumentation_system.language.values()

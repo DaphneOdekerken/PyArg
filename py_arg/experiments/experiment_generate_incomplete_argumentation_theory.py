@@ -19,7 +19,11 @@ def instantiate_incomplete_argumentation_theory_generator():
     return IncompleteArgumentationTheoryGenerator(
         argumentation_system=arg_sys,
         positive_queryable_candidates=list(positive_queryable_candidates),
-        queryable_literal_ratio=0.3,
+        queryable_literal_ratio=
+            len(positive_queryable_candidates) / layered_argumentation_system_generator.nr_of_literals,
         knowledge_queryable_ratio=0.5,
         axiom_knowledge_ratio=1
     )
+
+instantiate_incomplete_argumentation_theory_generator()
+

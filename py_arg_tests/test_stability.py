@@ -3,6 +3,8 @@ import unittest
 from typing import List
 
 from py_arg.algorithms.stability.stability_labeler import StabilityLabeler
+from py_arg.import_export.incomplete_argumentation_theory_from_lp_file_reader import \
+    IncompleteArgumentationTheoryFromLPFileReader
 from py_arg.import_export.incomplete_argumentation_theory_from_xlsx_reader import \
     IncompleteArgumentationTheoryFromXLSXFileReader
 
@@ -12,6 +14,20 @@ def path_to_resources(filename: str):
 
 
 class TestStability(unittest.TestCase):
+    def test_single_axiom(self):
+        asr = IncompleteArgumentationTheoryFromLPFileReader()
+        iat = asr.read_from_lp_file(str(pathlib.Path.cwd() / 'resources' / 'single_axiom.lp'))
+        stability_labeler = StabilityLabeler()
+        stability_labels = stability_labeler.label(iat)
+        i = 0
+
+    def test_fraud_real_test(self):
+        asr = IncompleteArgumentationTheoryFromXLSXFileReader()
+        iat = asr.read_from_xlsx_file(path_to_resources('Police_Intake_System_Anon'))
+        stability_labeler = StabilityLabeler()
+        stability_labels = stability_labeler.label(iat)
+        i = 0
+
     def test_fraud_mini_test(self):
         asr = IncompleteArgumentationTheoryFromXLSXFileReader()
         iat = asr.read_from_xlsx_file(path_to_resources('03_2019_FQAS_Paper_Example'))

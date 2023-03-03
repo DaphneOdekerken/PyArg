@@ -50,8 +50,8 @@ class IncompleteArgumentationTheoryFromXLSXFileReader:
             # Add additional contraries
             if _contrary_df is not None:
                 for index, row in _contrary_df.iterrows():
-                    literal_str = row['Literal']
-                    contraries_str = row['Contraries'].split(',')
+                    literal_str = row['Literal'].replace('~', '-')
+                    contraries_str = [cont.strip().replace('~', '-') for cont in row['Contraries'].split(',')]
                     for contrary_str in contraries_str:
                         contraries_and_contradictories[literal_str].add(language[contrary_str])
 
