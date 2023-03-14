@@ -1,9 +1,11 @@
+import itertools
 import random
 from typing import Dict, List, Tuple, Set
 
 from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
 from py_arg.aspic_classes.strict_rule import StrictRule
 
 
@@ -50,18 +52,21 @@ class LayeredArgumentationSystemGenerator:
             raise ValueError('Strict rule ratio should be between zero and one.')
         self.strict_rule_ratio = strict_rule_ratio
 
-    def generate(self, return_layered_language: bool = False) -> [ArgumentationSystem |
-                                                                  Tuple[ArgumentationSystem, Dict[int, List[Literal]]]]:
+    def generate(self, return_layered_language: bool = False, add_rule_preferences=True) -> \
+            [ArgumentationSystem | Tuple[ArgumentationSystem, Dict[int, List[Literal]]]]:
         max_remaining_tries = 25
         while max_remaining_tries > 0:
             try:
                 max_remaining_tries -= 1
                 layered_language, contraries = self._generate_language_and_contradictories_initial()
-                strict_rules, defeasible_rules = self._generate_rules(layered_language)
+                strict_rules, defeasible_rules, def_rule_preferences = self._generate_rules(layered_language,
+                                                                                            add_rule_preferences,
+                                                                                            contraries)
                 language = {str(literal): literal for literals in layered_language.values() for literal in literals}
 
                 argumentation_system = ArgumentationSystem(language, contraries, strict_rules, defeasible_rules,
-                                                           add_defeasible_rule_literals=False)
+                                                           add_defeasible_rule_literals=False,
+                                                           defeasible_rule_preferences=def_rule_preferences)
                 if return_layered_language:
                     return argumentation_system, layered_language
                 return argumentation_system
@@ -102,8 +107,9 @@ class LayeredArgumentationSystemGenerator:
 
         return layered_language, contradictories
 
-    def _generate_rules(self, layered_language: Dict[int, List[Literal]]) -> \
-            Tuple[List[StrictRule], List[DefeasibleRule]]:
+    def _generate_rules(self, layered_language: Dict[int, List[Literal]], add_rule_preferences: bool,
+                        contradictories: Dict[str, Set[Literal]]) -> \
+            Tuple[List[StrictRule], List[DefeasibleRule], PreferencePreorder]:
         # Keep track of remaining antecedent options
         r_a_d = self.rule_antecedent_distribution.copy()
 
@@ -132,7 +138,7 @@ class LayeredArgumentationSystemGenerator:
                         for other_literal in other_literals:
                             if other_literal not in antecedents and other_literal != consequent and \
                                     all([contrary not in antecedents and contrary != consequent
-                                         for contrary in other_literal.contraries_and_contradictories]):
+                                         for contrary in contradictories[str(other_literal)]]):
                                 antecedent_candidates.append(other_literal)
 
                 if not antecedent_candidates:
@@ -169,7 +175,7 @@ class LayeredArgumentationSystemGenerator:
                         for other_literal in other_literals:
                             if other_literal not in antecedents and other_literal != consequent and \
                                     all([contrary not in antecedents and contrary != consequent
-                                         for contrary in other_literal.contraries_and_contradictories]):
+                                         for contrary in contradictories[str(other_literal)]]):
                                 antecedent_candidates.append(other_literal)
 
                 if not antecedent_candidates:
@@ -188,4 +194,17 @@ class LayeredArgumentationSystemGenerator:
                 new_rule = DefeasibleRule('d' + str(len(defeasible_rules)), set(antecedents), consequent)
                 defeasible_rules.append(new_rule)
 
-        return strict_rules, defeasible_rules
+        if add_rule_preferences:
+            rule_preferences = PreferencePreorder()
+            shuffled_defeasible_rules = defeasible_rules.copy()
+            random.shuffle(shuffled_defeasible_rules)
+            contradicting_rules = {(rule_a, rule_b)
+                                   for rule_a, rule_b in itertools.combinations(shuffled_defeasible_rules, 2)
+                                   if rule_a.consequent in contradictories[str(rule_b.consequent)]}
+            leq_rules = random.sample(list(contradicting_rules), int(len(contradicting_rules) / 2))
+            for geq_tuple in leq_rules:
+                rule_preferences.append(geq_tuple)
+        else:
+            rule_preferences = PreferencePreorder.create_reflexive_preorder([])
+
+        return strict_rules, defeasible_rules, rule_preferences
