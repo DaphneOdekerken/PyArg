@@ -20,7 +20,7 @@ from py_arg_visualisation.functions.import_functions.read_argumentation_theory_f
 from py_arg_visualisation.layout_elements.structured_argumentation_layout_elements import get_aspic_setting, \
     get_structured_evaluation, get_structured_explanation, get_aspic_layout
 
-dash.register_page(__name__)
+dash.register_page(__name__, name='Visualise ASPIC+ AT', title='Visualise ASPIC+ AT')
 
 
 ASPIC_setting = get_aspic_setting()

@@ -2,7 +2,7 @@ import dash
 from dash import html, dcc, callback, Input, Output
 
 
-dash.register_page(__name__)
+dash.register_page(__name__, name='Chat', title='Chat')
 
 layout = html.Div(
     children=[

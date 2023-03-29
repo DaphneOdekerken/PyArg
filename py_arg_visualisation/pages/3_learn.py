@@ -1,9 +1,10 @@
 import dash
 from dash import html, dcc, callback, Input, Output, State
+import dash_bootstrap_components as dbc
 
 from py_arg_learning.identify_grounded_extension import IdentifyGroundedExtension
 
-dash.register_page(__name__)
+dash.register_page(__name__, name='Learn', title='Learn')
 
 # Get all exercises
 exercise_dict = {
@@ -12,26 +13,26 @@ exercise_dict = {
 
 layout = html.Div(
     children=[
-        html.H1('This is the argumentation learning home page.'),
-        html.Div([
-            html.P('What would you like to practice?'),
-            dcc.Dropdown(options=list(exercise_dict.keys()), value=list(exercise_dict.keys())[0],
-                         id='exercise-choice-dropdown'),
+        dbc.Col([
+            html.B('What would you like to practice?'),
+            dbc.Select(options=[{'label': option, 'value': option} for option in exercise_dict.keys()],
+                       value=list(exercise_dict.keys())[0],
+                       id='exercise-choice-dropdown'),
             html.Br(),
-            html.Div([], id='explanation-html'),
+            dbc.Card([], id='explanation-html'),
             html.Br(),
-            html.Button('Generate exercise', id='practice-button', n_clicks=0, className='small-pyarg-button'),
+            dbc.Button('Generate exercise', id='practice-button', n_clicks=0),
             html.Br(),
             html.Br(),
-            html.Div([], id='exercise-text'),
-            dcc.Textarea(value='', id='answer-input-text-field', style={'width': '100%'}),
+            dbc.Card([], id='exercise-text'),
+            dbc.Textarea(value='', id='answer-input-text-field', style={'width': '100%'}),
             html.Br(),
-            html.Button('Check', id='check-button', n_clicks=0, className='small-pyarg-button'),
+            dbc.Button('Check', id='check-button', n_clicks=0),
             html.Br(),
             html.Br(),
             html.Div([], id='feedback-field'),
             dcc.Store(id='solution-store', data=''),
-        ], style={'width': '800px'})
+        ])
     ]
 )
 
@@ -40,7 +41,7 @@ layout = html.Div(
           Input('exercise-choice-dropdown', 'value'))
 def get_explanation_html(exercise_choice_value: str):
     exercise_set = exercise_dict[exercise_choice_value]
-    return exercise_set.get_explanation_html()
+    return [html.B('Explanation'), exercise_set.get_explanation_html()]
 
 
 @callback(Output('exercise-text', 'children'),
@@ -53,14 +54,14 @@ def get_explanation_html(exercise_choice_value: str):
           State('exercise-text', 'children'),
           State('answer-input-text-field', 'value'),
           State('solution-store', 'data'))
-def handle_button_click(generate_button_clicks: int, check_button_clicks: int,
+def handle_button_click(_generate_button_clicks: int, _check_button_clicks: int,
                         exercise_choice_value: str, old_exercise_text: str,
                         user_solution: str, pre_generated_solutions):
     button_clicked = dash.ctx.triggered_id
     if button_clicked == 'practice-button':
         exercise_set = exercise_dict[exercise_choice_value]
         exercise, solutions = exercise_set.generate_exercise_and_solutions()
-        rendered_exercise = exercise_set.render_exercise_instance(exercise)
+        rendered_exercise = [html.B('Exercise'), exercise_set.render_exercise_instance(exercise)]
         return rendered_exercise, solutions, '', ''
     elif button_clicked == 'check-button':
         exercise_set = exercise_dict[exercise_choice_value]

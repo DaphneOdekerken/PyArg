@@ -3,6 +3,7 @@ from typing import List
 import dash
 from dash import html, callback, Input, Output, State
 from dash.exceptions import PreventUpdate
+import dash_bootstrap_components as dbc
 
 from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
@@ -17,7 +18,7 @@ from py_arg_visualisation.functions.import_functions.read_argumentation_framewor
 from py_arg_visualisation.layout_elements.abstract_argumentation_layout_elements import get_abstract_setting, \
     get_abstract_evaluation, get_abstract_explanation, get_abstract_layout
 
-dash.register_page(__name__)
+dash.register_page(__name__, name='Visualise AF', title='Visualise AF')
 
 abstract_setting = get_abstract_setting()
 abstract_evaluation = get_abstract_evaluation()
@@ -29,39 +30,6 @@ layout = html.Div(
         layout_abstract
     ]
 )
-
-
-@callback(
-    Output('abstract-arg-setting-collapse', 'is_open'),
-    [Input('abstract-arg-setting-button', 'n_clicks')],
-    [State('abstract-arg-setting-collapse', 'is_open')],
-)
-def toggle_collapse(n: int, is_open: bool):
-    if n:
-        return not is_open
-    return is_open
-
-
-@callback(
-    Output('abstract-evaluation-collapse', 'is_open'),
-    [Input('abstract-evaluation-button', 'n_clicks')],
-    [State('abstract-evaluation-collapse', 'is_open')],
-)
-def toggle_collapse(n: int, is_open: bool):
-    if n:
-        return not is_open
-    return is_open
-
-
-@callback(
-    Output('abstract-explanation-collapse', 'is_open'),
-    [Input('abstract-explanation-button', 'n_clicks')],
-    [State('abstract-explanation-collapse', 'is_open')],
-)
-def toggle_collapse(n: int, is_open: bool):
-    if n:
-        return not is_open
-    return is_open
 
 
 @callback(
@@ -89,7 +57,6 @@ def generate_abstract_argumentation_framework(nr_of_clicks: int):
 
 
 @callback(
-    Output('abstract-arguments-output', 'children'),
     Output('abstract-argumentation-graph', 'data'),
     Input('create-argumentation-framework-button', 'n_clicks'),
     State('abstract-arguments', 'value'),
@@ -101,8 +68,7 @@ def create_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str, 
                                             selected_arguments: List[str]):
     arg_framework = read_argumentation_framework(arguments, attacks)
     data = get_argumentation_framework_graph_data(arg_framework, selected_arguments)
-    return html.Div([html.H4('The arguments of the AF:'),
-                     html.Ul([html.Li(argument.name) for argument in arg_framework.arguments])]), data
+    return data
 
 
 @callback(
@@ -127,17 +93,19 @@ def evaluate_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str
         raise NotImplementedError
 
     extension_list_items = []
-    for extension in extensions:
-        extension_readable_str = '{' + ', '.join(argument.name for argument in extension) + '}'
-        extension_long_str = '+'.join(argument.name for argument in extension)
-        extension_with_link = html.A(children=extension_readable_str,
-                                     id={'type': 'extension-button-abstract', 'index': extension_long_str})
-        extension_list_items.append(html.Li(extension_with_link))
+    for extension in sorted(extensions):
+        extension_readable_str = '{' + ', '.join(argument.name for argument in sorted(extension)) + '}'
+        extension_long_str = '+'.join(argument.name for argument in sorted(extension))
+        extension_list_items.append(dbc.Button([extension_readable_str],
+                                               color='secondary',
+                                               id={'type': 'extension-button-abstract', 'index': extension_long_str}))
 
-    return html.Div([html.H4('The extension(s):'),
-                     html.Ul(extension_list_items),
-                     html.H4('The accepted argument(s):'),
-                     html.Ul([html.Li(argument.name) for argument in accepted])
+    return html.Div([html.B('The extension(s):'),
+                     html.Div(extension_list_items),
+                     html.B('The accepted argument(s):'),
+                     html.Div([dbc.Button(argument.name, color='secondary', id={'type': 'argument-button-abstract',
+                                                                                'index': argument.name})
+                               for argument in sorted(accepted)])
                      ])
 
 
@@ -156,7 +124,7 @@ def derive_explanations_abstract_argumentation_framework(_nr_of_clicks: int, arg
                                                          semantics: str, explanation_function: str,
                                                          explanation_type: str, explanation_strategy: str):
     if semantics == '':
-        return html.Div([html.H4('Error', className='error'),
+        return html.Div([html.B('Error'),
                          'Choose a semantics under "Evaluation" before deriving explanations.'])
     else:
         arg_framework = read_argumentation_framework(arguments, attacks)
@@ -173,12 +141,11 @@ def derive_explanations_abstract_argumentation_framework(_nr_of_clicks: int, arg
             arg_framework, semantics, extensions, accepted_arguments,
             explanation_function, explanation_type, explanation_strategy)
 
-        return html.Div([html.H4('The explanation(s):'),
+        return html.Div([html.B('The explanation(s):'),
                          html.Ul([html.Li(str(explanation)) for explanation in explanations])])
 
 
 @callback(
-    Output('abstract-argumentation-graph-output', 'children'),
     Output('abstract-argumentation-graph-evaluation', 'children'),
     Output('abstract-argumentation-graph-explanation', 'children'),
     Input('abstract-argumentation-graph', 'selection'),
@@ -199,7 +166,7 @@ def handle_selection_in_abstract_argumentation_graph(selection, arguments, attac
                 argument = arg
         arg_ext = []
         output_arg = html.Div(
-            [html.H4('The selected argument:'), html.H6('{}'.format(str(argument)))])
+            [html.B('The selected argument:'), html.H6('{}'.format(str(argument)))])
         output_accept = ''
         explanation_output = ''
         output_evaluation = ''
@@ -236,16 +203,16 @@ def handle_selection_in_abstract_argumentation_graph(selection, arguments, attac
                         credulous_explanation = get_argumentation_framework_explanations(
                             arg_framework, semantics, extensions, credulously_accepted_arguments,
                             function, explanation_type, 'Credulous')
-                        explanation_output = html.Div([html.H4(
+                        explanation_output = html.Div([html.B(
                             'The skeptical acceptance explanation for {}:'.format(str(argument))),
                             html.H6('\n {}'.format(
-                                str(skeptical_explanation.get(str(argument))).replace('set()', '{}'))), html.H4(
+                                str(skeptical_explanation.get(str(argument))).replace('set()', '{}'))), html.B(
                                 'The credulous acceptance explanation for {}:'.format(str(argument))),
                             html.H6('\n {}'.format(
                                 str(credulous_explanation.get(str(argument))).replace('set()', '{}')))])
                     elif function is not None and explanation_type == 'NonAcceptance':
                         explanation_output = html.Div(
-                            [html.H4('Error', className='error'),
+                            [html.B('Error', className='error'),
                              'There is no non-acceptance explanation for argument {}, since it is '
                              'skeptically accepted.'.format(argument)])
                 elif credulously_accepted:
@@ -255,7 +222,7 @@ def handle_selection_in_abstract_argumentation_graph(selection, arguments, attac
                             arg_framework, semantics, extensions, credulously_accepted_arguments,
                             function, explanation_type, 'Credulous')
                         explanation_output = html.Div(
-                            [html.H4('The credulous acceptance explanation for {}:'.format(str(argument))),
+                            [html.B('The credulous acceptance explanation for {}:'.format(str(argument))),
                              html.H6('\n {}'.format(
                                  str(credulous_explanation.get(str(argument))).replace('set()', '{}')))])
                     elif function is not None and explanation_type == 'NonAcceptance':
@@ -263,7 +230,7 @@ def handle_selection_in_abstract_argumentation_graph(selection, arguments, attac
                             arg_framework, semantics, extensions, skeptically_accepted_arguments,
                             function, explanation_type, 'Skeptical')
                         explanation_output = html.Div(
-                            [html.H4('The not skeptical acceptance explanation for {}:'.format(str(argument))),
+                            [html.B('The not skeptical acceptance explanation for {}:'.format(str(argument))),
                              html.H6('\n {}'.format(
                                  str(skeptical_explanation.get(str(argument))).replace('set()', '{}')))])
                 elif not skeptically_accepted and not credulously_accepted:
@@ -275,20 +242,20 @@ def handle_selection_in_abstract_argumentation_graph(selection, arguments, attac
                         credulous_explanation = get_argumentation_framework_explanations(
                             arg_framework, semantics, extensions, credulously_accepted_arguments,
                             function, explanation_type, 'Credulous')
-                        explanation_output = html.Div([html.H4(
+                        explanation_output = html.Div([html.B(
                             'The not skeptical acceptance explanation for {}:'.format(str(argument))),
-                            html.H6('\n {}'.format(str(skeptical_explanation.get(str(argument))).replace('set()', '{}'))), html.H4(
+                            html.H6('\n {}'.format(str(skeptical_explanation.get(str(argument))).replace('set()', '{}'))), html.B(
                                 'The not credulous acceptance explanation for {}:'.format(str(argument))),
                             html.H6('\n {}'.format(str(credulous_explanation.get(str(argument))).replace('set()', '{}')))])
                     elif function is not None and explanation_type == 'Acceptance':
                         explanation_output = html.Div(
-                            [html.H4('Error', className='error'),
+                            [html.B('Error', className='error'),
                              'There is no acceptance explanation for argument {}, since it is not '
                              'credulously accepted.'.format(argument)])
             output_evaluation = html.Div(
-                [html.H4('The extensions with argument {}:'.format(str(argument))),
+                [html.B('The extensions with argument {}:'.format(str(argument))),
                  html.H6('{}'.format(arg_ext)), html.H6('{}'.format(output_accept))])
-        return output_arg, output_evaluation, explanation_output
+        return output_evaluation, explanation_output
     raise PreventUpdate
 
 
