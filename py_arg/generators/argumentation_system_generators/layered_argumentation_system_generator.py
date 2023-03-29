@@ -52,8 +52,7 @@ class LayeredArgumentationSystemGenerator:
             raise ValueError('Strict rule ratio should be between zero and one.')
         self.strict_rule_ratio = strict_rule_ratio
 
-    def generate(self, return_layered_language: bool = False, add_rule_preferences=True) -> \
-            [ArgumentationSystem | Tuple[ArgumentationSystem, Dict[int, List[Literal]]]]:
+    def generate(self, return_layered_language: bool = False, add_rule_preferences=True):
         max_remaining_tries = 25
         while max_remaining_tries > 0:
             try:
