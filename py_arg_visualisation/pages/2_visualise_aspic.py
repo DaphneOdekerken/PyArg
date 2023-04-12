@@ -226,24 +226,6 @@ def mark_extension_in_graph(nr_of_clicks_values,
 
 
 @callback(
-    Output('selected-argument-store-abstract', 'data'),
-    Input({'type': 'extension-button-abstract', 'index': ALL}, 'n_clicks'),
-    State('selected-argument-store-abstract', 'data'),
-)
-def mark_extension_in_graph(nr_of_clicks_values,
-                            old_selected_data: List[str]):
-    button_clicked_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
-    if button_clicked_id == '':
-        return old_selected_data
-    if nr_of_clicks_values[0] is None:
-        raise PreventUpdate
-    button_clicked_id_content = json.loads(button_clicked_id)
-    button_clicked_id_index = button_clicked_id_content['index']
-    extension_arguments = button_clicked_id_index.split('+')
-    return extension_arguments
-
-
-@callback(
     Output('structured-explanation', 'children'),
     Input('structured-explanation-button', 'n_clicks'),
     State('aspic-axioms', 'value'),

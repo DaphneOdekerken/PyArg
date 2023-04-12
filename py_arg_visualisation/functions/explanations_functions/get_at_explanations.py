@@ -1,6 +1,6 @@
 from py_arg.algorithms.explanation.defending import get_defending, get_dir_defending
 from py_arg.algorithms.explanation.not_defending import get_not_defending, get_no_dir_defending, get_no_self_defense
-from py_arg.algorithms.explanation.suff_nec import get_suff_nec
+from py_arg.algorithms.explanation.suff_nec import get_sufficient_or_necessary
 from py_arg_visualisation.functions.ordering_functions.get_ordering_by_specification import get_ordering_by_specification
 
 
@@ -33,7 +33,7 @@ def get_str_explanations(argumentation_theory, semantics, ordering_specification
                 elif function == 'DirDefending':
                     arg_expl.extend(get_dir_defending(argumentation_framework, arg, extensions))
                 else:
-                    suff_expl.extend(get_suff_nec(argumentation_framework, arg, 'Suff', expl_type))
+                    suff_expl.extend(get_sufficient_or_necessary(argumentation_framework, arg, 'Suff', expl_type))
             if suff_expl != []:
                 if function == 'Suff':
                     arg_expl.extend(suff_expl)

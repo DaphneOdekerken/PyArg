@@ -17,18 +17,17 @@ def get_abstract_layout(abstract_evaluation, abstract_explanation, abstract_sett
                                     options={'height': '500px'}), body=True),
             html.Div([
                 html.Div([
-                    html.Div(id='abstract-argumentation-graph-evaluation', className='output'),
-                    html.Div(id='abstract-argumentation-graph-explanation', className='output')
+                    html.Div(id='abstract-argumentation-graph-evaluation'),
+                    html.Div(id='abstract-argumentation-graph-explanation')
                 ], className='row-container')
             ])
         ])
     ])
     layout_abstract = dbc.Row([left_column, right_column])
+    return html.Div([html.H1('Visualisation of abstract argumentation frameworks'), layout_abstract])
 
-    return layout_abstract
 
-
-def get_abstract_explanation():
+def get_abstract_explanation_div():
     abstract_explanation = html.Div([
         dbc.Row([
             html.B('Type'),
@@ -43,11 +42,12 @@ def get_abstract_explanation():
             dbc.Select(id='abstract-explanation-function')
             ]),
         dbc.Row([dbc.Button('Derive Explanations', id='abstract-explanation-button', n_clicks=0)]),
+        dbc.Row(id='abstract-explanation')
     ])
     return abstract_explanation
 
 
-def get_abstract_evaluation():
+def get_abstract_evaluation_div():
     abstract_evaluation = html.Div([
         html.Div([
             dbc.Row([
@@ -74,14 +74,13 @@ def get_abstract_evaluation():
             ]),
 
             dbc.Row(dbc.Button('Evaluate AF', id='evaluate-argumentation-framework-button', n_clicks=0)),
-            dbc.Row(id='abstract-evaluation', className='output'),
-            dbc.Row(id='abstract-explanation', className='output')
+            dbc.Row(id='abstract-evaluation')
         ]),
     ])
     return abstract_evaluation
 
 
-def get_abstract_setting():
+def get_abstract_setting_specification_div():
     abstract_setting = html.Div(children=[
         dcc.Store(id='selected-argument-store-abstract'),
         dbc.Col([
