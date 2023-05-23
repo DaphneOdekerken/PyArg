@@ -7,10 +7,57 @@ import dash
 app = Dash(__name__, use_pages=True, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.YETI])
 
 # Navigation bar.
-navbar = dbc.Navbar(dbc.Container([dbc.Row(
-    [dbc.Col(dbc.NavItem(dbc.NavLink(page['name'], href=page['relative_path'])))
-     for page in dash.page_registry.values()] +
-    [dbc.Col(html.Img(src=app.get_asset_url('UU_logo_2021_EN_RGB.png')))], align='center', className='g-0')]))
+navbar = dbc.NavbarSimple(
+    children=[
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem('Abstract', href='01-generate-abstract'),
+                dbc.DropdownMenuItem('Random ASPIC+', href='02-generate-random-aspic'),
+                dbc.DropdownMenuItem('Layered ASPIC+', href='03-generate-layered-aspic'),
+            ],
+            nav=True,
+            in_navbar=True,
+            label='Generate',
+        ),
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem('Abstract', href='11-edit-abstract'),
+                dbc.DropdownMenuItem('ASPIC+', href='12-edit-aspic'),
+            ],
+            nav=True,
+            in_navbar=True,
+            label='Edit',
+        ),
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem('Abstract', href='21-visualise-abstract'),
+                dbc.DropdownMenuItem('ASPIC+', href='22-visualise-aspic'),
+            ],
+            nav=True,
+            in_navbar=True,
+            label='Visualise',
+        ),
+        dbc.DropdownMenuItem('Learn', href='30-learn'),
+        dbc.DropdownMenu(
+            children=[],
+            nav=True,
+            in_navbar=True,
+            label='Algorithms',
+        ),
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem('Chat', href='40-chat'),
+            ],
+            nav=True,
+            in_navbar=True,
+            label='Applications',
+        ),
+        dbc.DropdownMenuItem('About', href='/')
+    ],
+    brand='PyArg',
+    brand_href='/',
+    color='primary',
+)
 
 # Specification of the layout, consisting of a navigation bar and the page container.
 app.layout = html.Div([navbar, dbc.Col(html.Div([dash.page_container]), width={'size': 10, 'offset': 1})])
