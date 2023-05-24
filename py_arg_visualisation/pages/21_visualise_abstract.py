@@ -1,5 +1,5 @@
 import json
-from typing import List
+from typing import List, Dict
 
 import dash
 from dash import html, callback, Input, Output, State, ALL
@@ -57,7 +57,7 @@ def generate_abstract_argumentation_framework(nr_of_clicks: int):
     prevent_initial_call=True
 )
 def create_abstract_argumentation_framework(arguments: str, attacks: str,
-                                            selected_arguments: List[str]):
+                                            selected_arguments: Dict[str, List[str]]):
     """
     Send the AF data to the graph for plotting.
     """
@@ -65,21 +65,45 @@ def create_abstract_argumentation_framework(arguments: str, attacks: str,
         arg_framework = read_argumentation_framework(arguments, attacks)
     except ValueError:
         arg_framework = AbstractArgumentationFramework()
-    data = get_argumentation_framework_graph_data(arg_framework, selected_arguments)
+
+    if dash.callback_context.triggered_id != 'selected-argument-store-abstract':
+        selected_arguments = None
+
+    if selected_arguments and 'blue' in selected_arguments:
+        blue = selected_arguments['blue']
+    else:
+        blue = []
+    if selected_arguments and 'green' in selected_arguments:
+        green = selected_arguments['green']
+    else:
+        green = []
+    if selected_arguments and 'yellow' in selected_arguments:
+        yellow = selected_arguments['yellow']
+    else:
+        yellow = []
+    if selected_arguments and 'red' in selected_arguments:
+        red = selected_arguments['red']
+    else:
+        red = []
+    data = get_argumentation_framework_graph_data(arg_framework, blue, green, yellow, red)
     return data
 
 
 @callback(
     Output('abstract-evaluation', 'children'),
-    Input('evaluate-argumentation-framework-button', 'n_clicks'),
     State('abstract-arguments', 'value'),
     State('abstract-attacks', 'value'),
-    State('abstract-evaluation-semantics', 'value'),
-    State('abstract-evaluation-strategy', 'value'),
+    Input('abstract-evaluation-accordion', 'active_item'),
+    Input('abstract-evaluation-semantics', 'value'),
+    Input('abstract-evaluation-strategy', 'value'),
     prevent_initial_call=True
 )
-def evaluate_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str, attacks: str, semantics: str,
-                                              strategy: str):
+def evaluate_abstract_argumentation_framework(arguments: str, attacks: str,
+                                              active_item: str,
+                                              semantics: str, strategy: str):
+    if active_item != 'Evaluation':
+        raise PreventUpdate
+
     # Read the abstract argumentation framework.
     arg_framework = read_argumentation_framework(arguments, attacks)
 
@@ -90,8 +114,16 @@ def evaluate_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str
     # Make a button for each extension.
     extension_buttons = []
     for extension in sorted(extensions):
+        out_arguments = {attacked for attacked in arg_framework.arguments
+                         if any(argument in arg_framework.get_incoming_defeat_arguments(attacked)
+                                for argument in extension)}
+        undecided_arguments = {argument for argument in arg_framework.arguments
+                               if argument not in extension and argument not in out_arguments}
         extension_readable_str = '{' + ', '.join(argument.name for argument in sorted(extension)) + '}'
-        extension_long_str = '+'.join(argument.name for argument in sorted(extension))
+        extension_in_str = '+'.join(argument.name for argument in sorted(extension))
+        extension_out_str = '+'.join(argument.name for argument in sorted(out_arguments))
+        extension_undecided_str = '+'.join(argument.name for argument in sorted(undecided_arguments))
+        extension_long_str = '|'.join([extension_in_str, extension_undecided_str, extension_out_str])
         extension_buttons.append(dbc.Button([extension_readable_str], color='secondary',
                                             id={'type': 'extension-button-abstract', 'index': extension_long_str}))
 
@@ -124,9 +156,10 @@ def mark_extension_or_argument_in_graph(_nr_of_clicks_extension_values, _nr_of_c
     button_clicked_id_type = button_clicked_id_content['type']
     button_clicked_id_index = button_clicked_id_content['index']
     if button_clicked_id_type == 'extension-button-abstract':
-        return button_clicked_id_index.split('+')
+        in_part, undecided_part, out_part = button_clicked_id_index.split('|', 3)
+        return {'green': in_part.split('+'), 'yellow': undecided_part.split('+'), 'red': out_part.split('+')}
     elif button_clicked_id_type == 'argument-button-abstract':
-        return [button_clicked_id_index]
+        return {'blue': [button_clicked_id_index]}
     return []
 
 

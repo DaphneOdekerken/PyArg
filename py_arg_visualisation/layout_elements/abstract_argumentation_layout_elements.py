@@ -7,9 +7,9 @@ def get_abstract_layout(abstract_evaluation, abstract_explanation, abstract_sett
     left_column = dbc.Col(
         dbc.Accordion([
             dbc.AccordionItem(abstract_setting, title='Abstract Argumentation Setting'),
-            dbc.AccordionItem(abstract_evaluation, title='Evaluation'),
+            dbc.AccordionItem(abstract_evaluation, title='Evaluation', item_id='Evaluation'),
             dbc.AccordionItem(abstract_explanation, title='Explanation')
-        ])
+        ], id='abstract-evaluation-accordion')
     )
     right_column = dbc.Col([
         dbc.Row([
@@ -72,8 +72,6 @@ def get_abstract_evaluation_div():
                         {'label': 'Skeptical', 'value': 'Skeptical'}
                     ], value='Credulous', id='abstract-evaluation-strategy')),
             ]),
-
-            dbc.Row(dbc.Button('Evaluate AF', id='evaluate-argumentation-framework-button', n_clicks=0)),
             dbc.Row(id='abstract-evaluation')
         ]),
     ])
