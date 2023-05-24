@@ -17,6 +17,7 @@ exercise_dict = {
 
 layout = html.Div(
     children=[
+        html.H1('Practice with argumentation exercises'),
         dbc.Col([
             html.B('What would you like to practice?'),
             dbc.Select(options=[{'label': option, 'value': option} for option in exercise_dict.keys()],

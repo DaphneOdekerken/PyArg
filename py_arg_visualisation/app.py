@@ -37,7 +37,14 @@ navbar = dbc.NavbarSimple(
             in_navbar=True,
             label='Visualise',
         ),
-        dbc.DropdownMenuItem('Learn', href='30-learn'),
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem('Practice', href='30-learn'),
+            ],
+            nav=True,
+            in_navbar=True,
+            label='Learn',
+        ),
         dbc.DropdownMenu(
             children=[],
             nav=True,
