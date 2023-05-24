@@ -165,26 +165,31 @@ def mark_extension_or_argument_in_graph(_nr_of_clicks_extension_values, _nr_of_c
 
 @callback(
     Output('abstract-explanation-function', 'options'),
+    Output('abstract-explanation-function', 'value'),
     [Input('abstract-explanation-type', 'value')]
 )
 def setting_choice(choice: str):
-    return [{'label': i, 'value': i} for i in EXPLANATION_FUNCTION_OPTIONS[choice]]
+    return EXPLANATION_FUNCTION_OPTIONS[choice], EXPLANATION_FUNCTION_OPTIONS[choice][0]['value']
 
 
 @callback(
     Output('abstract-explanation', 'children'),
-    Input('abstract-explanation-button', 'n_clicks'),
+    Input('abstract-evaluation-accordion', 'active_item'),
     State('abstract-arguments', 'value'),
     State('abstract-attacks', 'value'),
     State('abstract-evaluation-semantics', 'value'),
-    State('abstract-explanation-function', 'value'),
-    State('abstract-explanation-type', 'value'),
-    State('abstract-explanation-strategy', 'value'),
+    Input('abstract-explanation-function', 'value'),
+    Input('abstract-explanation-type', 'value'),
+    State('abstract-evaluation-strategy', 'value'),
     prevent_initial_call=True
 )
-def derive_explanations_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str, attacks: str,
+def derive_explanations_abstract_argumentation_framework(active_item,
+                                                         arguments: str, attacks: str,
                                                          semantics: str, explanation_function: str,
                                                          explanation_type: str, explanation_strategy: str):
+    if active_item != 'Explanation':
+        raise PreventUpdate
+
     # Compute the explanations based on the input.
     arg_framework = read_argumentation_framework(arguments, attacks)
     frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics)
@@ -199,117 +204,3 @@ def derive_explanations_abstract_argumentation_framework(_nr_of_clicks: int, arg
                         html.B(explanation_key),
                         html.Ul([html.Li(str(explanation_value)) for explanation_value in explanation_values])])
                      for explanation_key, explanation_values in explanations.items()])
-
-
-@callback(
-    Output('abstract-argumentation-graph-evaluation', 'children'),
-    Output('abstract-argumentation-graph-explanation', 'children'),
-    Input('abstract-argumentation-graph', 'selection'),
-    State('abstract-arguments', 'value'),
-    State('abstract-attacks', 'value'),
-    State('abstract-evaluation-semantics', 'value'),
-    State('abstract-evaluation-strategy', 'value'),
-    State('abstract-explanation-function', 'value'),
-    State('abstract-explanation-type', 'value'),
-    prevent_initial_call=True
-)
-def handle_selection_in_abstract_argumentation_graph(selection, arguments, attacks, semantics, strategy, function,
-                                                     explanation_type):
-    while selection is not None:
-        arg_framework = read_argumentation_framework(arguments, attacks)
-        for arg in arg_framework.arguments:
-            if str(arg) == str(selection['nodes'][0]):
-                argument = arg
-        arg_ext = []
-        output_arg = html.Div(
-            [html.B('The selected argument:'), html.H6('{}'.format(str(argument)))])
-        output_accept = ''
-        explanation_output = ''
-        output_evaluation = ''
-        if semantics != '':
-            frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics)
-            if strategy != '':
-                skeptically_accepted = False
-                credulously_accepted = False
-                if semantics != 'Grounded':
-                    extensions = [set(frozen_extension) for frozen_extension in frozen_extensions]
-                    skeptically_accepted_arguments = set.intersection(*extensions)
-                    credulously_accepted_arguments = set.union(*extensions)
-                    for ext in extensions:
-                        if argument in ext:
-                            arg_ext.append(ext)
-                    if arg_ext == extensions:
-                        skeptically_accepted = True
-                    if arg_ext:
-                        credulously_accepted = True
-                elif semantics == 'Grounded':
-                    extensions = frozen_extensions
-                    if argument in extensions:
-                        arg_ext.append(extensions)
-                        skeptically_accepted_arguments = extensions
-                        credulously_accepted_arguments = extensions
-                        skeptically_accepted = True
-                        credulously_accepted = True
-                if skeptically_accepted:
-                    output_accept += str(argument) + ' is skeptically and credulously accepted.'
-                    if function is not None and explanation_type == 'Acceptance':
-                        skeptical_explanation = get_argumentation_framework_explanations(arg_framework, extensions,
-                                                                                         skeptically_accepted_arguments,
-                                                                                         function, explanation_type)
-                        credulous_explanation = get_argumentation_framework_explanations(arg_framework, extensions,
-                                                                                         credulously_accepted_arguments,
-                                                                                         function, explanation_type)
-                        explanation_output = html.Div([html.B(
-                            'The skeptical acceptance explanation for {}:'.format(str(argument))),
-                            html.H6('\n {}'.format(
-                                str(skeptical_explanation.get(str(argument))).replace('set()', '{}'))), html.B(
-                                'The credulous acceptance explanation for {}:'.format(str(argument))),
-                            html.H6('\n {}'.format(
-                                str(credulous_explanation.get(str(argument))).replace('set()', '{}')))])
-                    elif function is not None and explanation_type == 'NonAcceptance':
-                        explanation_output = html.Div(
-                            [html.B('Error', className='error'),
-                             'There is no non-acceptance explanation for argument {}, since it is '
-                             'skeptically accepted.'.format(argument)])
-                elif credulously_accepted:
-                    output_accept += str(argument) + ' is credulously but not skeptically accepted.'
-                    if function is not None and explanation_type == 'Acceptance':
-                        credulous_explanation = get_argumentation_framework_explanations(arg_framework, extensions,
-                                                                                         credulously_accepted_arguments,
-                                                                                         function, explanation_type)
-                        explanation_output = html.Div(
-                            [html.B('The credulous acceptance explanation for {}:'.format(str(argument))),
-                             html.H6('\n {}'.format(
-                                 str(credulous_explanation.get(str(argument))).replace('set()', '{}')))])
-                    elif function is not None and explanation_type == 'NonAcceptance':
-                        skeptical_explanation = get_argumentation_framework_explanations(arg_framework, extensions,
-                                                                                         skeptically_accepted_arguments,
-                                                                                         function, explanation_type)
-                        explanation_output = html.Div(
-                            [html.B('The not skeptical acceptance explanation for {}:'.format(str(argument))),
-                             html.H6('\n {}'.format(
-                                 str(skeptical_explanation.get(str(argument))).replace('set()', '{}')))])
-                elif not skeptically_accepted and not credulously_accepted:
-                    output_accept += str(argument) + ' is neither  credulously nor skeptically accepted.'
-                    if function is not None and explanation_type == 'NonAcceptance':
-                        skeptical_explanation = get_argumentation_framework_explanations(arg_framework, extensions,
-                                                                                         skeptically_accepted_arguments,
-                                                                                         function, explanation_type)
-                        credulous_explanation = get_argumentation_framework_explanations(arg_framework, extensions,
-                                                                                         credulously_accepted_arguments,
-                                                                                         function, explanation_type)
-                        explanation_output = html.Div([html.B(
-                            'The not skeptical acceptance explanation for {}:'.format(str(argument))),
-                            html.H6('\n {}'.format(str(skeptical_explanation.get(str(argument))).replace('set()', '{}'))), html.B(
-                                'The not credulous acceptance explanation for {}:'.format(str(argument))),
-                            html.H6('\n {}'.format(str(credulous_explanation.get(str(argument))).replace('set()', '{}')))])
-                    elif function is not None and explanation_type == 'Acceptance':
-                        explanation_output = html.Div(
-                            [html.B('Error', className='error'),
-                             'There is no acceptance explanation for argument {}, since it is not '
-                             'credulously accepted.'.format(argument)])
-            output_evaluation = html.Div(
-                [html.B('The extensions with argument {}:'.format(str(argument))),
-                 html.H6('{}'.format(arg_ext)), html.H6('{}'.format(output_accept))])
-        return output_evaluation, explanation_output
-    raise PreventUpdate

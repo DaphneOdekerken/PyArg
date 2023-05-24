@@ -6,21 +6,15 @@ from dash import html, dcc
 def get_abstract_layout(abstract_evaluation, abstract_explanation, abstract_setting):
     left_column = dbc.Col(
         dbc.Accordion([
-            dbc.AccordionItem(abstract_setting, title='Abstract Argumentation Setting'),
+            dbc.AccordionItem(abstract_setting, title='Abstract Argumentation Framework'),
             dbc.AccordionItem(abstract_evaluation, title='Evaluation', item_id='Evaluation'),
-            dbc.AccordionItem(abstract_explanation, title='Explanation')
+            dbc.AccordionItem(abstract_explanation, title='Explanation', item_id='Explanation')
         ], id='abstract-evaluation-accordion')
     )
     right_column = dbc.Col([
         dbc.Row([
             dbc.Card(visdcc.Network(data={'nodes': [], 'edges': []}, id='abstract-argumentation-graph',
                                     options={'height': '500px'}), body=True),
-            html.Div([
-                html.Div([
-                    html.Div(id='abstract-argumentation-graph-evaluation'),
-                    html.Div(id='abstract-argumentation-graph-explanation')
-                ], className='row-container')
-            ])
         ])
     ])
     layout_abstract = dbc.Row([left_column, right_column])
@@ -30,18 +24,14 @@ def get_abstract_layout(abstract_evaluation, abstract_explanation, abstract_sett
 def get_abstract_explanation_div():
     abstract_explanation = html.Div([
         dbc.Row([
-            html.B('Type'),
-            dbc.Select(options=[{'label': 'Acceptance', 'value': 'Acceptance'},
-                                {'label': 'Non-Acceptance', 'value': 'NonAcceptance'}],
-                       value='Acceptance', id='abstract-explanation-type'),
-            html.B('Strategy'),
-            dbc.Select(options=[{'label': 'Credulous', 'value': 'Credulous'},
-                                {'label': 'Skeptical', 'value': 'Skeptical'}],
-                       value='Credulous', id='abstract-explanation-strategy'),
-            html.B('Explanation function'),
-            dbc.Select(id='abstract-explanation-function')
-            ]),
-        dbc.Row([dbc.Button('Derive Explanations', id='abstract-explanation-button', n_clicks=0)]),
+            dbc.Col(html.B('Type')),
+            dbc.Col(dbc.Select(options=[{'label': 'Acceptance', 'value': 'Acceptance'},
+                                        {'label': 'Non-Acceptance', 'value': 'NonAcceptance'}],
+                               value='Acceptance', id='abstract-explanation-type'))]),
+        dbc.Row([
+            dbc.Col(html.B('Explanation function')),
+            dbc.Col(dbc.Select(id='abstract-explanation-function'))
+        ]),
         dbc.Row(id='abstract-explanation')
     ])
     return abstract_explanation
