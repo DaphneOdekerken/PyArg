@@ -3,11 +3,15 @@ from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 
 from py_arg_learning.identify_grounded_extension import IdentifyGroundedExtension
+from py_arg_learning.list_complete_extensions import ListCompleteExtensions
+from py_arg_learning.list_preferred_extensions import ListPreferredExtensions
 
 dash.register_page(__name__, name='Learn', title='Learn')
 
 # Get all exercises
 exercise_dict = {
+    'List all complete extensions': ListCompleteExtensions(),
+    'List all preferred extensions': ListPreferredExtensions(),
     'Identify grounded extension': IdentifyGroundedExtension()
 }
 

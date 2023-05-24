@@ -26,7 +26,7 @@ class IdentifyGroundedExtension(AbstractExerciseSet):
 
     def render_exercise_instance(self, exercise_instance):
         exercise_instance_parts = exercise_instance.split(';')
-        exercise_text = 'Consider an abstract argumentation framework AF = (A, R) with A = [{a}] and R = [{r}]. ' \
+        exercise_text = 'Consider an abstract argumentation framework AF = (A, R) with A = {{{a}}} and R = {{{r}}}. ' \
                         'Which arguments belong to the grounded extension (divide by commas)?'.format(
                                 a=exercise_instance_parts[0],
                                 r=exercise_instance_parts[1])
