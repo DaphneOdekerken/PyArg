@@ -12,8 +12,8 @@ navbar = dbc.NavbarSimple(
         dbc.DropdownMenu(
             children=[
                 dbc.DropdownMenuItem('Random Abstract AF', href='01-generate-abstract'),
-                dbc.DropdownMenuItem('Random ASPIC+ AT', href='02-generate-random-aspic'),
-                dbc.DropdownMenuItem('Layered ASPIC+ AT', href='03-generate-layered-aspic'),
+                # dbc.DropdownMenuItem('Random ASPIC+ AT', href='02-generate-random-aspic'),
+                dbc.DropdownMenuItem('Layered ASPIC+ AS', href='03-generate-layered-aspic'),
             ],
             nav=True,
             in_navbar=True,

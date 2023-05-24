@@ -96,6 +96,7 @@ def generate_abstract_argumentation_framework(
 
     return output_children
 
+
 def read_defeats(defeat_text: str) -> List[Defeat]:
     defeat_text_lines = defeat_text.split('\n')
     result = []

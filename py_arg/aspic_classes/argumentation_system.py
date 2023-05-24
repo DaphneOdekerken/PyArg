@@ -43,7 +43,7 @@ class ArgumentationSystem:
 
     @property
     def rules(self):
-        rules: List[Rule] = self.defeasible_rules + self.defeasible_rules
+        rules: List[Rule] = self.strict_rules + self.defeasible_rules
         return rules
 
     def get_literal(self, defeasible_rule: DefeasibleRule) -> Literal:
