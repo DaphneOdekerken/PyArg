@@ -6,6 +6,7 @@ from dash import html, callback, Input, Output, State, ALL
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
 from py_arg_visualisation.functions.explanations_functions.explanation_function_options import \
@@ -50,18 +51,20 @@ def generate_abstract_argumentation_framework(nr_of_clicks: int):
 
 @callback(
     Output('abstract-argumentation-graph', 'data'),
-    Input('create-argumentation-framework-button', 'n_clicks'),
-    State('abstract-arguments', 'value'),
-    State('abstract-attacks', 'value'),
+    Input('abstract-arguments', 'value'),
+    Input('abstract-attacks', 'value'),
     Input('selected-argument-store-abstract', 'data'),
     prevent_initial_call=True
 )
-def create_abstract_argumentation_framework(_nr_of_clicks: int, arguments: str, attacks: str,
+def create_abstract_argumentation_framework(arguments: str, attacks: str,
                                             selected_arguments: List[str]):
     """
     Send the AF data to the graph for plotting.
     """
-    arg_framework = read_argumentation_framework(arguments, attacks)
+    try:
+        arg_framework = read_argumentation_framework(arguments, attacks)
+    except ValueError:
+        arg_framework = AbstractArgumentationFramework()
     data = get_argumentation_framework_graph_data(arg_framework, selected_arguments)
     return data
 

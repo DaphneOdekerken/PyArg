@@ -20,7 +20,7 @@ class AbstractArgumentationFramework:
         else:
             self._defeats = defeats
 
-        for defeat in defeats:
+        for defeat in self._defeats:
             defeat.from_argument.add_outgoing_defeat(defeat.to_argument)
             defeat.to_argument.add_ingoing_defeat(defeat.from_argument)
 

@@ -98,8 +98,7 @@ def get_abstract_setting_specification_div():
                                  placeholder='Add one attack per line. For example: \n (A,B) \n (A,C) \n (C,B)',
                                  value='', style={'height': '300px'}),
                 ])
-            ]),
-            dbc.Row(dbc.Button('Create AF', id='create-argumentation-framework-button', n_clicks=0))
+            ])
         ])
     ])
     return abstract_setting
