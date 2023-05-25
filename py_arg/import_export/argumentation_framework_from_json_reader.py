@@ -16,7 +16,7 @@ class ArgumentationFrameworkFromJsonReader:
         else:
             name = ''
         arguments = [Argument(argument_name) for argument_name in json_object['arguments']]
-        defeats = [Defeat(from_argument, to_argument) for
+        defeats = [Defeat(Argument(from_argument), Argument(to_argument)) for
                    from_argument, to_argument in json_object['defeats']]
         return AbstractArgumentationFramework(name, arguments, defeats)
 

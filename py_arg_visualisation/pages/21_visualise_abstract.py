@@ -1,3 +1,4 @@
+import base64
 import json
 from typing import List, Dict
 
@@ -10,6 +11,7 @@ import dash_bootstrap_components as dbc
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
+from py_arg.import_export.argumentation_framework_from_json_reader import ArgumentationFrameworkFromJsonReader
 from py_arg_visualisation.functions.explanations_functions.explanation_function_options import \
     EXPLANATION_FUNCTION_OPTIONS
 from py_arg_visualisation.functions.explanations_functions.get_af_explanations import \
@@ -29,7 +31,9 @@ def get_abstract_setting_specification_div():
     return html.Div(children=[
         dcc.Store(id='selected-argument-store-abstract'),
         dbc.Col([
-            dbc.Row(dbc.Button('Generate random', id='generate-random-af-button', n_clicks=0)),
+            dbc.Row([dbc.Col(dbc.Button('Generate random', id='generate-random-af-button', n_clicks=0,
+                                        className='w-100')),
+                     dbc.Col(dcc.Upload(dbc.Button('Open existing AF', className='w-100'), id='upload-af'))]),
             dbc.Row([
                 dbc.Col([
                     html.B('Arguments'),
@@ -113,17 +117,26 @@ layout = html.Div([html.H1('Visualisation of abstract argumentation frameworks')
 @callback(
     Output('abstract-arguments', 'value'),
     Output('abstract-attacks', 'value'),
-    Input('generate-random-af-button', 'n_clicks')
+    Input('generate-random-af-button', 'n_clicks'),
+    Input('upload-af', 'contents')
 )
-def generate_abstract_argumentation_framework(nr_of_clicks: int):
+def generate_abstract_argumentation_framework(_nr_of_clicks_random: int, af_content: str):
     """
     Generate a random AF after clicking the button and put the result in the text box.
     """
-    if nr_of_clicks > 0:
+    if dash.callback_context.triggered_id == 'generate-random-af-button':
         random_af = AbstractArgumentationFrameworkGenerator(8, 8, True).generate()
         abstract_arguments_value = '\n'.join((str(arg) for arg in random_af.arguments))
         abstract_attacks_value = '\n'.join((f'({str(defeat.from_argument)},{str(defeat.to_argument)})'
                                             for defeat in random_af.defeats))
+        return abstract_arguments_value, abstract_attacks_value
+    elif dash.callback_context.triggered_id == 'upload-af':
+        content_type, content_str = af_content.split(',')
+        decoded = base64.b64decode(content_str)
+        opened_af = ArgumentationFrameworkFromJsonReader().from_json(json.loads(decoded))
+        abstract_arguments_value = '\n'.join((str(arg) for arg in opened_af.arguments))
+        abstract_attacks_value = '\n'.join((f'({str(defeat.from_argument)},{str(defeat.to_argument)})'
+                                            for defeat in opened_af.defeats))
         return abstract_arguments_value, abstract_attacks_value
     return '', ''
 
