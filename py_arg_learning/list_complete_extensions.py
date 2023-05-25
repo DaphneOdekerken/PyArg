@@ -14,9 +14,8 @@ class ListCompleteExtensions(AbstractExerciseSet):
         argumentation_framework_generator = AbstractArgumentationFrameworkGenerator(4, 5, False)
         af = argumentation_framework_generator.generate()
 
-        exercise_instance = ', '.join(argument.name for argument in af.arguments) + ';' + \
-                            ', '.join('(' + defeat.from_argument.name + ', ' + defeat.to_argument.name + ')'
-                                      for defeat in af.defeats)
+        exercise_instance = self.argumentation_framework_to_exercise_instance(af)
+        graph_data = self.argumentation_framework_to_graph_data(af)
 
         complete_extensions = get_complete_extensions(af)
         complete_extensions_str_list = \
@@ -24,9 +23,9 @@ class ListCompleteExtensions(AbstractExerciseSet):
                     for extension in complete_extensions])
 
         solutions = complete_extensions_str_list
-        return exercise_instance, solutions
+        return exercise_instance, graph_data, solutions
 
-    def render_exercise_instance(self, exercise_instance):
+    def render_exercise_instance_text(self, exercise_instance):
         exercise_instance_parts = exercise_instance.split(';')
         exercise_text = 'Consider an abstract argumentation framework AF = (A, R) with A = {{{a}}} and R = {{{r}}}. ' \
                         'List all complete extensions. Use a new line for each set, and ' \

@@ -69,8 +69,11 @@ def handle_button_click(_generate_button_clicks: int, _check_button_clicks: int,
     button_clicked = dash.ctx.triggered_id
     if button_clicked == 'practice-button':
         exercise_set = exercise_dict[exercise_choice_value]
-        exercise, solutions = exercise_set.generate_exercise_and_solutions()
-        rendered_exercise = [html.B('Exercise'), exercise_set.render_exercise_instance(exercise)]
+        exercise, graph_data, solutions = exercise_set.generate_exercise_and_solutions()
+        rendered_exercise = [
+            html.B('Exercise'),
+            exercise_set.render_exercise_instance(exercise, graph_data)
+        ]
         return rendered_exercise, solutions, '', '', {'display': 'block'}
     elif button_clicked == 'check-button':
         exercise_set = exercise_dict[exercise_choice_value]
