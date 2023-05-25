@@ -4,7 +4,8 @@ from py_arg.algorithms.explanation.suff_nec import get_sufficient_or_necessary
 from py_arg_visualisation.functions.ordering_functions.get_ordering_by_specification import get_ordering_by_specification
 
 
-def get_str_explanations(argumentation_theory, semantics, ordering_specification, extensions, accepted_formulas, function, expl_type, strategy, form):
+def get_str_explanations(argumentation_theory, semantics, ordering_specification, extensions, accepted_formulas,
+                         function, expl_type, strategy, form):
     """
     Calculate, for each formula, the explanations, given the function, type, strategy and form.
 
@@ -19,8 +20,7 @@ def get_str_explanations(argumentation_theory, semantics, ordering_specification
     :param form: The form of the explanation, for example, explanations in terms of arguments, rules or premises.
     :return: A dictionary with for each (non-)accepted argument its explanation, given the parameters.
     """
-    ordering = get_ordering_by_specification(argumentation_theory, ordering_specification)
-    argumentation_framework = argumentation_theory.create_abstract_argumentation_framework('af', ordering)
+    argumentation_framework = argumentation_theory.create_abstract_argumentation_framework('af', ordering_specification)
     abstract_explanation = {}
     if expl_type == 'Acceptance':
         for formula in accepted_formulas:

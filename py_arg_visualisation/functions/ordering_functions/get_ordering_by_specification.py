@@ -17,5 +17,5 @@ def get_ordering_by_specification(argumentation_theory: ArgumentationTheory, ord
     elif ordering_specification == 'elitist_weakest_link':
         ordering = WeakestLinkElitistOrdering(def_rule_preferences, premise_preferences)
     else:
-        ordering = None
+        raise NotImplementedError
     return ordering

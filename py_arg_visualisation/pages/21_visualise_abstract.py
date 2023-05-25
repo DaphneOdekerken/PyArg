@@ -148,23 +148,7 @@ def create_abstract_argumentation_framework(arguments: str, attacks: str,
     if dash.callback_context.triggered_id != 'selected-argument-store-abstract':
         selected_arguments = None
 
-    if selected_arguments and 'blue' in selected_arguments:
-        blue = selected_arguments['blue']
-    else:
-        blue = []
-    if selected_arguments and 'green' in selected_arguments:
-        green = selected_arguments['green']
-    else:
-        green = []
-    if selected_arguments and 'yellow' in selected_arguments:
-        yellow = selected_arguments['yellow']
-    else:
-        yellow = []
-    if selected_arguments and 'red' in selected_arguments:
-        red = selected_arguments['red']
-    else:
-        red = []
-    data = get_argumentation_framework_graph_data(arg_framework, blue, green, yellow, red)
+    data = get_argumentation_framework_graph_data(arg_framework, selected_arguments)
     return data
 
 

@@ -2,11 +2,14 @@ import json
 from typing import List
 
 import dash
+import dash_bootstrap_components as dbc
 import visdcc
 from dash import html, callback, Input, Output, State, ALL, dcc
 from dash.exceptions import PreventUpdate
-import dash_bootstrap_components as dbc
 
+from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
 from py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
     LayeredArgumentationSystemGenerator
 from py_arg.generators.argumentation_theory_generators.argumentation_theory_generator import \
@@ -15,298 +18,163 @@ from py_arg_visualisation.functions.explanations_functions.explanation_function_
     EXPLANATION_FUNCTION_OPTIONS
 from py_arg_visualisation.functions.explanations_functions.get_at_explanations import get_str_explanations
 from py_arg_visualisation.functions.extensions_functions.get_accepted_formulas import get_accepted_formulas
-from py_arg_visualisation.functions.extensions_functions.get_at_extensions import get_argumentation_theory_extensions
+from py_arg_visualisation.functions.extensions_functions.get_af_extensions import get_argumentation_framework_extensions
 from py_arg_visualisation.functions.graph_data_functions.get_at_graph_data import get_argumentation_theory_graph_data
 from py_arg_visualisation.functions.import_functions.read_argumentation_theory_functions import \
     read_argumentation_theory
+from py_arg_visualisation.functions.ordering_functions.get_ordering_by_specification import \
+    get_ordering_by_specification
 
 dash.register_page(__name__, name='Visualise ASPIC+ AT', title='Visualise ASPIC+ AT')
 
 
-def get_aspic_layout(ASPIC_setting, structured_evaluation, structured_explanation):
-    return html.Div([
-        html.Div([
-            html.Div([
-                dbc.CardHeader(dbc.Button('ASPIC Argumentation Setting', className='pyarg-button',
-                                          id='structured-arg-setting-button')),
-                dbc.Collapse(dbc.CardBody(ASPIC_setting), id='structured-arg-setting-collapse', is_open=False),
-
-                dbc.CardHeader(dbc.Button('Evaluation', className='pyarg-button', id='structured-evaluation-button')),
-                dbc.Collapse(dbc.CardBody(structured_evaluation), id='structured-evaluation-collapse', is_open=False),
-
-                dbc.CardHeader(dbc.Button('Explanation', className='pyarg-button', id='structured-explanation-button')),
-                dbc.Collapse(dbc.CardBody(structured_explanation), id='structured-explanation-collapse', is_open=False),
-            ], className='padded-item'),
-
-            html.Div([
-                visdcc.Network(data={'nodes': [], 'edges': []},
-                               id='structured-argumentation-graph',
-                               options=dict(height='600px'),
-                               style={'border-radius': '8px',
-                                      'border': '2px solid #152A47',
-                                      'margin-right': '25px'}),
-                html.Div([
-                    html.Div([
-                        html.Div(id='structured-output', className='output'),
-                        html.Div(id='structured-evaluation', className='output'),
-                        html.Div(id='structured-explanation', className='output')
-                    ], className='row-container'),
-                    html.Div([
-                        html.Div(id='structured-argumentation-graph-output', className='output'),
-                        html.Div(id='structured-argumentation-graph-evaluation', className='output'),
-                        html.Div(id='structured-argumentation-graph-explanation', className='output')
-                    ], className='row-container')
-                ])
-            ], className='padded-item'),
-        ], className='row-container')
+def get_aspic_layout(aspic_setting, structured_evaluation, structured_explanation):
+    left_column = dbc.Col(
+        dbc.Accordion([
+            dbc.AccordionItem(aspic_setting, title='Abstract Argumentation Framework'),
+            dbc.AccordionItem(structured_evaluation, title='Evaluation', item_id='Evaluation'),
+            dbc.AccordionItem(structured_explanation, title='Explanation', item_id='Explanation')
+        ], id='structured-evaluation-accordion')
+    )
+    right_column = dbc.Col([
+        dbc.Row([
+            dbc.Card(visdcc.Network(data={'nodes': [], 'edges': []}, id='structured-argumentation-graph',
+                                    options={'height': '500px'}), body=True),
+        ])
     ])
+    return dbc.Row([left_column, right_column])
 
 
-def get_structured_explanation():
-    return html.Div([
-        html.Div([
-            html.Div([
-                html.Div([
-                    html.B('Type'),
-                    dcc.RadioItems(
-                        options=[{'label': 'Acceptance', 'value': 'Acceptance'},
-                                 {'label': 'Non-Acceptance', 'value': 'NonAcceptance'}],
-                        value='', id='structured-explanation-type'
-                    ),
-                ]),
-
-                html.Div([
-                    html.B('Strategy'),
-                    dcc.RadioItems(
-                        options=[
-                            {'label': 'Credulous', 'value': 'Credulous'},
-                            {'label': 'Skeptical', 'value': 'Skeptical'}
-                        ],
-                        value='', id='structured-explanation-strategy'
-                    ),
-                ], style={'margin-top': '20px'}),
-            ], className='padded-item'),
-
-            html.Div([
-                html.Div([
-                    html.B('Explanation function'),
-                    dcc.RadioItems(
-                        id='structured-explanation-function'
-                    ),
-                ]),
-
-                html.Div([
-                    html.B('Explanation form'),
-                    dcc.RadioItems(
-                        options=[
-                            {'label': 'Argument', 'value': 'Arg'},
-                            {'label': 'Premises', 'value': 'Prem'},
-                            {'label': 'Rules', 'value': 'Rule'},
-                            {'label': 'Sub-arguments', 'value': 'SubArg'},
-                            {'label': 'Sub-argument conclusions', 'value': 'SubArgConclusions'}
-                        ],
-                        id='structured-explanation-form'
-                    ),
-                ], style={'margin-top': '20px'}),
-            ], className='padded-item')
-
-        ], className='row-container'),
-
-        html.Div(
-            [html.Button('Derive Explanations', id='structured-explanation-button', n_clicks=0,
-                         className='pyarg-button')], className='button-container'),
-
-        html.Div(style={'whiteSpace': 'pre-line'}),
-    ])
-
-
-def get_structured_evaluation():
-    return html.Div([
-        html.Div([
-            html.Div([
-                html.B('Semantics'),
-                dcc.RadioItems(
+def get_aspic_setting_specification_div():
+    return html.Div(children=[
+        dcc.Store(id='selected-argument-store-structured'),
+        dbc.Col([
+            dbc.Row(dbc.Button('Generate random', id='generate-random-arg-theory-button', n_clicks=0)),
+            dbc.Row([
+                dbc.Col([html.B('Axioms')]),
+                dbc.Col([html.B('Ordinary premises')]),
+                dbc.Col([html.B('Ordinary premise preferences')]),
+            ]),
+            dbc.Row([
+                dbc.Col([dbc.Textarea(id='aspic-axioms',
+                                      placeholder='Add one axiom per line. For example:\n p \n -q \n ~r',
+                                      value='', style={'height': '200px'})]),
+                dbc.Col([dbc.Textarea(id='aspic-ordinary-premises',
+                                      placeholder='Add one ordinary premise per line. For example:\n p \n -q \n ~r',
+                                      value='', style={'height': '200px'}), ]),
+                dbc.Col([dbc.Textarea(id='ordinary-prem-preferences',
+                                      placeholder='Add one preference between two premises per line. '
+                                                  'For example:\n p < -q \n -q > ~r',
+                                      value='', style={'height': '200px'}), ]),
+            ]),
+            dbc.Row([
+                dbc.Col([html.B('Strict rules')]),
+                dbc.Col([html.B('Defeasible rules')]),
+                dbc.Col([html.B('Defeasible rule preferences')]),
+            ]),
+            dbc.Row([
+                dbc.Col([dbc.Textarea(id='aspic-strict-rules',
+                                      placeholder='Add one strict rule per line. For example:\n p->q \n -q -> -r',
+                                      value='', style={'height': '200px'})]),
+                dbc.Col([dbc.Textarea(id='aspic-defeasible-rules',
+                                      placeholder='Add one defeasible rule per line, including the rule name. '
+                                                  'For example:\n d1: p=>q \n d2: -q => -r',
+                                      value='', style={'height': '200px'}), ]),
+                dbc.Col([dbc.Textarea(id='defeasible-rule-preferences',
+                                      placeholder='Add one preference between two rules per line. '
+                                                  'For example:\n d1 < d2',
+                                      value='', style={'height': '200px'}), ]),
+            ]),
+            dbc.Row([html.B('Ordering')]),
+            dbc.Row([
+                dbc.Col(dbc.Select(
                     options=[
-                        {'label': 'Admissible', 'value': 'Admissible'},
-                        {'label': 'Complete', 'value': 'Complete'},
-                        {'label': 'Grounded', 'value': 'Grounded'},
-                        {'label': 'Preferred', 'value': 'Preferred'},
-                        {'label': 'Ideal', 'value': 'Ideal'},
-                        {'label': 'Stable', 'value': 'Stable'},
-                        {'label': 'Semi-stable', 'value': 'SemiStable'},
-                        {'label': 'Eager', 'value': 'Eager'},
+                        {'label': 'Democratic', 'value': 'democratic'},
+                        {'label': 'Elitist', 'value': 'elitist'}
+                    ], value='democratic', id='ordering-choice')),
+                dbc.Col(dbc.Select(
+                    options=[
+                        {'label': 'Last link', 'value': 'last_link'},
+                        {'label': 'Weakest link', 'value': 'weakest_link'}
                     ],
-                    value='Complete', id='structured-evaluation-semantics'
-                ),
-            ], className='padded-item'),
+                    value='last_link', id='ordering-link')),
+            ]),
+        ])
+    ])
 
-            html.Div([
-                html.B('Evaluation strategy'),
-                dcc.RadioItems(
+
+def get_structured_evaluation_specification_div():
+    return html.Div([
+        html.Div([
+            dbc.Row([
+                dbc.Col(html.B('Semantics')),
+                dbc.Col(dbc.Select(options=[
+                    {'label': 'Admissible', 'value': 'Admissible'},
+                    {'label': 'Complete', 'value': 'Complete'},
+                    {'label': 'Grounded', 'value': 'Grounded'},
+                    {'label': 'Preferred', 'value': 'Preferred'},
+                    {'label': 'Ideal', 'value': 'Ideal'},
+                    {'label': 'Stable', 'value': 'Stable'},
+                    {'label': 'Semi-stable', 'value': 'SemiStable'},
+                    {'label': 'Eager', 'value': 'Eager'},
+                ],
+                    value='Complete', id='structured-evaluation-semantics')),
+            ]),
+
+            dbc.Row([
+                dbc.Col(html.B('Evaluation strategy')),
+                dbc.Col(dbc.Select(
                     options=[
                         {'label': 'Credulous', 'value': 'Credulous'},
                         {'label': 'Weakly Skeptical', 'value': 'WeaklySkeptical'},
                         {'label': 'Skeptical', 'value': 'Skeptical'}
                     ],
-                    value='Credulous', id='structured-evaluation-strategy'
-                ),
-            ], className='padded-item'),
-        ], className='row-container'),
-
-        html.Div(
-            [html.Button('Evaluate AF', id='evaluate-structured-argumentation-theory-button',
-                         n_clicks=0, className='small-pyarg-button')], className='button-container'),
-        html.Div(style={'whiteSpace': 'pre-line'}),
+                    value='Credulous', id='structured-evaluation-strategy')),
+            ]),
+            dbc.Row(id='structured-evaluation')
+        ]),
     ])
 
 
-def get_aspic_setting():
-    return html.Div(children=[
-        dcc.Store(id='selected-argument-store-structured'),
-        html.Div([html.Button('Generate random', id='generate-random-arg-theory-button', n_clicks=0,
-                              className='small-pyarg-button')], className='padded-item'),
-        # html.Div([html.Button('Generate layered', id='generate-layered-arg-theory-button', n_clicks=0,
-        #                       className='small-pyarg-button')], className='padded-item'),
-        html.Div([
-            html.Div([
-                html.B('Axioms'),
-                html.Br(),
-                dcc.Textarea(id='aspic-axioms', placeholder='Add one axiom per line. For example:\n p \n -q \n ~r',
-                             value='', className='aspic-input'),
-            ], className='padded-item'),
-
-            html.Div([
-                html.B('Ordinary premises'),
-                html.Br(),
-                dcc.Textarea(id='aspic-ordinary-premises',
-                             placeholder='Add one ordinary premise per line. For example:\n p \n -q \n ~r',
-                             value='', className='aspic-input'),
-            ], className='padded-item'),
-
-            html.Div([
-                html.B('Ordinary premise preferences', style={'margin-left': '10px'}),
-                html.Br(),
-                dcc.Textarea(id='ordinary-prem-preferences',
-                             placeholder='Add one preference between two premises per line. '
-                                         'For example:\n p < -q \n -q > ~r',
-                             value='', className='aspic-input'),
-            ], className='padded-item'),
-        ], className='row-container'),
-
-        html.Div([
-            html.Div([
-                html.B('Strict rules', style={'margin-left': '10px'}),
-                html.Br(),
-                dcc.Textarea(
-                    id='aspic-strict-rules',
-                    placeholder='Add one strict rule per line. For example:\n p->q \n -q -> -r',
-                    value='', className='aspic-input',
-                ),
-            ], className='padded-item'),
-
-            html.Div([
-                html.B('Defeasible rules'),
-                html.Br(),
-                dcc.Textarea(
-                    id='aspic-defeasible-rules',
-                    placeholder='Add one defeasible rule per line, including the rule name. '
-                                'For example:\n d1: p=>q \n d2: -q => -r',
-                    value='', className='aspic-input'),
-            ], className='padded-item'),
-
-            html.Div([
-                html.B('Defeasible rule preferences', style={'margin-left': '10px'}),
-                html.Br(),
-                dcc.Textarea(
-                    id='defeasible-rule-preferences',
-                    placeholder='Add one preference between two rules per line. For example:\n d1 < d2',
-                    value='', className='aspic-input',
-                ),
-            ], className='padded-item'),
-        ], className='row-container'),
-
-        html.Div([
-            html.B('Ordering', style={'margin-left': '10px'}),
-            html.Br(),
-            html.Div([
-                html.Div([
-                    dcc.RadioItems(
-                        options=[
-                            {'label': 'Democratic', 'value': 'democratic'},
-                            {'label': 'Elitist', 'value': 'elitist'}
-                        ],
-                        value='democratic', id='ordering-choice'
-                    ),
-                ], style={'padding': 5, 'flex': 1}),
-
-                html.Div([
-                    dcc.RadioItems(
-                        options=[
-                            {'label': 'Last link', 'value': 'last_link'},
-                            {'label': 'Weakest link', 'value': 'weakest_link'}
-                        ],
-                        value='last_link', id='ordering-link'
-                    ),
-                ], style={'padding': 5, 'flex': 1}),
-            ], className='row-container'),
+def get_structured_explanation_specification_div():
+    return html.Div([
+        dbc.Row([
+            dbc.Col(html.B('Type')),
+            dbc.Col(dbc.Select(options=[{'label': 'Acceptance', 'value': 'Acceptance'},
+                                        {'label': 'Non-Acceptance', 'value': 'NonAcceptance'}],
+                               value='Acceptance', id='structured-explanation-type'))]),
+        dbc.Row([
+            dbc.Col(html.B('Explanation function')),
+            dbc.Col(dbc.Select(id='structured-explanation-function'))
         ]),
-
-        html.Div(
-            [html.Button('Create AF', id='create-argumentation-theory-button', n_clicks=0,
-                         className='small-pyarg-button')], className='button-container'),
-
-        html.Div(id='ASPIC-argumentation', style={'whiteSpace': 'pre-line'})
+        dbc.Row([
+            dbc.Col(html.B('Explanation form')),
+            dbc.Col(dbc.Select(options=[{'label': 'Argument', 'value': 'Arg'},
+                                        {'label': 'Premises', 'value': 'Prem'},
+                                        {'label': 'Rules', 'value': 'Rule'},
+                                        {'label': 'Sub-arguments', 'value': 'SubArg'}],
+                               value='Arg', id='structured-explanation-form'))
+        ]),
+        dbc.Row(id='structured-explanation')
     ])
 
 
 layout = html.Div(
     children=[
         html.H1('Visualisation of ASPIC+ argumentation theories'),
-        get_aspic_layout(get_aspic_setting(), get_structured_evaluation(), get_structured_explanation())
+        get_aspic_layout(get_aspic_setting_specification_div(), get_structured_evaluation_specification_div(),
+                         get_structured_explanation_specification_div())
     ]
 )
 
 
 @callback(
-    Output('structured-arg-setting-collapse', 'is_open'),
-    [Input('structured-arg-setting-button', 'n_clicks')],
-    [State('structured-arg-setting-collapse', 'is_open')],
-)
-def toggle_collapse(n: int, is_open: bool):
-    if n:
-        return not is_open
-    return is_open
-
-
-@callback(
-    Output('structured-evaluation-collapse', 'is_open'),
-    [Input('structured-evaluation-button', 'n_clicks')],
-    [State('structured-evaluation-collapse', 'is_open')],
-)
-def toggle_collapse(n: int, is_open: bool):
-    if n:
-        return not is_open
-    return is_open
-
-
-@callback(
-    Output('structured-explanation-collapse', 'is_open'),
-    [Input('structured-explanation-button', 'n_clicks')],
-    [State('structured-explanation-collapse', 'is_open')],
-)
-def toggle_collapse(n: int, is_open: bool):
-    if n:
-        return not is_open
-    return is_open
-
-
-@callback(
     Output('structured-explanation-function', 'options'),
-    [Input('structured-explanation-type', 'value')],
-    prevent_initial_call=True
+    Output('structured-explanation-function', 'value'),
+    [Input('structured-explanation-type', 'value')]
 )
 def setting_choice(choice: str):
-    return [{'label': i, 'value': i} for i in EXPLANATION_FUNCTION_OPTIONS[choice]]
+    return EXPLANATION_FUNCTION_OPTIONS[choice], EXPLANATION_FUNCTION_OPTIONS[choice][0]['value']
 
 
 @callback(
@@ -345,52 +213,45 @@ def generate_random_argumentation_theory(nr_of_clicks: int):
             '\n'.join(f'{preference[0].id} < {preference[1].id}'
                       for preference in argumentation_system.rule_preferences.preference_tuples)
         return aspic_axioms_value, aspic_ordinary_premises_value, aspic_strict_rule, aspic_defeasible_rule, \
-               aspic_ordinary_premise_preference_value, aspic_defeasible_rule_preference_vale
+            aspic_ordinary_premise_preference_value, aspic_defeasible_rule_preference_vale
     return '', '', '', '', '', ''
 
 
 @callback(
-    Output('structured-output', 'children'),
     Output('structured-argumentation-graph', 'data'),
-    Input('create-argumentation-theory-button', 'n_clicks'),
-    State('aspic-axioms', 'value'),
-    State('aspic-ordinary-premises', 'value'),
-    State('aspic-strict-rules', 'value'),
-    State('aspic-defeasible-rules', 'value'),
-    State('ordinary-prem-preferences', 'value'),
-    State('defeasible-rule-preferences', 'value'),
-    State('ordering-choice', 'value'),
-    State('ordering-link', 'value'),
+    Input('aspic-axioms', 'value'),
+    Input('aspic-ordinary-premises', 'value'),
+    Input('aspic-strict-rules', 'value'),
+    Input('aspic-defeasible-rules', 'value'),
+    Input('ordinary-prem-preferences', 'value'),
+    Input('defeasible-rule-preferences', 'value'),
+    Input('ordering-choice', 'value'),
+    Input('ordering-link', 'value'),
     Input('selected-argument-store-structured', 'data'),
     prevent_initial_call=True
 )
-def create_argumentation_theory(_nr_of_clicks: int, axioms_str: str, ordinary_premises_str: str, strict_rules_str: str,
+def create_argumentation_theory(axioms_str: str, ordinary_premises_str: str, strict_rules_str: str,
                                 defeasible_rules_str: str,
                                 ordinary_premise_preferences_str: str, defeasible_rule_preferences_str: str,
                                 ordering_choice_value: str, ordering_link_value: str,
                                 selected_arguments: List[str]):
     # Read the ordering
-    ordering_specification = ordering_choice_value + ordering_link_value
+    ordering_specification = ordering_choice_value + '_' + ordering_link_value
 
     # Read the argumentation theory
-    arg_theory, error_message = read_argumentation_theory(
-        axioms_str, ordinary_premises_str, strict_rules_str, defeasible_rules_str, ordinary_premise_preferences_str,
-        defeasible_rule_preferences_str)
+    try:
+        arg_theory = read_argumentation_theory(
+            axioms_str, ordinary_premises_str, strict_rules_str, defeasible_rules_str, ordinary_premise_preferences_str,
+            defeasible_rule_preferences_str)
+    except ValueError:
+        arg_theory = ArgumentationTheory(ArgumentationSystem({}, {}, [], []), [], [])
 
     # Generate the graph data for this argumentation theory
-    data = get_argumentation_theory_graph_data(arg_theory, ordering_specification, selected_arguments)
-
-    # Generate the list of arguments
-    generated_arguments_html_content = \
-        [html.H4('The generated argument(s):'),
-         html.Ul([html.Li(argument.short_name) for argument in arg_theory.all_arguments])
-         ]
-    return generated_arguments_html_content, data
+    return get_argumentation_theory_graph_data(arg_theory, ordering_specification, selected_arguments)
 
 
 @callback(
     Output('structured-evaluation', 'children'),
-    Input('evaluate-structured-argumentation-theory-button', 'n_clicks'),
     State('aspic-axioms', 'value'),
     State('aspic-ordinary-premises', 'value'),
     State('aspic-strict-rules', 'value'),
@@ -399,66 +260,97 @@ def create_argumentation_theory(_nr_of_clicks: int, axioms_str: str, ordinary_pr
     State('defeasible-rule-preferences', 'value'),
     State('ordering-choice', 'value'),
     State('ordering-link', 'value'),
-    State('structured-evaluation-semantics', 'value'),
-    State('structured-evaluation-strategy', 'value'),
+    Input('structured-evaluation-accordion', 'active_item'),
+    Input('structured-evaluation-semantics', 'value'),
+    Input('structured-evaluation-strategy', 'value'),
     prevent_initial_call=True
 )
-def evaluate_structured_argumentation_framework(_nr_of_clicks: int, axioms_str: str, ordinary_premises_str: str,
+def evaluate_structured_argumentation_framework(axioms_str: str, ordinary_premises_str: str,
                                                 strict_rules_str: str, defeasible_rules_str: str,
                                                 ordinary_premise_preferences_str: str,
                                                 defeasible_rule_preferences_str: str,
                                                 ordering_choice_value: str, ordering_link_value: str,
+                                                active_item: str,
                                                 semantics_specification: str, acceptance_strategy_specification: str):
-    # Read the ordering
-    ordering_specification = ordering_choice_value + ordering_link_value
-
-    # Read the argumentation theory
-    arg_theory, error_message = read_argumentation_theory(
-        axioms_str, ordinary_premises_str, strict_rules_str, defeasible_rules_str, ordinary_premise_preferences_str,
-        defeasible_rule_preferences_str)
-    if not arg_theory.all_arguments:
+    if active_item != 'Evaluation':
         raise PreventUpdate
 
-    frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics_specification, ordering_specification)
+    # Read the ordering
+    ordering_specification = ordering_choice_value + '_' + ordering_link_value
+
+    # Read the argumentation theory
+    try:
+        arg_theory = read_argumentation_theory(
+            axioms_str, ordinary_premises_str, strict_rules_str, defeasible_rules_str, ordinary_premise_preferences_str,
+            defeasible_rule_preferences_str)
+    except ValueError:
+        arg_theory = ArgumentationTheory(ArgumentationSystem({}, {}, [], []), [], [])
+
+    ordering = get_ordering_by_specification(arg_theory, ordering_specification)
+    arg_framework = arg_theory.create_abstract_argumentation_framework('af', ordering)
+    frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics_specification)
 
     extensions = [set(frozen_extension) for frozen_extension in frozen_extensions]
     accepted_formulas = get_accepted_formulas(extensions, acceptance_strategy_specification)
 
-    extension_list_items = []
+    extension_buttons = []
+    formula_arguments = {formula: [] for formula in arg_theory.argumentation_system.language.keys()}
     for extension in extensions:
-        extension_readable_str = '{' + ', '.join(argument.short_name for argument in extension) + '}'
-        extension_long_str = '+'.join(argument.name for argument in extension)
-        extension_with_link = html.A(children=extension_readable_str,
-                                     id={'type': 'extension-button', 'index': extension_long_str})
-        extension_list_items.append(html.Li(extension_with_link))
+        for argument in extension:
+            assert isinstance(argument, InstantiatedArgument)
+            accepted_formula = argument.conclusion
+            formula_arguments[accepted_formula.s1].append(argument.name)
 
-    return [html.H4('The extension(s):'),
-            html.Ul(extension_list_items),
-            html.H4('The accepted formula(s):'),
-            html.Ul([html.Li(accepted_formula.s1) for accepted_formula in sorted(accepted_formulas)])]
+        out_arguments = {attacked for attacked in arg_framework.arguments
+                         if any(argument in arg_framework.get_incoming_defeat_arguments(attacked)
+                                for argument in extension)}
+        undecided_arguments = {argument for argument in arg_framework.arguments
+                               if argument not in extension and argument not in out_arguments}
+        extension_readable_str = '{' + ', '.join(argument.short_name for argument in extension) + '}'
+
+        extension_in_str = '+'.join(argument.name for argument in sorted(extension))
+        extension_out_str = '+'.join(argument.name for argument in sorted(out_arguments))
+        extension_undecided_str = '+'.join(argument.name for argument in sorted(undecided_arguments))
+        extension_long_str = '|'.join([extension_in_str, extension_undecided_str, extension_out_str])
+        extension_buttons.append(dbc.Button([extension_readable_str], color='secondary',
+                                            id={'type': 'extension-button', 'index': extension_long_str}))
+
+    accepted_formula_buttons = [dbc.Button(formula.s1, color='secondary',
+                                           id={'type': 'formula-button-structured',
+                                               'index': '+'.join(formula_arguments[formula.s1])})
+                                for formula in sorted(accepted_formulas)]
+
+    return [html.B('The extension(s):'),
+            html.Div(extension_buttons),
+            html.B('The accepted formula(s):'),
+            html.Div(accepted_formula_buttons)]
 
 
 @callback(
     Output('selected-argument-store-structured', 'data'),
     Input({'type': 'extension-button', 'index': ALL}, 'n_clicks'),
+    Input({'type': 'formula-button-structured', 'index': ALL}, 'n_clicks'),
     State('selected-argument-store-structured', 'data'),
 )
-def mark_extension_in_graph(nr_of_clicks_values,
+def mark_extension_in_graph(_nr_of_clicks_values_extension, _nr_of_clicks_values_formula,
                             old_selected_data: List[str]):
     button_clicked_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
     if button_clicked_id == '':
         return old_selected_data
-    if nr_of_clicks_values[0] is None:
-        raise PreventUpdate
     button_clicked_id_content = json.loads(button_clicked_id)
+    button_clicked_id_type = button_clicked_id_content['type']
     button_clicked_id_index = button_clicked_id_content['index']
-    extension_arguments = button_clicked_id_index.split('+')
-    return extension_arguments
+    if button_clicked_id_type == 'extension-button':
+        in_part, undecided_part, out_part = button_clicked_id_index.split('|', 3)
+        return {'green': in_part.split('+'), 'yellow': undecided_part.split('+'), 'red': out_part.split('+')}
+    elif button_clicked_id_type == 'formula-button-structured':
+        return {'blue': button_clicked_id_index.split('+')}
+    return []
 
 
 @callback(
     Output('structured-explanation', 'children'),
-    Input('structured-explanation-button', 'n_clicks'),
+    Input('structured-evaluation-accordion', 'active_item'),
     State('aspic-axioms', 'value'),
     State('aspic-ordinary-premises', 'value'),
     State('aspic-strict-rules', 'value'),
@@ -470,177 +362,34 @@ def mark_extension_in_graph(nr_of_clicks_values,
     State('structured-evaluation-semantics', 'value'),
     State('structured-explanation-function', 'value'),
     State('structured-explanation-type', 'value'),
-    State('structured-explanation-strategy', 'value'),
+    State('structured-evaluation-strategy', 'value'),
     State('structured-explanation-form', 'value'),
     prevent_initial_call=True
 )
-def derive_explanation_structured(_nr_of_clicks: int, axioms, ordinary, strict, defeasible, premise_preferences, rule_preferences,
+def derive_explanation_structured(active_item: str, axioms, ordinary, strict, defeasible, premise_preferences,
+                                  rule_preferences,
                                   choice, link, semantics, function, explanation_type, strategy, form):
-    if semantics == '':
-        return html.Div([html.H4('Error', className='error'),
-                         'Choose a semantics under "Evaluation" before deriving explanations.'])
+    if active_item != 'Explanation':
+        raise PreventUpdate
+
+    try:
+        arg_theory = read_argumentation_theory(axioms, ordinary, strict, defeasible,
+                                               premise_preferences, rule_preferences)
+    except ValueError:
+        arg_theory = ArgumentationTheory(ArgumentationSystem({}, {}, [], []), [], [])
+
+    ordering = get_ordering_by_specification(arg_theory, choice + '_' + link)
+    arg_framework = arg_theory.create_abstract_argumentation_framework('af', ordering)
+    frozen_extensions = get_argumentation_framework_extensions(arg_framework, semantics)
+
+    if semantics == 'Grounded':
+        extension = frozen_extensions
+        accepted = extension
     else:
-        ordering = choice + '_' + link
-        arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible,
-                                                              premise_preferences, rule_preferences)
-        if error_message != '':
-            return error_message
-        frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics, ordering)
-        accepted = set()
-        if semantics != 'Grounded':
-            extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
-            accepted = get_accepted_formulas(extension, strategy)
-        elif semantics == 'Grounded':
-            extension = frozen_extensions
-            accepted = extension
-        explanations = get_str_explanations(arg_theory, semantics, ordering, extension, accepted, function,
-                                            explanation_type,
-                                            strategy, form)
+        extension = [set(frozen_extension) for frozen_extension in frozen_extensions]
+        accepted = get_accepted_formulas(extension, strategy)
+    explanations = get_str_explanations(arg_theory, semantics, ordering, extension, accepted, function,
+                                        explanation_type, strategy, form)
 
-        return html.Div([html.H4('The Explanation(s):'),
-                         html.H6('\n {}'.format(str(explanations).replace('set()','{}')))])
-
-
-@callback(
-    Output('structured-argumentation-graph-output', 'children'),
-    Output('structured-argumentation-graph-evaluation', 'children'),
-    Output('structured-argumentation-graph-explanation', 'children'),
-    Input('structured-argumentation-graph', 'selection'),
-    Input('structured-argumentation-graph', 'data'),
-    Input('aspic-axioms', 'value'),
-    Input('aspic-ordinary-premises', 'value'),
-    Input('aspic-strict-rules', 'value'),
-    Input('aspic-defeasible-rules', 'value'),
-    Input('ordinary-prem-preferences', 'value'),
-    Input('defeasible-rule-preferences', 'value'),
-    Input('ordering-choice', 'value'),
-    Input('ordering-link', 'value'),
-    Input('structured-evaluation-semantics', 'value'),
-    Input('structured-explanation-function', 'value'),
-    Input('structured-explanation-type', 'value'),
-    Input('structured-evaluation-strategy', 'value'),
-    Input('structured-explanation-form', 'value'),
-    prevent_initial_call=True
-)
-def interactive_str_graph(selection, data, axioms, ordinary, strict, defeasible, premise_preferences, rule_preferences,
-                          choice, link,
-                          semantics, function, explanation_type, strategy, form):
-    while selection is not None:
-        ordering = choice + '_' + link
-        arg_theory, error_message = read_argumentation_theory(axioms, ordinary, strict, defeasible, premise_preferences,
-                                                              rule_preferences)
-        if error_message != '':
-            return error_message
-        select_id = selection['nodes'][0]
-        for node in data['nodes']:
-            if node.get('id') == select_id:
-                select_node = node.get('label')
-        for arg in arg_theory.all_arguments:
-            if str(arg) == str(select_node):
-                argument = arg
-                formula = arg.conclusion
-        arg_ext = []
-        output_arg = html.Div(
-            [html.H4('The selected argument:'), html.H6('{}'.format(str(argument))),
-             html.H4('The selected conclusion:'),
-             html.H6('{}'.format(str(argument.conclusion)))])
-        output_accept = ''
-        expl_output = ''
-        output_evaluation = ''
-        if semantics != '':
-            frozen_extensions = get_argumentation_theory_extensions(arg_theory, semantics, ordering)
-            if strategy != '':
-                skep_accept = False
-                wskep_accept = False
-                cred_accept = False
-                if semantics != 'Grounded':
-                    extensions = [set(frozen_extension) for frozen_extension in frozen_extensions]
-                    skep_accepted = get_accepted_formulas(extensions, 'Skeptical')
-                    wskep_accepted = get_accepted_formulas(extensions, 'WeaklySkeptical')
-                    cred_accepted = get_accepted_formulas(extensions, 'Credulous')
-                    for ext in extensions:
-                        if argument in ext:
-                            arg_ext.append(ext)
-                    if formula in skep_accepted:
-                        skep_accept = True
-                    if formula in wskep_accepted:
-                        wskep_accept = True
-                    if formula in cred_accepted:
-                        cred_accept = True
-                elif semantics == 'Grounded':
-                    extensions = frozen_extensions
-                    if argument in extensions:
-                        arg_ext.append(extensions)
-                        skep_accepted = extensions
-                        cred_accepted = extensions
-                        skep_accept = True
-                        wskep_accept = True
-                        cred_accept = True
-                if skep_accept:
-                    output_accept += str(formula) + ' is (weakly) skeptically and credulously accepted.'
-                    if function is not None and explanation_type == 'Acceptance':
-                        skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
-                                                          function, explanation_type, 'Skeptical', form)
-                        cred_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, cred_accepted,
-                                                          function, explanation_type, 'Credulous', form)
-                        expl_output = html.Div([html.H4(
-                            'The skeptical acceptance explanation for {}:'.format(str(formula))),
-                            html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}'))), html.H4(
-                                'The credulous acceptance explanation for {}:'.format(str(argument))),
-                            html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
-                    elif function is not None and explanation_type == 'NonAcceptance':
-                        expl_output = html.Div([html.H4('Error', className='error'),
-                                                'There is no non-acceptance explanation for formula {}, since it is '
-                                                'skeptically accepted.'.format(
-                                                    formula)])
-                elif wskep_accept:
-                    output_accept += str(
-                        formula) + ' is weakly skeptically and credulously accepted, but not skeptically accepted.'
-                    if function is not None and explanation_type == 'Acceptance':
-                        cred_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, cred_accepted,
-                                                          function, explanation_type, 'Credulous', form)
-                        expl_output = html.Div(
-                            [html.H4('The credulous acceptance explanation for {}:'.format(str(formula))),
-                             html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
-                    elif function is not None and explanation_type == 'NonAcceptance':
-                        skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
-                                                          function, explanation_type, 'Skeptical', form)
-                        expl_output = html.Div(
-                            [html.H4('The not skeptical acceptance explanation for {}:'.format(str(formula))),
-                             html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}')))])
-                elif cred_accept:
-                    output_accept += str(formula) + ' is credulously but not (weakly) skeptically accepted.'
-                    if function is not None and explanation_type == 'Acceptance':
-                        cred_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, cred_accepted,
-                                                          function, explanation_type, 'Credulous', form)
-                        expl_output = html.Div(
-                            [html.H4('The credulous acceptance explanation for {}:'.format(str(formula))),
-                             html.H6('\n {}'.format(str(cred_expla.get(str(formula))).replace('set()','{}')))])
-                    elif function is not None and explanation_type == 'NonAcceptance':
-                        skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
-                                                          function, explanation_type, 'Skeptical', form)
-                        expl_output = html.Div(
-                            [html.H4('The not skeptical acceptance explanation for {}:'.format(str(formula))),
-                             html.H6('\n {}'.format(str(skep_expla.get(str(formula))).replace('set()','{}')))])
-                elif skep_accept == False and cred_accept == False:
-                    output_accept += str(argument) + ' is neither credulously nor (weakly) skeptically accepted.'
-                    if function is not None and explanation_type == 'NonAcceptance':
-                        skep_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, skep_accepted,
-                                                          function, explanation_type, 'Skeptical', form)
-                        cred_expla = get_str_explanations(arg_theory, semantics, ordering, extensions, cred_accepted,
-                                                          function, explanation_type, 'Credulous', form)
-                        expl_output = html.Div([html.H4(
-                            'The not skeptical acceptance explanation for {}:'.format(str(argument))),
-                            html.H6('\n {}'.format(str(skep_expla.get(str(argument))).replace('set()','{}'))), html.H4(
-                                'The not credulous acceptance explanation for {}:'.format(str(argument))),
-                            html.H6('\n {}'.format(str(cred_expla.get(str(argument))).replace('set()','{}')))])
-                    elif function is not None and explanation_type == 'Acceptance':
-                        expl_output = html.Div([html.H4('Error', className='error'),
-                                                'There is no acceptance explanation for formula {}, since it is not '
-                                                'credulously accepted.'.format(
-                                                    formula)])
-            output_evaluation = html.Div(
-                [html.H4('The extensions with argument {}:'.format(str(argument))),
-                 html.H6('{}'.format(arg_ext)), html.H6('{}'.format(output_accept))])
-        return output_arg, output_evaluation, expl_output
-    raise PreventUpdate
+    return html.Div([html.B('The Explanation(s):'),
+                     html.H6('\n {}'.format(str(explanations).replace('set()', '{}')))])

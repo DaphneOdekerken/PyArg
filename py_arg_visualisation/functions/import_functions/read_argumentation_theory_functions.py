@@ -144,4 +144,4 @@ def read_argumentation_theory(axioms_str: str, ordinary_premises_str: str,
                                                defeasible_rules, defeasible_rule_preferences)
     argumentation_theory = ArgumentationTheory(argumentation_system, axioms, ordinary_premises,
                                                ordinary_premise_preferences)
-    return argumentation_theory, ''
+    return argumentation_theory

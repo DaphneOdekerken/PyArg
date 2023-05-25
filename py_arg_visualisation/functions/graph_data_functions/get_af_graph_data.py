@@ -1,46 +1,47 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 
 
 def get_argumentation_framework_graph_data(arg_framework: AbstractArgumentationFramework,
-                                           blue_arguments: Optional[List[str]],
-                                           green_arguments: Optional[List[str]],
-                                           yellow_arguments: Optional[List[str]],
-                                           red_arguments: Optional[List[str]]
-                                           ):
+                                           selected_arguments: Optional[Dict[str, List[str]]]):
     """
     Calculate the data needed for the graphical representation of the argumentation framework
 
     :param arg_framework: The abstract argumentation framework that needs to be visualized.
-    :param blue_arguments: Arguments to be marked in blue
-    :param green_arguments: Arguments to be marked in green
-    :param yellow_arguments: Arguments to be marked in yellow
-    :param red_arguments: Arguments to be marked in red
+    :param selected_arguments: The arguments to be marked in a specific color.
     """
-    if not blue_arguments:
-        blue_arguments = []
-    if not green_arguments:
-        green_arguments = []
-    if not yellow_arguments:
-        yellow_arguments = []
-    if not red_arguments:
-        red_arguments = []
+    if selected_arguments and 'blue' in selected_arguments:
+        blue = selected_arguments['blue']
+    else:
+        blue = []
+    if selected_arguments and 'green' in selected_arguments:
+        green = selected_arguments['green']
+    else:
+        green = []
+    if selected_arguments and 'yellow' in selected_arguments:
+        yellow = selected_arguments['yellow']
+    else:
+        yellow = []
+    if selected_arguments and 'red' in selected_arguments:
+        red = selected_arguments['red']
+    else:
+        red = []
     other_arguments = [str(argument) for argument in arg_framework.arguments
-                       if argument.name not in blue_arguments + green_arguments + yellow_arguments + red_arguments]
+                       if argument.name not in blue + green + yellow + red]
 
     data_nodes_blue = [{'id': str(argument), 'label': str(argument), 'color': '#6dcde3'}
-                           for argument in arg_framework.arguments
-                           if argument.name in blue_arguments]
+                       for argument in arg_framework.arguments
+                       if argument.name in blue]
     data_nodes_green = [{'id': str(argument), 'label': str(argument), 'color': '#2ac2ab'}
-                       for argument in arg_framework.arguments
-                       if argument.name in green_arguments]
+                        for argument in arg_framework.arguments
+                        if argument.name in green]
     data_nodes_yellow = [{'id': str(argument), 'label': str(argument), 'color': '#fff2cc'}
-                       for argument in arg_framework.arguments
-                       if argument.name in yellow_arguments]
+                         for argument in arg_framework.arguments
+                         if argument.name in yellow]
     data_nodes_red = [{'id': str(argument), 'label': str(argument), 'color': '#e60c3f'}
-                       for argument in arg_framework.arguments
-                       if argument.name in red_arguments]
+                      for argument in arg_framework.arguments
+                      if argument.name in red]
     data_nodes_unselected = [{'id': str(argument), 'label': str(argument), 'color': '#AAAAAA'}
                              for argument in arg_framework.arguments
                              if argument.name in other_arguments]

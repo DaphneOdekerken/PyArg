@@ -347,7 +347,7 @@ class ArgumentationTheory:
 
     def create_structured_argumentation_framework(self, name: str, ordering: Optional[Ordering] = None):
         """
-        Create an structured argumentation framework based on this argumentation theory. Note: if no ordering is given,
+        Create a structured argumentation framework based on this argumentation theory. Note: if no ordering is given,
         last link elitist ordering is chosen as default ordering.
 
         :param name: The name of the argumentation framework.
