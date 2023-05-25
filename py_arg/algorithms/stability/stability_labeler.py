@@ -41,7 +41,7 @@ class StabilityLabeler:
         while rules_to_reconsider:
             rule = rules_to_reconsider.pop()
 
-            # Store old label so we can check if the label changed.
+            # Store old label, so we can check if the label changed.
             old_rule_label = labels.rule_labeling[rule].__copy__()
 
             self.color_rule(rule, labels)

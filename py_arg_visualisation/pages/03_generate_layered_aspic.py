@@ -158,4 +158,4 @@ def generate_layered_aspic_argumentation_system(
 )
 def download_generated_argumentation_system(
         _nr_clicks: int, argumentation_system_data):
-    return {'content': json.dumps(argumentation_system_data), 'filename': 'generated.json'}
+    return {'content': argumentation_system_data, 'filename': 'generated.json'}
