@@ -62,9 +62,9 @@ def get_canonical_argumentation_framework(extension_sets_str: str, semantics: st
     return [
         html.B('Canonical argumentation framework'),
         html.Br(),
-        html.P('AF = (A, D) where A = {{}} and D = {{}}.'.format(
-            ', '.join(str(arg) for arg in af.arguments),
-            '; '.join('(' + str(defeat.from_argument) + ', ' + str(defeat.to_argument) + ')'
-                      for defeat in af.defeats)
+        html.P('AF = (A, D) where A = {{{a}}} and D = {{{d}}}.'.format(
+            a=', '.join(str(arg) for arg in af.arguments),
+            d='; '.join('(' + str(defeat.from_argument) + ', ' + str(defeat.to_argument) + ')'
+                        for defeat in af.defeats)
         ))
     ]
