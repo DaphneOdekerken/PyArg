@@ -2,7 +2,8 @@ import json
 from typing import List, Dict
 
 import dash
-from dash import html, callback, Input, Output, State, ALL
+import visdcc
+from dash import html, callback, Input, Output, State, ALL, dcc
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 
@@ -18,17 +19,95 @@ from py_arg_visualisation.functions.extensions_functions.get_af_extensions impor
 from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
 from py_arg_visualisation.functions.import_functions.read_argumentation_framework_functions import \
     read_argumentation_framework
-from py_arg_visualisation.layout_elements.abstract_argumentation_layout_elements import \
-    get_abstract_setting_specification_div, get_abstract_evaluation_div, get_abstract_explanation_div, \
-    get_abstract_layout
 
 dash.register_page(__name__, name='Visualise AF', title='Visualise AF')
 
+
 # Create layout elements and compose them into the layout for this page.
-abstract_setting = get_abstract_setting_specification_div()
-abstract_evaluation = get_abstract_evaluation_div()
-abstract_explanation = get_abstract_explanation_div()
-layout = get_abstract_layout(abstract_evaluation, abstract_explanation, abstract_setting)
+
+def get_abstract_setting_specification_div():
+    return html.Div(children=[
+        dcc.Store(id='selected-argument-store-abstract'),
+        dbc.Col([
+            dbc.Row(dbc.Button('Generate random', id='generate-random-af-button', n_clicks=0)),
+            dbc.Row([
+                dbc.Col([
+                    html.B('Arguments'),
+                    dbc.Textarea(id='abstract-arguments',
+                                 placeholder='Add one argument per line. For example:\n A\n B\n C',
+                                 value='', style={'height': '300px'})
+                ]),
+                dbc.Col([
+                    html.B('Attacks'),
+                    dbc.Textarea(id='abstract-attacks',
+                                 placeholder='Add one attack per line. For example: \n (A,B) \n (A,C) \n (C,B)',
+                                 value='', style={'height': '300px'}),
+                ])
+            ])
+        ])
+    ])
+
+
+def get_abstract_evaluation_div():
+    return html.Div([
+        html.Div([
+            dbc.Row([
+                dbc.Col(html.B('Semantics')),
+                dbc.Col(dbc.Select(options=[
+                    {'label': 'Admissible', 'value': 'Admissible'},
+                    {'label': 'Complete', 'value': 'Complete'},
+                    {'label': 'Grounded', 'value': 'Grounded'},
+                    {'label': 'Preferred', 'value': 'Preferred'},
+                    {'label': 'Ideal', 'value': 'Ideal'},
+                    {'label': 'Stable', 'value': 'Stable'},
+                    {'label': 'Semi-stable', 'value': 'SemiStable'},
+                    {'label': 'Eager', 'value': 'Eager'},
+                ], value='Complete', id='abstract-evaluation-semantics')),
+            ]),
+
+            dbc.Row([
+                dbc.Col(html.B('Evaluation strategy')),
+                dbc.Col(dbc.Select(
+                    options=[
+                        {'label': 'Credulous', 'value': 'Credulous'},
+                        {'label': 'Skeptical', 'value': 'Skeptical'}
+                    ], value='Credulous', id='abstract-evaluation-strategy')),
+            ]),
+            dbc.Row(id='abstract-evaluation')
+        ]),
+    ])
+
+
+def get_abstract_explanation_div():
+    return html.Div([
+        dbc.Row([
+            dbc.Col(html.B('Type')),
+            dbc.Col(dbc.Select(options=[{'label': 'Acceptance', 'value': 'Acceptance'},
+                                        {'label': 'Non-Acceptance', 'value': 'NonAcceptance'}],
+                               value='Acceptance', id='abstract-explanation-type'))]),
+        dbc.Row([
+            dbc.Col(html.B('Explanation function')),
+            dbc.Col(dbc.Select(id='abstract-explanation-function'))
+        ]),
+        dbc.Row(id='abstract-explanation')
+    ])
+
+
+left_column = dbc.Col(
+    dbc.Accordion([
+        dbc.AccordionItem(get_abstract_setting_specification_div(), title='Abstract Argumentation Framework'),
+        dbc.AccordionItem(get_abstract_evaluation_div(), title='Evaluation', item_id='Evaluation'),
+        dbc.AccordionItem(get_abstract_explanation_div(), title='Explanation', item_id='Explanation')
+    ], id='abstract-evaluation-accordion')
+)
+right_column = dbc.Col([
+    dbc.Row([
+        dbc.Card(visdcc.Network(data={'nodes': [], 'edges': []}, id='abstract-argumentation-graph',
+                                options={'height': '500px'}), body=True),
+    ])
+])
+layout_abstract = dbc.Row([left_column, right_column])
+layout = html.Div([html.H1('Visualisation of abstract argumentation frameworks'), layout_abstract])
 
 
 @callback(
@@ -199,7 +278,7 @@ def derive_explanations_abstract_argumentation_framework(active_item,
                                                             explanation_function, explanation_type)
 
     # Print the explanations for each of the arguments.
-    return html.Div([html.B('The explanation(s):')] +
+    return html.Div([html.Div(html.B('The explanation(s):'))] +
                     [html.Div([
                         html.B(explanation_key),
                         html.Ul([html.Li(str(explanation_value)) for explanation_value in explanation_values])])
