@@ -46,14 +46,16 @@ navbar = dbc.NavbarSimple(
             label='Learn',
         ),
         dbc.DropdownMenu(
-            children=[],
+            children=[
+                dbc.DropdownMenuItem('Canonical representations', href='40-canonical')
+            ],
             nav=True,
             in_navbar=True,
             label='Algorithms',
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Chat', href='40-chat'),
+                dbc.DropdownMenuItem('Chat', href='50-chat'),
             ],
             nav=True,
             in_navbar=True,
