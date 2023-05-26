@@ -80,6 +80,7 @@ def big_c(extension: frozenset, extension_set: Set) -> Set[FrozenSet]:
         temp = temp.union(new_ext)
     return out
 
+
 @staticmethod
 def dcl(extension_set: Set) -> Set[FrozenSet]:
     out = set()
