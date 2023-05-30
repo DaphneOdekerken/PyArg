@@ -5,7 +5,7 @@ import dash_bootstrap_components as dbc
 
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.algorithms.canonical_constructions import construct_af_adm, construct_af_grd, construct_af_naive, \
-    construct_af_stage, construct_af_stb
+    construct_af_stage, construct_af_stb, construct_af_cf
 from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
 
 dash.register_page(__name__, name='Canonical', title='Canonical')
@@ -21,11 +21,12 @@ layout = html.Div(
                              style={'height': '200px'}),
                 html.B('Semantics'),
                 dbc.Select(options=[
+                    {'label': 'Conflict Free', 'value': 'Conflict_Free'},
                     {'label': 'Admissible', 'value': 'Admissible'},
                     {'label': 'Grounded', 'value': 'Grounded'},
+                    {'label': 'Stable', 'value': 'Stable'},
                     {'label': 'Naive', 'value': 'Naive'},
                     {'label': 'Stage', 'value': 'Stage'},
-                    {'label': 'Stable', 'value': 'Stable'},
                 ], value='Admissible', id='40-canonical-semantics'),
             ]),
             dbc.Col(html.Div(id='40-canonical-output-div'))
@@ -53,6 +54,8 @@ def get_canonical_argumentation_framework(extension_sets_str: str, semantics: st
 
     if semantics == 'Admissible':
         af = construct_af_adm.apply(input_extension_set)
+    elif semantics == 'Conflict_Free':
+        af = construct_af_cf.apply(input_extension_set)
     elif semantics == 'Grounded':
         af = construct_af_grd.apply(input_extension_set)
     elif semantics == 'Naive':
