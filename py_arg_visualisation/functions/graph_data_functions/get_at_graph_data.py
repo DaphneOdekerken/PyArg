@@ -1,18 +1,21 @@
-from typing import List
+from typing import List, Dict
 
 from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
+from py_arg_visualisation.functions.graph_data_functions.get_color import get_color
 from py_arg_visualisation.functions.ordering_functions.get_ordering_by_specification \
     import get_ordering_by_specification
 
 
 def get_argumentation_theory_graph_data(argumentation_theory: ArgumentationTheory, ordering_specification: str,
-                                        selected_arguments: List[str]):
+                                        selected_arguments: Dict[str, List[str]],
+                                        color_blind_mode: bool):
     """
     Calculate the data needed for the graphical representation of the argumentation theory and ordering
 
     :param argumentation_theory: The argumentation_theory that needs to be visualized.
     :param ordering_specification: The chosen ordering, combining both last/weakest link and democratic/elitist.
     :param selected_arguments: Arguments to be marked with a different color (e.g. because they are in some extension)
+    :param color_blind_mode: Is the color-blind mode on?
     """
     if selected_arguments and 'blue' in selected_arguments:
         blue = selected_arguments['blue']
@@ -37,15 +40,15 @@ def get_argumentation_theory_graph_data(argumentation_theory: ArgumentationTheor
         readable_id = 'A' + str(argument_id + 1)
         argument_long_str_to_id[argument.name] = readable_id
         if argument.name in blue:
-            color = '#6DCDE3'
+            color = get_color('blue', color_blind_mode)
         elif argument.name in green:
-            color = '#2ac2ab'
+            color = get_color('green', color_blind_mode)
         elif argument.name in yellow:
-            color = '#fff2cc'
+            color = get_color('yellow', color_blind_mode)
         elif argument.name in red:
-            color = '#e60c3f'
+            color = get_color('red', color_blind_mode)
         else:
-            color = '#AAAAAA'
+            color = get_color('gray', color_blind_mode)
         data_nodes.append({'id': readable_id, 'label': argument.short_name, 'color': color})
 
     ordering = get_ordering_by_specification(argumentation_theory, ordering_specification)

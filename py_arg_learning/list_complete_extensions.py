@@ -10,12 +10,12 @@ class ListCompleteExtensions(AbstractExerciseSet):
     def get_explanation_html(self):
         return "A complete extension is a set of arguments that contains exactly those arguments that it defends."
 
-    def generate_exercise_and_solutions(self):
+    def generate_exercise_and_solutions(self, color_blind_mode: bool):
         argumentation_framework_generator = AbstractArgumentationFrameworkGenerator(4, 5, False)
         af = argumentation_framework_generator.generate()
 
         exercise_instance = self.argumentation_framework_to_exercise_instance(af)
-        graph_data = self.argumentation_framework_to_graph_data(af)
+        graph_data = self.argumentation_framework_to_graph_data(af, color_blind_mode)
 
         complete_extensions = get_complete_extensions(af)
         complete_extensions_str_list = \

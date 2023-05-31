@@ -1,6 +1,6 @@
 import dash
 import visdcc
-from dash import html, callback, Input, Output
+from dash import html, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 
 from py_arg.abstract_argumentation_classes.argument import Argument
@@ -39,9 +39,10 @@ layout = html.Div(
     Output('40-canonical-output-div', 'children'),
     Input('40-extension-sets-textarea', 'value'),
     Input('40-canonical-semantics', 'value'),
+    State('color-blind-mode', 'on'),
     prevent_initial_call=True
 )
-def get_canonical_argumentation_framework(extension_sets_str: str, semantics: str):
+def get_canonical_argumentation_framework(extension_sets_str: str, semantics: str, color_blind_mode: bool):
 
     extensions_set = extension_sets_str.split('\n')
     input_extension_set = set()
@@ -68,7 +69,7 @@ def get_canonical_argumentation_framework(extension_sets_str: str, semantics: st
         # TODO cf?
         raise NotImplementedError
 
-    graph_data = get_argumentation_framework_graph_data(af, None)
+    graph_data = get_argumentation_framework_graph_data(af, None, color_blind_mode)
 
     return [
         html.B('Canonical argumentation framework'),

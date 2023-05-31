@@ -146,10 +146,12 @@ def generate_abstract_argumentation_framework(_nr_of_clicks_random: int, af_cont
     Input('abstract-arguments', 'value'),
     Input('abstract-attacks', 'value'),
     Input('selected-argument-store-abstract', 'data'),
+    State('color-blind-mode', 'on'),
     prevent_initial_call=True
 )
 def create_abstract_argumentation_framework(arguments: str, attacks: str,
-                                            selected_arguments: Dict[str, List[str]]):
+                                            selected_arguments: Dict[str, List[str]],
+                                            color_blind_mode: bool):
     """
     Send the AF data to the graph for plotting.
     """
@@ -161,7 +163,7 @@ def create_abstract_argumentation_framework(arguments: str, attacks: str,
     if dash.callback_context.triggered_id != 'selected-argument-store-abstract':
         selected_arguments = None
 
-    data = get_argumentation_framework_graph_data(arg_framework, selected_arguments)
+    data = get_argumentation_framework_graph_data(arg_framework, selected_arguments, color_blind_mode)
     return data
 
 

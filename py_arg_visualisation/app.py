@@ -1,6 +1,7 @@
 from dash import Dash, html
 import dash_bootstrap_components as dbc
 import dash
+import dash_daq as daq
 
 
 # Create a Dash app using an external stylesheet.
@@ -63,7 +64,9 @@ navbar = dbc.NavbarSimple(
             in_navbar=True,
             label='Applications', className='fw-bold',
         ),
-        dbc.DropdownMenuItem('About', href='/', className='fw-bold')
+        # dbc.DropdownMenuItem('About', href='/', className='fw-bold'),
+        daq.BooleanSwitch(id='color-blind-mode', on=False, className='mt-2'),
+        dbc.DropdownMenuItem('Colorblind mode', className='fw-bold')
     ],
     brand='PyArg',
     brand_href='/',

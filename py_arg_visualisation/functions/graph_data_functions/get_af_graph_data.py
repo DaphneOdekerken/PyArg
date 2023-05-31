@@ -1,15 +1,18 @@
 from typing import List, Optional, Dict
 
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg_visualisation.functions.graph_data_functions.get_color import get_color
 
 
 def get_argumentation_framework_graph_data(arg_framework: AbstractArgumentationFramework,
-                                           selected_arguments: Optional[Dict[str, List[str]]]):
+                                           selected_arguments: Optional[Dict[str, List[str]]],
+                                           color_blind_mode: bool):
     """
     Calculate the data needed for the graphical representation of the argumentation framework
 
     :param arg_framework: The abstract argumentation framework that needs to be visualized.
     :param selected_arguments: The arguments to be marked in a specific color.
+    :param color_blind_mode: Is the color-blind mode on?
     """
     if selected_arguments and 'blue' in selected_arguments:
         blue = selected_arguments['blue']
@@ -30,19 +33,24 @@ def get_argumentation_framework_graph_data(arg_framework: AbstractArgumentationF
     other_arguments = [str(argument) for argument in arg_framework.arguments
                        if argument.name not in blue + green + yellow + red]
 
-    data_nodes_blue = [{'id': str(argument), 'label': str(argument), 'color': '#6dcde3'}
+    data_nodes_blue = [{'id': str(argument), 'label': str(argument),
+                        'color': get_color('blue', color_blind_mode)}
                        for argument in arg_framework.arguments
                        if argument.name in blue]
-    data_nodes_green = [{'id': str(argument), 'label': str(argument), 'color': '#2ac2ab'}
+    data_nodes_green = [{'id': str(argument), 'label': str(argument),
+                         'color': get_color('green', color_blind_mode)}
                         for argument in arg_framework.arguments
                         if argument.name in green]
-    data_nodes_yellow = [{'id': str(argument), 'label': str(argument), 'color': '#fff2cc'}
+    data_nodes_yellow = [{'id': str(argument), 'label': str(argument),
+                          'color': get_color('yellow', color_blind_mode)}
                          for argument in arg_framework.arguments
                          if argument.name in yellow]
-    data_nodes_red = [{'id': str(argument), 'label': str(argument), 'color': '#e60c3f'}
+    data_nodes_red = [{'id': str(argument), 'label': str(argument),
+                       'color': get_color('red', color_blind_mode)}
                       for argument in arg_framework.arguments
                       if argument.name in red]
-    data_nodes_unselected = [{'id': str(argument), 'label': str(argument), 'color': '#AAAAAA'}
+    data_nodes_unselected = [{'id': str(argument), 'label': str(argument),
+                              'color': get_color('gray', color_blind_mode)}
                              for argument in arg_framework.arguments
                              if argument.name in other_arguments]
     data_nodes = data_nodes_blue + data_nodes_red + data_nodes_yellow + data_nodes_green + data_nodes_unselected

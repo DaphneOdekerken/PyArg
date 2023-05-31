@@ -11,12 +11,12 @@ class IdentifyGroundedExtension(AbstractExerciseSet):
         # TODO better explanation
         return "The grounded extension is the minimal complete extension w.r.t. set inclusion."
 
-    def generate_exercise_and_solutions(self):
+    def generate_exercise_and_solutions(self, color_blind_mode: bool):
         argumentation_framework_generator = AbstractArgumentationFrameworkGenerator(5, 4, True)
         af = argumentation_framework_generator.generate()
 
         exercise_instance = self.argumentation_framework_to_exercise_instance(af)
-        graph_data = self.argumentation_framework_to_graph_data(af)
+        graph_data = self.argumentation_framework_to_graph_data(af, color_blind_mode)
 
         grounded_extension = sorted(get_grounded_extension(af))
         grounded_extension_argument_names = [argument.name for argument in grounded_extension]

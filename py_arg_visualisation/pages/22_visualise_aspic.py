@@ -1,5 +1,5 @@
 import json
-from typing import List
+from typing import List, Dict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -31,7 +31,7 @@ dash.register_page(__name__, name='Visualise ASPIC+ AT', title='Visualise ASPIC+
 def get_aspic_layout(aspic_setting, structured_evaluation, structured_explanation):
     left_column = dbc.Col(
         dbc.Accordion([
-            dbc.AccordionItem(aspic_setting, title='Abstract Argumentation Framework'),
+            dbc.AccordionItem(aspic_setting, title='ASPIC+ Argumentation Theory'),
             dbc.AccordionItem(structured_evaluation, title='Evaluation', item_id='Evaluation'),
             dbc.AccordionItem(structured_explanation, title='Explanation', item_id='Explanation')
         ], id='structured-evaluation-accordion')
@@ -228,13 +228,14 @@ def generate_random_argumentation_theory(nr_of_clicks: int):
     Input('ordering-choice', 'value'),
     Input('ordering-link', 'value'),
     Input('selected-argument-store-structured', 'data'),
+    State('color-blind-mode', 'on'),
     prevent_initial_call=True
 )
 def create_argumentation_theory(axioms_str: str, ordinary_premises_str: str, strict_rules_str: str,
                                 defeasible_rules_str: str,
                                 ordinary_premise_preferences_str: str, defeasible_rule_preferences_str: str,
                                 ordering_choice_value: str, ordering_link_value: str,
-                                selected_arguments: List[str]):
+                                selected_arguments: Dict[str, List[str]], color_blind_mode: bool):
     # Read the ordering
     ordering_specification = ordering_choice_value + '_' + ordering_link_value
 
@@ -247,7 +248,7 @@ def create_argumentation_theory(axioms_str: str, ordinary_premises_str: str, str
         arg_theory = ArgumentationTheory(ArgumentationSystem({}, {}, [], []), [], [])
 
     # Generate the graph data for this argumentation theory
-    return get_argumentation_theory_graph_data(arg_theory, ordering_specification, selected_arguments)
+    return get_argumentation_theory_graph_data(arg_theory, ordering_specification, selected_arguments, color_blind_mode)
 
 
 @callback(

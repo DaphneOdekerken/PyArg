@@ -62,14 +62,17 @@ def get_explanation_html(exercise_choice_value: str):
           State('exercise-text', 'children'),
           State('answer-input-text-field', 'value'),
           State('solution-store', 'data'),
-          State('30-exercise-div', 'style'))
+          State('30-exercise-div', 'style'),
+          State('color-blind-mode', 'on')
+          )
 def handle_button_click(_generate_button_clicks: int, _check_button_clicks: int,
                         exercise_choice_value: str, old_exercise_text: str,
-                        user_solution: str, pre_generated_solutions, old_style: dict):
+                        user_solution: str, pre_generated_solutions, old_style: dict,
+                        color_blind_mode: bool):
     button_clicked = dash.ctx.triggered_id
     if button_clicked == 'practice-button':
         exercise_set = exercise_dict[exercise_choice_value]
-        exercise, graph_data, solutions = exercise_set.generate_exercise_and_solutions()
+        exercise, graph_data, solutions = exercise_set.generate_exercise_and_solutions(color_blind_mode)
         rendered_exercise = [
             html.B('Exercise'),
             exercise_set.render_exercise_instance(exercise, graph_data)

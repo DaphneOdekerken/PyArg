@@ -15,15 +15,15 @@ class AbstractExerciseSet(ABC):
                       for defeat in argumentation_framework.defeats)
 
     @staticmethod
-    def argumentation_framework_to_graph_data(argumentation_framework):
-        return get_argumentation_framework_graph_data(argumentation_framework, None)
+    def argumentation_framework_to_graph_data(argumentation_framework, color_blind_mode):
+        return get_argumentation_framework_graph_data(argumentation_framework, None, color_blind_mode)
 
     @abstractmethod
     def get_explanation_html(self):
         pass
 
     @abstractmethod
-    def generate_exercise_and_solutions(self):
+    def generate_exercise_and_solutions(self, color_blind_mode: bool):
         pass
 
     @abstractmethod
