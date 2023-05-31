@@ -361,10 +361,10 @@ def mark_extension_in_graph(_nr_of_clicks_values_extension, _nr_of_clicks_values
     State('ordering-choice', 'value'),
     State('ordering-link', 'value'),
     State('structured-evaluation-semantics', 'value'),
-    State('structured-explanation-function', 'value'),
-    State('structured-explanation-type', 'value'),
+    Input('structured-explanation-function', 'value'),
+    Input('structured-explanation-type', 'value'),
     State('structured-evaluation-strategy', 'value'),
-    State('structured-explanation-form', 'value'),
+    Input('structured-explanation-form', 'value'),
     prevent_initial_call=True
 )
 def derive_explanation_structured(active_item: str, axioms, ordinary, strict, defeasible, premise_preferences,

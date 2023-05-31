@@ -21,16 +21,16 @@ navbar = dbc.NavbarSimple(
             label='Generate',
             className='fw-bold',
         ),
-        dbc.DropdownMenu(
-            children=[
-                dbc.DropdownMenuItem('Abstract', href='11-edit-abstract', className='fw-bold'),
-                dbc.DropdownMenuItem('ASPIC+', href='12-edit-aspic', className='fw-bold'),
-            ],
-            nav=True,
-            in_navbar=True,
-            label='Edit',
-            className='fw-bold',
-        ),
+        # dbc.DropdownMenu(
+        #     children=[
+        #         dbc.DropdownMenuItem('Abstract', href='11-edit-abstract', className='fw-bold'),
+        #         dbc.DropdownMenuItem('ASPIC+', href='12-edit-aspic', className='fw-bold'),
+        #     ],
+        #     nav=True,
+        #     in_navbar=True,
+        #     label='Edit',
+        #     className='fw-bold',
+        # ),
         dbc.DropdownMenu(
             children=[
                 dbc.DropdownMenuItem('Abstract', href='21-visualise-abstract', className='fw-bold'),

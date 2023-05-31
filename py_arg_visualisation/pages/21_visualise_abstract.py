@@ -277,7 +277,7 @@ def derive_explanations_abstract_argumentation_framework(active_item,
                                                             explanation_function, explanation_type)
 
     # Print the explanations for each of the arguments.
-    return html.Div([html.Div(html.B('The explanation(s):'))] +
+    return html.Div([html.Div(html.B('The explanation(s), by argument:'))] +
                     [html.Div([
                         html.B(explanation_key),
                         html.Ul([html.Li(str(explanation_value)) for explanation_value in explanation_values])])
