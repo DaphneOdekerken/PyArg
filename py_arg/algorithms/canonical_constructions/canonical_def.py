@@ -20,8 +20,10 @@ def disjunctive_defence_formula(extension_set: Set, arg: Argument) -> Set[Frozen
     cnf = defence_formula(extension_set, arg)
     dnf = set({frozenset()})
     for conjunct in cnf:
+        if len(conjunct) == 0:
+            return set()
         old_dnf = dnf
-        new_dnf = set({frozenset()})
+        new_dnf = set()
         for disjunct in old_dnf:
             for d in conjunct:
                 new_elem = set(disjunct)
