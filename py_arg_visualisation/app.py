@@ -11,61 +11,63 @@ navbar = dbc.NavbarSimple(
     children=[
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Random Abstract AF', href='01-generate-abstract'),
+                dbc.DropdownMenuItem('Random Abstract AF', href='01-generate-abstract', className='fw-bold'),
                 # dbc.DropdownMenuItem('Random ASPIC+ AT', href='02-generate-random-aspic'),
-                dbc.DropdownMenuItem('Layered ASPIC+ AS', href='03-generate-layered-aspic'),
+                dbc.DropdownMenuItem('Layered ASPIC+ AS', href='03-generate-layered-aspic', className='fw-bold'),
             ],
             nav=True,
             in_navbar=True,
             label='Generate',
+            className='fw-bold',
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Abstract', href='11-edit-abstract'),
-                dbc.DropdownMenuItem('ASPIC+', href='12-edit-aspic'),
+                dbc.DropdownMenuItem('Abstract', href='11-edit-abstract', className='fw-bold'),
+                dbc.DropdownMenuItem('ASPIC+', href='12-edit-aspic', className='fw-bold'),
             ],
             nav=True,
             in_navbar=True,
             label='Edit',
+            className='fw-bold',
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Abstract', href='21-visualise-abstract'),
-                dbc.DropdownMenuItem('ASPIC+', href='22-visualise-aspic'),
+                dbc.DropdownMenuItem('Abstract', href='21-visualise-abstract', className='fw-bold'),
+                dbc.DropdownMenuItem('ASPIC+', href='22-visualise-aspic', className='fw-bold'),
             ],
             nav=True,
             in_navbar=True,
-            label='Visualise',
+            label='Visualise', className='fw-bold',
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Practice', href='30-learn'),
+                dbc.DropdownMenuItem('Practice', href='30-learn', className='fw-bold'),
             ],
             nav=True,
             in_navbar=True,
-            label='Learn',
+            label='Learn', className='fw-bold',
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Canonical representations', href='40-canonical')
+                dbc.DropdownMenuItem('Canonical representations', href='40-canonical', className='fw-bold')
             ],
             nav=True,
             in_navbar=True,
-            label='Algorithms',
+            label='Algorithms', className='fw-bold',
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Chat', href='50-chat'),
+                dbc.DropdownMenuItem('Chat', href='50-chat', className='fw-bold'),
             ],
             nav=True,
             in_navbar=True,
-            label='Applications',
+            label='Applications', className='fw-bold',
         ),
-        dbc.DropdownMenuItem('About', href='/')
+        dbc.DropdownMenuItem('About', href='/', className='fw-bold')
     ],
     brand='PyArg',
     brand_href='/',
-    color='primary',
+    color='primary', className='fw-bold',
 )
 
 # Specification of the layout, consisting of a navigation bar and the page container.
