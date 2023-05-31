@@ -47,6 +47,7 @@ layout = html.Div([
     Output('50-queryables-dropdown', 'value'),
     Output('50-argumentation-system', 'data'),
     Output('50-topic-dropdown', 'value'),
+    Output('50-knowledge-base', 'value'),
     Input('50-chat-as-upload', 'contents'),
     Input('50-fraud-example-button', 'n_clicks'),
     prevent_initial_call=True
@@ -75,14 +76,14 @@ def update_queryable_and_topic_options(argumentation_system_content, _fraud_exam
         queryable_values = []
         topic_value = None
     else:
-        return [], [], [], {}, None
+        return [], [], [], {}, None, []
 
     pos_literals = [{'label': key, 'value': key}
                     for key, value in opened_as.language.items()
                     if value.is_positive]
     all_literals = [{'label': key, 'value': key} for key in opened_as.language.keys()]
     as_to_json = ArgumentationSystemToJSONWriter().to_dict(opened_as)
-    return pos_literals, all_literals, queryable_values, as_to_json, topic_value
+    return pos_literals, all_literals, queryable_values, as_to_json, topic_value, []
 
 
 @callback(
