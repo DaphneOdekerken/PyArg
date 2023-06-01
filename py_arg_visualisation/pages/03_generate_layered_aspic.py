@@ -141,10 +141,22 @@ def generate_layered_aspic_argumentation_system(
          dcc.Store(data=argumentation_system_json,
                    id={'type': '03-generate-layered-aspic-download-content', 'index': nr_clicks}),
          html.Br(),
-         dbc.Row([dbc.Button('Download',
-                             id={'type': '03-generate-layered-aspic-download-button', 'index': nr_clicks},
-                             className='w-50 mx-auto')]),
-         dcc.Download(id={'type': '03-generate-layered-aspic-downloader', 'index': nr_clicks})
+         # dbc.Row([dbc.Button('Download',
+         #                     id={'type': '03-generate-layered-aspic-download-button', 'index': nr_clicks},
+         #                     className='w-50 mx-auto')]),
+         # dcc.Download(id={'type': '03-generate-layered-aspic-downloader', 'index': nr_clicks}),
+         dbc.Row([
+             dbc.InputGroup([
+                 dbc.InputGroupText('Filename'),
+                 dbc.Input(value='generated_as', id={'type': '03-generate-layered-aspic-filename', 'index': nr_clicks}),
+                 dbc.InputGroupText('.'),
+                 dbc.Select(options=[{'label': extension, 'value': extension}
+                                     for extension in ['JSON']],
+                            value='JSON', id={'type': '03-generate-layered-aspic-extension', 'index': nr_clicks}),
+                 dbc.Button('Download', id={'type': '03-generate-layered-aspic-download-button', 'index': nr_clicks}),
+             ]),
+             dcc.Download(id={'type': '03-generate-layered-aspic-downloader', 'index': nr_clicks})
+         ])
          ]
 
     return output_children
@@ -154,8 +166,12 @@ def generate_layered_aspic_argumentation_system(
     Output({'type': '03-generate-layered-aspic-downloader', 'index': MATCH}, 'data'),
     Input({'type': '03-generate-layered-aspic-download-button', 'index': MATCH}, 'n_clicks'),
     State({'type': '03-generate-layered-aspic-download-content', 'index': MATCH}, 'data'),
+    State({'type': '03-generate-layered-aspic-filename', 'index': MATCH}, 'value'),
+    State({'type': '03-generate-layered-aspic-extension', 'index': MATCH}, 'value'),
     prevent_initial_call=True,
 )
 def download_generated_argumentation_system(
-        _nr_clicks: int, argumentation_system_data):
-    return {'content': argumentation_system_data, 'filename': 'generated.json'}
+        _nr_clicks: int, argumentation_system_data, filename: str, extension: str):
+    if extension == 'JSON':
+        return {'content': argumentation_system_data, 'filename': filename + '.' + extension}
+    return NotImplementedError
