@@ -21,16 +21,6 @@ navbar = dbc.NavbarSimple(
             label='Generate',
             className='fw-bold',
         ),
-        # dbc.DropdownMenu(
-        #     children=[
-        #         dbc.DropdownMenuItem('Abstract', href='11-edit-abstract', className='fw-bold'),
-        #         dbc.DropdownMenuItem('ASPIC+', href='12-edit-aspic', className='fw-bold'),
-        #     ],
-        #     nav=True,
-        #     in_navbar=True,
-        #     label='Edit',
-        #     className='fw-bold',
-        # ),
         dbc.DropdownMenu(
             children=[
                 dbc.DropdownMenuItem('Abstract', href='21-visualise-abstract', className='fw-bold'),
@@ -66,11 +56,11 @@ navbar = dbc.NavbarSimple(
         ),
         # dbc.DropdownMenuItem('About', href='/', className='fw-bold'),
         daq.BooleanSwitch(id='color-blind-mode', on=False, className='mt-2'),
-        dbc.DropdownMenuItem('Colorblind mode', className='fw-bold')
+        dbc.DropdownMenuItem('Colorblind mode', className='fw-bold text-light')
     ],
     brand='PyArg',
     brand_href='/',
-    color='primary', className='fw-bold',
+    color='primary', className='fw-bold', dark=True
 )
 
 # Specification of the layout, consisting of a navigation bar and the page container.
@@ -78,4 +68,4 @@ app.layout = html.Div([navbar, dbc.Col(html.Div([dash.page_container]), width={'
 
 # Running the app.
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
