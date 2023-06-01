@@ -17,11 +17,11 @@ dash.register_page(__name__, name='Canonical', title='Canonical')
 properties_table = html.Div([html.Table([
     html.Colgroup([
         html.Col(style={}),
-        html.Col(id='40-downward-closed-column'),
         html.Col(id='40-tight-column'),
+        html.Col(id='40-conflict-sensitive-column'),
+        html.Col(id='40-downward-closed-column'),
         html.Col(id='40-incomparable-column'),
         html.Col(id='40-dcl-tight-column'),
-        html.Col(id='40-conflict-sensitive-column'),
         html.Col(id='40-contains-empty-set-column'),
         html.Col(id='40-nonempty-column'),
         html.Col(id='40-unary-column'),
@@ -40,34 +40,48 @@ properties_table = html.Div([html.Table([
         html.Th(),
     ]),
     html.Tr([
-        html.Td('Conflict Free'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
-        html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-conflict-free-button'))
+        html.Td('Conflict Free'),
+        html.Td(id='40-cf-tight'), html.Td(),
+        html.Td(id='40-cf-downward-closed'),
+        html.Td(), html.Td(), html.Td(),
+        html.Td(id='40-cf-non-empty'),
+        html.Td(), html.Td(dbc.Button('Generate', id='40-generate-conflict-free-button'))
     ]),
     html.Tr([
-        html.Td('Admissible'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
-        html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-admissible-button'))
+        html.Td('Admissible'), html.Td(),
+        html.Td(id='40-adm-conflict-sensitive'), html.Td(),
+        html.Td(), html.Td(),
+        html.Td(id='40-adm-contains-empty'),
+        html.Td(id='40-adm-non-empty'),
+        html.Td(), html.Td(dbc.Button('Generate', id='40-generate-admissible-button'))
     ]),
     html.Tr([
-        html.Td('Grounded'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
-        html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-grounded-button'))
+        html.Td('Grounded'), html.Td(), html.Td(), html.Td(),
+        html.Td(), html.Td(), html.Td(), html.Td(),
+        html.Td(id='40-gr-unary'),
+        html.Td(dbc.Button('Generate', id='40-generate-grounded-button'))
     ]),
     html.Tr([
-        html.Td('Stable'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
-        html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-stable-button'))
+        html.Td('Stable'), html.Td(id='40-stb-tight'),
+        html.Td(), html.Td(), html.Td(),
+        html.Td(id='40-stb-incomparable'),
+        html.Td(), html.Td(),
+        html.Td(), html.Td(dbc.Button('Generate', id='40-generate-stable-button'))
     ]),
     html.Tr([
-        html.Td('Naive'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
-        html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-naive-button'))
+        html.Td('Naive'), html.Td(), html.Td(), html.Td(),
+        html.Td(id='40-na-incomparable'),
+        html.Td(id='40-na-dcl-tight'), html.Td(),
+        html.Td(id='40-na-non-empty'),
+        html.Td(), html.Td(dbc.Button('Generate', id='40-generate-naive-button'))
     ]),
     html.Tr([
-        html.Td('Stage'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
-        html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-stage-button'))
+        html.Td('Stage'), html.Td(id='40-stg-tight'),
+        html.Td(), html.Td(),
+        html.Td(id='40-stg-incomparable'),
+        html.Td(), html.Td(),
+        html.Td(id='40-stg-non-empty'),
+        html.Td(), html.Td(dbc.Button('Generate', id='40-generate-stage-button'))
     ]),
 ])])
 
@@ -118,6 +132,21 @@ def read_extension_sets_from_str(extension_sets_str: str):
     Output('40-generate-stable-button', 'disabled'),
     Output('40-generate-naive-button', 'disabled'),
     Output('40-generate-stage-button', 'disabled'),
+    Output('40-cf-tight', 'children'),
+    Output('40-cf-downward-closed', 'children'),
+    Output('40-cf-non-empty', 'children'),
+    Output('40-adm-conflict-sensitive', 'children'),
+    Output('40-adm-contains-empty', 'children'),
+    Output('40-adm-non-empty', 'children'),
+    Output('40-gr-unary', 'children'),
+    Output('40-stb-tight', 'children'),
+    Output('40-stb-incomparable', 'children'),
+    Output('40-na-incomparable', 'children'),
+    Output('40-na-dcl-tight', 'children'),
+    Output('40-na-non-empty', 'children'),
+    Output('40-stg-tight', 'children'),
+    Output('40-stg-incomparable', 'children'),
+    Output('40-stg-non-empty', 'children'),
     Input('40-extension-sets-textarea', 'value')
 )
 def fill_properties_table(extension_sets_str: str):
@@ -126,49 +155,66 @@ def fill_properties_table(extension_sets_str: str):
     green = '#CCFFCC'
     red = '#FFCCCC'
 
+    positive_icon = '✅'
+    negative_icon = '❌'
+
     # Test which properties hold
     tight = check_tight.apply(input_extension_set)
     if tight:
         tight_style = {'background-color': green}
+        tight_value = positive_icon
     else:
         tight_style = {'background-color': red}
+        tight_value = negative_icon
     conf_sens = check_conf_sens.apply(input_extension_set)
     if conf_sens:
         conf_sens_style = {'background-color': green}
+        conf_sens_value = positive_icon
     else:
         conf_sens_style = {'background-color': red}
+        conf_sens_value = negative_icon
     downward_closed = check_downward_closed.apply(input_extension_set)
     if downward_closed:
         downward_closed_style = {'background-color': green}
+        downward_closed_value = positive_icon
     else:
         downward_closed_style = {'background-color': red}
+        downward_closed_value = negative_icon
     incomparable = check_incomparable.apply(input_extension_set)
     if incomparable:
         incomparable_style = {'background-color': green}
+        incomparable_value = positive_icon
     else:
         incomparable_style = {'background-color': red}
+        incomparable_value = negative_icon
     dcl_tight = check_incomparable.apply(input_extension_set)
     if dcl_tight:
         dcl_tight_style = {'background-color': green}
+        dcl_tight_value = positive_icon
     else:
         dcl_tight_style = {'background-color': red}
+        dcl_tight_value = negative_icon
     contains_empty = check_contains_empty.apply(input_extension_set)
     if contains_empty:
         contains_empty_style = {'background-color': green}
+        contains_empty_value = positive_icon
     else:
         contains_empty_style = {'background-color': red}
+        contains_empty_value = negative_icon
     unary = check_unary.apply(input_extension_set)
     if unary:
         unary_style = {'background-color': green}
+        unary_value = positive_icon
     else:
         unary_style = {'background-color': red}
+        unary_value = negative_icon
     non_empty = check_non_empty.apply(input_extension_set)
     if non_empty:
         non_empty_style = {'background-color': green}
+        non_empty_value = positive_icon
     else:
         non_empty_style = {'background-color': red}
-
-    # TODO: test which semantics can be applied
+        non_empty_value = negative_icon
 
     cf_realizable = downward_closed and tight and non_empty
     adm_realizable = contains_empty and non_empty and conf_sens
@@ -179,7 +225,14 @@ def fill_properties_table(extension_sets_str: str):
 
     return tight_style, conf_sens_style, downward_closed_style, incomparable_style, dcl_tight_style, \
         contains_empty_style, non_empty_style, unary_style, \
-        cf_realizable, adm_realizable, grd_realizable, stb_realizable, naive_realizable, stg_realizable
+        not cf_realizable, not adm_realizable, not grd_realizable, not stb_realizable, not naive_realizable, \
+        not stg_realizable, \
+        tight_value, downward_closed_value, non_empty_value, \
+        conf_sens_value, contains_empty_value, non_empty_value, \
+        unary_value, \
+        tight_value, incomparable_value, \
+        incomparable_value, dcl_tight_value, non_empty_value, \
+        tight_value, incomparable_value, non_empty_value
 
 
 @callback(
