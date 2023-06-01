@@ -7,7 +7,9 @@ import dash_bootstrap_components as dbc
 
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.algorithms.canonical_constructions import construct_af_adm, construct_af_grd, construct_af_naive, \
-    construct_af_stage, construct_af_stb, construct_af_cf, check_tight
+    construct_af_stage, construct_af_stb, construct_af_cf, check_tight, check_incomparable, check_conf_sens, \
+    check_set_conf_sens, check_com_closed, check_downward_closed, check_set_com_closed, check_unary, check_dcl_tight, \
+    check_contains_empty, check_non_empty
 from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
 
 dash.register_page(__name__, name='Canonical', title='Canonical')
@@ -21,48 +23,50 @@ properties_table = html.Div([html.Table([
         html.Col(id='40-dcl-tight-column'),
         html.Col(id='40-conflict-sensitive-column'),
         html.Col(id='40-contains-empty-set-column'),
-        html.Col(id='40-one-extension-column'),
+        html.Col(id='40-nonempty-column'),
+        html.Col(id='40-unary-column'),
         html.Col(style={}),
     ]),
     html.Tr([
         html.Th(),
-        html.Th(html.Div(html.Span('Downward-closed')), className='rotate'),
         html.Th(html.Div(html.Span('Tight')), className='rotate'),
+        html.Th(html.Div(html.Span('Conflict-sensitive')), className='rotate'),
+        html.Th(html.Div(html.Span('Downward-closed')), className='rotate'),
         html.Th(html.Div(html.Span('Incomparable')), className='rotate'),
         html.Th(html.Div(html.Span('DCL-tight')), className='rotate'),
-        html.Th(html.Div(html.Span('Conflict-sensitive')), className='rotate'),
         html.Th(html.Div(html.Span('Contains empty set')), className='rotate'),
-        html.Th(html.Div(html.Span('One extension')), className='rotate'),
+        html.Th(html.Div(html.Span('Nonempty')), className='rotate'),
+        html.Th(html.Div(html.Span('Unary')), className='rotate'),
         html.Th(),
     ]),
     html.Tr([
         html.Td('Conflict Free'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'),
+        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
         html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-conflict-free-button'))
     ]),
     html.Tr([
         html.Td('Admissible'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'),
+        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
         html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-admissible-button'))
     ]),
     html.Tr([
         html.Td('Grounded'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'),
+        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
         html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-grounded-button'))
     ]),
     html.Tr([
         html.Td('Stable'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'),
+        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
         html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-stable-button'))
     ]),
     html.Tr([
         html.Td('Naive'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'),
+        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
         html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-naive-button'))
     ]),
     html.Tr([
         html.Td('Stage'), html.Td('✅'), html.Td('✅'), html.Td('❌'),
-        html.Td('❌'), html.Td('❌'), html.Td('❌'),
+        html.Td('❌'), html.Td('❌'), html.Td('❌'), html.Td('❌'),
         html.Td('❌'), html.Td(dbc.Button('Generate', id='40-generate-stage-button'))
     ]),
 ])])
@@ -100,13 +104,14 @@ def read_extension_sets_from_str(extension_sets_str: str):
 
 
 @callback(
-    Output('40-downward-closed-column', 'style'),
     Output('40-tight-column', 'style'),
+    Output('40-conflict-sensitive-column', 'style'),
+    Output('40-downward-closed-column', 'style'),
     Output('40-incomparable-column', 'style'),
     Output('40-dcl-tight-column', 'style'),
-    Output('40-conflict-sensitive-column', 'style'),
     Output('40-contains-empty-set-column', 'style'),
-    Output('40-one-extension-column', 'style'),
+    Output('40-nonempty-column', 'style'),
+    Output('40-unary-column', 'style'),
     Output('40-generate-conflict-free-button', 'disabled'),
     Output('40-generate-admissible-button', 'disabled'),
     Output('40-generate-grounded-button', 'disabled'),
@@ -118,18 +123,63 @@ def read_extension_sets_from_str(extension_sets_str: str):
 def fill_properties_table(extension_sets_str: str):
     input_extension_set = read_extension_sets_from_str(extension_sets_str)
 
+    green = '#CCFFCC'
+    red = '#FFCCCC'
+
     # Test which properties hold
     tight = check_tight.apply(input_extension_set)
     if tight:
-        tight_style = {'background-color': '#AAAAAA'}
+        tight_style = {'background-color': green}
     else:
-        tight_style = {}
-    # TODO also for other properties
+        tight_style = {'background-color': red}
+    conf_sens = check_conf_sens.apply(input_extension_set)
+    if conf_sens:
+        conf_sens_style = {'background-color': green}
+    else:
+        conf_sens_style = {'background-color': red}
+    downward_closed = check_downward_closed.apply(input_extension_set)
+    if downward_closed:
+        downward_closed_style = {'background-color': green}
+    else:
+        downward_closed_style = {'background-color': red}
+    incomparable = check_incomparable.apply(input_extension_set)
+    if incomparable:
+        incomparable_style = {'background-color': green}
+    else:
+        incomparable_style = {'background-color': red}
+    dcl_tight = check_incomparable.apply(input_extension_set)
+    if dcl_tight:
+        dcl_tight_style = {'background-color': green}
+    else:
+        dcl_tight_style = {'background-color': red}
+    contains_empty = check_contains_empty.apply(input_extension_set)
+    if contains_empty:
+        contains_empty_style = {'background-color': green}
+    else:
+        contains_empty_style = {'background-color': red}
+    unary = check_unary.apply(input_extension_set)
+    if unary:
+        unary_style = {'background-color': green}
+    else:
+        unary_style = {'background-color': red}
+    non_empty = check_non_empty.apply(input_extension_set)
+    if non_empty:
+        non_empty_style = {'background-color': green}
+    else:
+        non_empty_style = {'background-color': red}
 
     # TODO: test which semantics can be applied
 
-    return {}, tight_style, {}, {}, {}, {}, {}, \
-        False, True, True, True, False, True
+    cf_realizable = downward_closed and tight and non_empty
+    adm_realizable = contains_empty and non_empty and conf_sens
+    grd_realizable = unary
+    stb_realizable = tight and incomparable
+    naive_realizable = non_empty and incomparable and dcl_tight
+    stg_realizable = tight and incomparable and non_empty
+
+    return tight_style, conf_sens_style, downward_closed_style, incomparable_style, dcl_tight_style, \
+        contains_empty_style, non_empty_style, unary_style, \
+        cf_realizable, adm_realizable, grd_realizable, stb_realizable, naive_realizable, stg_realizable
 
 
 @callback(
