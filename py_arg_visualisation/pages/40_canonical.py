@@ -187,7 +187,7 @@ def fill_properties_table(extension_sets_str: str):
     else:
         incomparable_style = {'background-color': red}
         incomparable_value = negative_icon
-    dcl_tight = check_incomparable.apply(input_extension_set)
+    dcl_tight = check_dcl_tight.apply(input_extension_set)
     if dcl_tight:
         dcl_tight_style = {'background-color': green}
         dcl_tight_value = positive_icon
