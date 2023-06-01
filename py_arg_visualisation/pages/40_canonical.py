@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import dash
+import dash_bootstrap_components as dbc
 import visdcc
 from dash import html, callback, Input, Output, State
-import dash_bootstrap_components as dbc
 
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.algorithms.canonical_constructions import construct_af_adm, construct_af_grd, construct_af_naive, \
     construct_af_stage, construct_af_stb, construct_af_cf, check_tight, check_incomparable, check_conf_sens, \
-    check_set_conf_sens, check_com_closed, check_downward_closed, check_set_com_closed, check_unary, check_dcl_tight, \
+    check_downward_closed, check_unary, check_dcl_tight, \
     check_contains_empty, check_non_empty
 from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
 
@@ -63,8 +63,8 @@ properties_table = html.Div([html.Table([
     ]),
     html.Tr([
         html.Td('Stable'), html.Td(id='40-stb-tight'),
-        html.Td(), html.Td(), html.Td(),
-        html.Td(id='40-stb-incomparable'),
+        html.Td(), html.Td(), html.Td(id='40-stb-incomparable'),
+        html.Td(),
         html.Td(), html.Td(),
         html.Td(), html.Td(dbc.Button('Generate', id='40-generate-stable-button'))
     ]),
