@@ -1,8 +1,8 @@
 from typing import Dict, List, Optional, Set
 
-from py_arg.aba_classes.rule import Rule
-from py_arg.aba_classes.atom import Atom
-from py_arg.aba_classes import instantiated_argument
+from src.py_arg.aba_classes import Rule
+from src.py_arg.aba_classes import Atom
+from src.py_arg.aba_classes import instantiated_argument
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import *
 from py_arg.abstract_argumentation_classes.defeat import *
 from py_arg.abstract_argumentation_classes.argument import *

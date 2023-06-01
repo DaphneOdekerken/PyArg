@@ -1,6 +1,6 @@
 from typing import Set
 
-from py_arg.aba_classes.atom import Atom
+from src.py_arg.aba_classes import Atom
 from py_arg.abstract_argumentation_classes.argument import Argument
 
 

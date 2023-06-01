@@ -1,25 +1,11 @@
 import unittest
 
-from typing import Set, FrozenSet
-
-import py_arg.algorithms.semantics.get_stable_extensions as get_stable_extensions
-
 import py_arg.algorithms.canonical_constructions.canonical_cf as canonical_cf
-import py_arg.algorithms.canonical_constructions.canonical_st as canonical_st
-import py_arg.algorithms.canonical_constructions.canonical_def as canonical_def
 
-import py_arg.algorithms.canonical_constructions.aux_operators as aux_operators
-
-from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from py_arg.abstract_argumentation_classes.argument import Argument
-from py_arg.abstract_argumentation_classes.defeat import Defeat
-
-from py_arg.algorithms.canonical_constructions import check_incomparable, check_tight, check_downward_closed, \
-    check_downward_closed, check_com_closed, check_set_com_closed, check_conf_sens, check_set_conf_sens
-from py_arg.algorithms.canonical_constructions import construct_af_cf, construct_af_adm, construct_af_grd, \
-    construct_af_stb, construct_af_naive, construct_af_stage
-from py_arg.algorithms.semantics import get_stable_extensions, get_ideal_extension, get_preferred_extensions, \
-    get_semistable_extensions, get_complete_extensions, get_grounded_extension, get_admissible_sets, get_eager_extension
+from py_arg.algorithms.canonical_constructions import check_incomparable, check_tight, check_conf_sens
+from py_arg.algorithms.canonical_constructions import construct_af_adm, construct_af_grd, \
+    construct_af_stb
+from py_arg.algorithms.semantics import get_stable_extensions, get_grounded_extension, get_admissible_sets
 from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator \
     import AbstractArgumentationFrameworkGenerator
 

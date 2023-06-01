@@ -4,7 +4,7 @@ from typing import Set
 import py_arg.algorithms.canonical_constructions.canonical_cf as canonical_cf
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 import py_arg.algorithms.canonical_constructions.check_tight as check_tight
-import py_arg.algorithms.canonical_constructions.check_downward_closed as check_downward_closed
+import src.py_arg.algorithms.canonical_constructions.check_downward_closed as check_downward_closed
 
 
 @staticmethod
