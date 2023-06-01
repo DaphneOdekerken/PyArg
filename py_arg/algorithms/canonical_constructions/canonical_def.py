@@ -30,7 +30,14 @@ def disjunctive_defence_formula(extension_set: Set, arg: Argument) -> Set[Frozen
                 new_elem.add(d)
                 new_dnf.add(frozenset(new_elem))
         dnf = new_dnf
-    return dnf
+
+    non_minimal = set()
+    for d1 in dnf:
+        for d2 in dnf:
+            if d2.issubset(d1) and not d1.issubset(d2):
+                non_minimal.add(d1)
+
+    return dnf.difference(non_minimal)
 
 
 @staticmethod
