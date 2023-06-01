@@ -12,6 +12,13 @@ from py_arg.abstract_argumentation_classes.abstract_argumentation_framework impo
 from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
 from py_arg.import_export.argumentation_framework_from_json_reader import ArgumentationFrameworkFromJsonReader
+from py_arg.import_export.argumentation_framework_to_aspartix_format_writer import \
+    ArgumentationFrameworkToASPARTIXFormatWriter
+from py_arg.import_export.argumentation_framework_to_iccma23_format_writer import \
+    ArgumentationFrameworkToICCMA23FormatWriter
+from py_arg.import_export.argumentation_framework_to_json_writer import ArgumentationFrameworkToJSONWriter
+from py_arg.import_export.argumentation_framework_to_trivial_graph_format_writer import \
+    ArgumentationFrameworkToTrivialGraphFormatWriter
 from py_arg_visualisation.functions.explanations_functions.explanation_function_options import \
     EXPLANATION_FUNCTION_OPTIONS
 from py_arg_visualisation.functions.explanations_functions.get_af_explanations import \
@@ -33,7 +40,8 @@ def get_abstract_setting_specification_div():
         dbc.Col([
             dbc.Row([dbc.Col(dbc.Button('Generate random', id='generate-random-af-button', n_clicks=0,
                                         className='w-100')),
-                     dbc.Col(dcc.Upload(dbc.Button('Open existing AF', className='w-100'), id='upload-af'))]),
+                     dbc.Col(dcc.Upload(dbc.Button('Open existing AF', className='w-100'), id='upload-af'))
+                     ], className='mt-2'),
             dbc.Row([
                 dbc.Col([
                     html.B('Arguments'),
@@ -47,6 +55,18 @@ def get_abstract_setting_specification_div():
                                  placeholder='Add one attack per line. For example: \n (A,B) \n (A,C) \n (C,B)',
                                  value='', style={'height': '300px'}),
                 ])
+            ], className='mt-2'),
+            dbc.Row([
+                dbc.InputGroup([
+                    dbc.InputGroupText('Filename'),
+                    dbc.Input(value='edited_af', id='21-af-filename'),
+                    dbc.InputGroupText('.'),
+                    dbc.Select(options=[{'label': extension, 'value': extension}
+                                        for extension in ['JSON', 'TGF', 'APX', 'ICCMA23']],
+                               value='JSON', id='21-af-extension'),
+                    dbc.Button('Download', id='21-af-download-button'),
+                ], className='mt-2'),
+                dcc.Download(id='21-af-download')
             ])
         ])
     ])
@@ -165,6 +185,37 @@ def create_abstract_argumentation_framework(arguments: str, attacks: str,
 
     data = get_argumentation_framework_graph_data(arg_framework, selected_arguments, color_blind_mode)
     return data
+
+
+@callback(
+    Output('21-af-download', 'data'),
+    Input('21-af-download-button', 'n_clicks'),
+    State('abstract-arguments', 'value'),
+    State('abstract-attacks', 'value'),
+    State('21-af-filename', 'value'),
+    State('21-af-extension', 'value'),
+    prevent_initial_call=True,
+)
+def download_generated_abstract_argumentation_framework(
+        _nr_clicks: int, arguments_text: str, defeats_text: str, filename: str, extension: str):
+    argumentation_framework = read_argumentation_framework(arguments_text, defeats_text)
+
+    if extension == 'JSON':
+        argumentation_framework_json = ArgumentationFrameworkToJSONWriter().to_dict(argumentation_framework)
+        argumentation_framework_str = json.dumps(argumentation_framework_json)
+    elif extension == 'TGF':
+        argumentation_framework_str = \
+            ArgumentationFrameworkToTrivialGraphFormatWriter.write_to_str(argumentation_framework)
+    elif extension == 'APX':
+        argumentation_framework_str = \
+            ArgumentationFrameworkToASPARTIXFormatWriter.write_to_str(argumentation_framework)
+    elif extension == 'ICCMA23':
+        argumentation_framework_str = \
+            ArgumentationFrameworkToICCMA23FormatWriter.write_to_str(argumentation_framework)
+    else:
+        raise NotImplementedError
+
+    return {'content': argumentation_framework_str, 'filename': filename + '.' + extension}
 
 
 @callback(
