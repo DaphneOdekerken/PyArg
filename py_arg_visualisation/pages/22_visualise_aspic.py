@@ -392,5 +392,12 @@ def derive_explanation_structured(active_item: str, axioms, ordinary, strict, de
     explanations = get_str_explanations(arg_theory, semantics, ordering, extension, accepted, function,
                                         explanation_type, strategy, form)
 
-    return html.Div([html.B('The Explanation(s):'),
-                     html.H6('\n {}'.format(str(explanations).replace('set()', '{}')))])
+    # return html.Div([html.B('The Explanation(s):'),
+    #                  html.H6('\n {}'.format(str(explanations).replace('set()', '{}')))])
+
+    return html.Div([html.Div(html.B('Explanation(s) by formula:'))] +
+                    [html.Div([
+                        html.B(explanation_key),
+                        html.Ul([html.Li(str(explanation_value).replace('set()', '{}'))
+                                 for explanation_value in explanation_values])])
+                        for explanation_key, explanation_values in explanations.items()])
