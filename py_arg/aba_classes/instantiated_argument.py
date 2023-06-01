@@ -1,9 +1,10 @@
 from typing import Set
 
 from py_arg.aba_classes.atom import Atom
+from py_arg.abstract_argumentation_classes.argument import Argument
 
 
-class InstantiatedArgument:
+class InstantiatedArgument(Argument):
     """
     A Rule has a list of antecedents and a single consequent.
     """
@@ -12,6 +13,7 @@ class InstantiatedArgument:
         self.premise = premise
         self.conclusion = conclusion
         self.arg_str = ','.join([str(atom) for atom in sorted(self.premise)]) + '|-' + str(self.conclusion)
+        super.__init__(self.arg_str)
         self.arg_hash = hash(self.arg_str)
 
     def __eq__(self, other):
