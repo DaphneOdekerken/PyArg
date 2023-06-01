@@ -11,7 +11,13 @@ import dash_bootstrap_components as dbc
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
+from py_arg.import_export.argumentation_framework_from_aspartix_format_reader import \
+    ArgumentationFrameworkFromASPARTIXFormatReader
+from py_arg.import_export.argumentation_framework_from_iccma23_format_reader import \
+    ArgumentationFrameworkFromICCMA23FormatReader
 from py_arg.import_export.argumentation_framework_from_json_reader import ArgumentationFrameworkFromJsonReader
+from py_arg.import_export.argumentation_framework_from_trivial_graph_format_reader import \
+    ArgumentationFrameworkFromTrivialGraphFormatReader
 from py_arg.import_export.argumentation_framework_to_aspartix_format_writer import \
     ArgumentationFrameworkToASPARTIXFormatWriter
 from py_arg.import_export.argumentation_framework_to_iccma23_format_writer import \
@@ -138,9 +144,10 @@ layout = html.Div([html.H1('Visualisation of abstract argumentation frameworks')
     Output('abstract-arguments', 'value'),
     Output('abstract-attacks', 'value'),
     Input('generate-random-af-button', 'n_clicks'),
-    Input('upload-af', 'contents')
+    Input('upload-af', 'contents'),
+    State('upload-af', 'filename')
 )
-def generate_abstract_argumentation_framework(_nr_of_clicks_random: int, af_content: str):
+def generate_abstract_argumentation_framework(_nr_of_clicks_random: int, af_content: str, af_filename: str):
     """
     Generate a random AF after clicking the button and put the result in the text box.
     """
@@ -153,7 +160,19 @@ def generate_abstract_argumentation_framework(_nr_of_clicks_random: int, af_cont
     elif dash.callback_context.triggered_id == 'upload-af':
         content_type, content_str = af_content.split(',')
         decoded = base64.b64decode(content_str)
-        opened_af = ArgumentationFrameworkFromJsonReader().from_json(json.loads(decoded))
+
+        name = af_filename.split('.')[0]
+        if af_filename.upper().endswith('.JSON'):
+            opened_af = ArgumentationFrameworkFromJsonReader().from_json(json.loads(decoded))
+        elif af_filename.upper().endswith('.TGF'):
+            opened_af = ArgumentationFrameworkFromTrivialGraphFormatReader.from_tgf(decoded.decode(), name)
+        elif af_filename.upper().endswith('.APX'):
+            opened_af = ArgumentationFrameworkFromASPARTIXFormatReader.from_apx(decoded.decode(), name)
+        elif af_filename.upper().endswith('.ICCMA23'):
+            opened_af = ArgumentationFrameworkFromICCMA23FormatReader.from_iccma23(decoded.decode(), name)
+        else:
+            raise NotImplementedError('This file format is currently not supported.')
+
         abstract_arguments_value = '\n'.join((str(arg) for arg in opened_af.arguments))
         abstract_attacks_value = '\n'.join((f'({str(defeat.from_argument)},{str(defeat.to_argument)})'
                                             for defeat in opened_af.defeats))
