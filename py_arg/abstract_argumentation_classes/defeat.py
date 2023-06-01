@@ -11,3 +11,6 @@ class Defeat:
 
     def __eq__(self, other):
         return self.from_argument == other.from_argument and self.to_argument == other.to_argument
+
+    def __hash__(self):
+        return hash(str(self))
