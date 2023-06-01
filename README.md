@@ -1,1 +1,1 @@
-Link to the visualisation: https://npai.science.uu.nl/pyarg
+Link to the visualisation: https://pyarg.npai.science.uu.nl/
