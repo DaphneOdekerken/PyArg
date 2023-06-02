@@ -9,18 +9,17 @@ class InstantiatedArgument(Argument):
     A Rule has a list of antecedents and a single consequent.
     """
     def __init__(self, argument_id: str, premise: Set[Atom], conclusion: Atom):
+        super().__init__(','.join([str(atom) for atom in sorted(premise)]) + '|-' + str(conclusion))
         self.id = str(argument_id)
         self.premise = premise
         self.conclusion = conclusion
-        self.arg_str = ','.join([str(atom) for atom in sorted(self.premise)]) + '|-' + str(self.conclusion)
-        super.__init__(self.arg_str)
-        self.arg_hash = hash(self.arg_str)
+        self.arg_hash = hash(self.name)
 
     def __eq__(self, other):
         return self.arg_hash == other.arg_hash
 
     def __str__(self):
-        return self.arg_str
+        return self.name
 
     def __hash__(self):
         return self.arg_hash

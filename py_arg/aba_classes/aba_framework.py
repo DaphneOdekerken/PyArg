@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional, Set
 
+from py_arg.aba_classes.instantiated_argument import InstantiatedArgument
 from py_arg.aba_classes.rule import Rule
 from py_arg.aba_classes.atom import Atom
 from py_arg.aba_classes import instantiated_argument
@@ -46,15 +47,33 @@ class ABAF:
 
     def generate_af(self) -> AbstractArgumentationFramework:
         arguments = set()
+        defeats = set()
+
         for assumption in self.assumptions:
             arguments.add(instantiated_argument.InstantiatedArgument('', {assumption}, assumption))
 
         for assumption in self.assumptions:
-            premises_set = self.recursively_construct_argument(self.rules, assumption, {assumption})
-            for p in premises_set:
-                arguments.add(Argument(str(p)))
+            arguments.add(InstantiatedArgument('', {assumption}, assumption))
 
-        return AbstractArgumentationFramework('', arguments=list(arguments), defeats=[])
+            contrary = self.contraries[assumption]
+            contrary_premises_set = self.recursively_construct_argument(self.rules, contrary, {contrary})
+            # print()
+            # print(assumption)
+            # print(contrary)
+            # print(contrary_premises_set)
+            # print()
+            for contrary_premise in contrary_premises_set:
+                arguments.add(InstantiatedArgument('', set(contrary_premise), contrary))
+
+        for arg1 in arguments:
+            for premise in arg1.premise:
+                for arg2 in arguments:
+                    if arg1 != arg2 and self.contraries[premise] == arg2.conclusion:
+                        arg1.add_ingoing_defeat(arg2)
+                        arg2.add_outgoing_defeat(arg1)
+                        defeats.add(Defeat(arg2, arg1))
+
+        return AbstractArgumentationFramework('', arguments=list(arguments), defeats=list(defeats))
 
     # I am basically reimplementing Prolog?
     # A premise of an argument is a minimal set of assumptions implying an atom
@@ -72,20 +91,28 @@ class ABAF:
                 rest_rules.add(rule)
 
         for rule in relevant_rules:
-            rule_premise = set()
+            rule_premises = set()
+            if len(rule.body) == 0:
+                rule_premises.add(frozenset())
+            asm = set()
             for atom in rule.body:
                 if atom in self.assumptions:
-                    rule_premise = self.merge(rule_premise, {frozenset({atom})})
-                else:
-                    rule_premise = self.merge(rule_premise,
-                                              self.recursively_construct_argument(rest_rules,
-                                                                                  atom, visited.copy().union({atom})))
-            premises_set = premises_set.union(rule_premise)
+                    asm.add(atom)
+            rule_premises = {frozenset(asm)}
+            for atom in rule.body:
+                if atom not in self.assumptions:
+                    rule_premises = self.merge(rule_premises,
+                                               self.recursively_construct_argument(rest_rules,
+                                                                                   atom,
+                                                                                   visited.copy().union({atom})))
+            premises_set = premises_set.union(rule_premises)
 
         return premises_set
 
     # crossproductlike merge
     def merge(self, premise_set_set1: Set[frozenset], premise_set_set2: Set[frozenset]):
+        if len(premise_set_set1) == 0:
+            return premise_set_set2
         out = set()
         for s1 in premise_set_set1:
             for s2 in premise_set_set2:

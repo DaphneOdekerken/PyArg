@@ -1,12 +1,10 @@
 import unittest
 
-from typing import Set, FrozenSet
-
 import py_arg.algorithms.semantics.get_stable_extensions as get_stable_extensions
 
-import py_arg.algorithms.canonical_constructions.canonical_cf as canonical_cf
-import py_arg.algorithms.canonical_constructions.canonical_st as canonical_st
-import py_arg.algorithms.canonical_constructions.canonical_def as canonical_def
+import py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
+import py_arg.algorithms.canonical_constructions.canonical_af.canonical_st as canonical_st
+import py_arg.algorithms.canonical_constructions.canonical_af.canonical_def as canonical_def
 
 import py_arg.algorithms.canonical_constructions.aux_operators as aux_operators
 
@@ -15,7 +13,6 @@ from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat
 
 import py_arg.algorithms.canonical_constructions.check_incomparable as check_incomparable
-import py_arg.algorithms.canonical_constructions.check_downward_closed as check_downward_closed
 import py_arg.algorithms.canonical_constructions.check_tight as check_tight
 import py_arg.algorithms.canonical_constructions.check_com_closed as check_com_closed
 import py_arg.algorithms.canonical_constructions.check_set_com_closed as check_set_com_closed

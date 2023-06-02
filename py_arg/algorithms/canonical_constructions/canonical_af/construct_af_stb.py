@@ -1,7 +1,7 @@
 
 from typing import Set
 
-import py_arg.algorithms.canonical_constructions.canonical_st as canonical_st
+import py_arg.algorithms.canonical_constructions.canonical_af.canonical_st as canonical_st
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 import py_arg.algorithms.canonical_constructions.check_tight as check_tight
 import py_arg.algorithms.canonical_constructions.check_incomparable as check_incomparable

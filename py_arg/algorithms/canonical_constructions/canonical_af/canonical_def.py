@@ -1,6 +1,6 @@
 from typing import Set, FrozenSet
 
-import py_arg.algorithms.canonical_constructions.canonical_cf as canonical_cf
+import py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat
