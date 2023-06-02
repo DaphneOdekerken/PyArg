@@ -4,6 +4,7 @@ import itertools
 from typing import Set
 
 from py_arg.abstract_argumentation_classes.argument import Argument
+import py_arg.algorithms.canonical_constructions.check_union_closed as check_union_closed
 
 
 @staticmethod
@@ -82,9 +83,47 @@ def big_c(extension: frozenset, extension_set: Set) -> Set[FrozenSet]:
 
 
 @staticmethod
+def unique_big_c(extension: frozenset, extension_set: Set) -> FrozenSet:
+    c = big_c(extension, extension_set)
+    if len(c) == 1:
+        return c.pop()
+    else:
+        return frozenset()
+
+
+@staticmethod
 def dcl(extension_set: Set) -> Set[FrozenSet]:
     out = set()
     for ext in extension_set:
         for s in powerset(ext):
             out.add(s)
     return out
+
+@staticmethod
+def ucl(extension_set: Set) -> Set[FrozenSet]:
+    out, _ = ucl_(extension_set)
+    return out
+
+
+@staticmethod
+def ucl_(extension_set: Set):
+    if check_union_closed.apply(extension_set):
+        return extension_set, True
+    else:
+        for ext in extension_set:
+            potential, is_union_closed = ucl_(extension_set.difference({ext}))
+            if is_union_closed:
+                return potential, True
+
+
+@staticmethod
+def reduce(extension_set: Set) -> Set[FrozenSet]:
+    intersection = big_a(extension_set)
+    for ext in extension_set:
+        intersection = intersection.intersection(ext)
+
+    out = set()
+    for ext in extension_set:
+        out.add(ext.difference(intersection))
+    return out
+
