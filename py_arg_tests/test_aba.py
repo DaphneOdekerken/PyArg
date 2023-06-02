@@ -1,10 +1,17 @@
 import unittest
 
-from src.py_arg.aba_classes import Rule, Atom
-from src.py_arg.aba_classes import ABAF
+from typing import Set, FrozenSet
+
+from py_arg.aba_classes.rule import Rule, Atom
+from py_arg.aba_classes.aba_framework import ABAF
+from py_arg.aba_classes import instantiated_argument
+from py_arg.abstract_argumentation_classes import argument, defeat, abstract_argumentation_framework
 
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat
+
+import py_arg.aba_classes
 
 
 class TestCanonicalConstructions(unittest.TestCase):

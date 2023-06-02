@@ -1,6 +1,6 @@
 from typing import Set
 
-from src.py_arg.aba_classes import Atom
+from py_arg.aba_classes.atom import Atom
 
 
 class Rule:

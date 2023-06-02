@@ -8,9 +8,8 @@ from dash import html, callback, Input, Output, State
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.algorithms.canonical_constructions import construct_af_adm, construct_af_grd, construct_af_naive, \
     construct_af_stage, construct_af_stb, construct_af_cf, check_tight, check_incomparable, check_conf_sens, \
-    check_unary, check_dcl_tight, \
+    check_downward_closed, check_unary, check_dcl_tight, \
     check_contains_empty, check_non_empty
-from src.py_arg.algorithms.canonical_constructions import check_downward_closed
 from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
 
 dash.register_page(__name__, name='Canonical', title='Canonical')
