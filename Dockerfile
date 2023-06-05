@@ -1,12 +1,12 @@
-FROM python:3.8-slim-buster
+FROM python:3.8
 
 # Create a working directory.
-RUN mkdir wd
-WORKDIR wd
+WORKDIR /usr/src/app
 
 # Install Python dependencies.
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
+RUN pip3 install uwsgi
 
 # Copy the rest of the codebase into the image
 COPY . ./
@@ -14,4 +14,4 @@ COPY . ./
 ENV PYTHONPATH "${PYTHONPATH}:/py_arg"
 
 # Finally, run gunicorn.
-CMD ["python", "./py_arg_visualisation/app.py"]
+CMD ["uwsgi", "wsgi.ini"]
