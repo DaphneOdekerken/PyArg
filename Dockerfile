@@ -11,7 +11,7 @@ RUN pip3 install uwsgi
 # Copy the rest of the codebase into the image
 COPY . ./
 
-ENV PYTHONPATH "${PYTHONPATH}:/py_arg"
+ENV PYTHONPATH "${PYTHONPATH}:/usr/src/app/src"
 
 # Finally, run gunicorn.
 CMD ["uwsgi", "wsgi.ini"]
