@@ -40,7 +40,8 @@ navbar = dbc.NavbarSimple(
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Canonical representations', href='40-canonical', className='fw-bold')
+                dbc.DropdownMenuItem('Canonical representations', href='41-canonical-af', className='fw-bold'),
+                dbc.DropdownMenuItem('Canonical representations', href='42-canonical-abaf', className='fw-bold')
             ],
             nav=True,
             in_navbar=True,

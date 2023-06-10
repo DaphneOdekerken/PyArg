@@ -18,14 +18,14 @@ dash.register_page(__name__, name='Canonical', title='Canonical')
 properties_table = html.Div([html.Table([
     html.Colgroup([
         html.Col(style={}),
-        html.Col(id='40-tight-column'),
-        html.Col(id='40-conflict-sensitive-column'),
-        html.Col(id='40-downward-closed-column'),
-        html.Col(id='40-incomparable-column'),
-        html.Col(id='40-dcl-tight-column'),
-        html.Col(id='40-contains-empty-set-column'),
-        html.Col(id='40-nonempty-column'),
-        html.Col(id='40-unary-column'),
+        html.Col(id='41-tight-column'),
+        html.Col(id='41-conflict-sensitive-column'),
+        html.Col(id='41-downward-closed-column'),
+        html.Col(id='41-incomparable-column'),
+        html.Col(id='41-dcl-tight-column'),
+        html.Col(id='41-contains-empty-set-column'),
+        html.Col(id='41-nonempty-column'),
+        html.Col(id='41-unary-column'),
         html.Col(style={}),
     ]),
     html.Tr([
@@ -42,47 +42,47 @@ properties_table = html.Div([html.Table([
     ]),
     html.Tr([
         html.Td('Conflict Free'),
-        html.Td(id='40-cf-tight'), html.Td(),
-        html.Td(id='40-cf-downward-closed'),
+        html.Td(id='41-cf-tight'), html.Td(),
+        html.Td(id='41-cf-downward-closed'),
         html.Td(), html.Td(), html.Td(),
-        html.Td(id='40-cf-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='40-generate-conflict-free-button'))
+        html.Td(id='41-cf-non-empty'),
+        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-conflict-free-button'))
     ]),
     html.Tr([
         html.Td('Admissible'), html.Td(),
-        html.Td(id='40-adm-conflict-sensitive'), html.Td(),
+        html.Td(id='41-adm-conflict-sensitive'), html.Td(),
         html.Td(), html.Td(),
-        html.Td(id='40-adm-contains-empty'),
-        html.Td(id='40-adm-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='40-generate-admissible-button'))
+        html.Td(id='41-adm-contains-empty'),
+        html.Td(id='41-adm-non-empty'),
+        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-admissible-button'))
     ]),
     html.Tr([
         html.Td('Grounded'), html.Td(), html.Td(), html.Td(),
         html.Td(), html.Td(), html.Td(), html.Td(),
-        html.Td(id='40-gr-unary'),
-        html.Td(dbc.Button('Generate', id='40-generate-grounded-button'))
+        html.Td(id='41-gr-unary'),
+        html.Td(dbc.Button('Generate', id='41-generate-grounded-button'))
     ]),
     html.Tr([
-        html.Td('Stable'), html.Td(id='40-stb-tight'),
-        html.Td(), html.Td(), html.Td(id='40-stb-incomparable'),
+        html.Td('Stable'), html.Td(id='41-stb-tight'),
+        html.Td(), html.Td(), html.Td(id='41-stb-incomparable'),
         html.Td(),
         html.Td(), html.Td(),
-        html.Td(), html.Td(dbc.Button('Generate', id='40-generate-stable-button'))
+        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-stable-button'))
     ]),
     html.Tr([
         html.Td('Naive'), html.Td(), html.Td(), html.Td(),
-        html.Td(id='40-na-incomparable'),
-        html.Td(id='40-na-dcl-tight'), html.Td(),
-        html.Td(id='40-na-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='40-generate-naive-button'))
+        html.Td(id='41-na-incomparable'),
+        html.Td(id='41-na-dcl-tight'), html.Td(),
+        html.Td(id='41-na-non-empty'),
+        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-naive-button'))
     ]),
     html.Tr([
-        html.Td('Stage'), html.Td(id='40-stg-tight'),
+        html.Td('Stage'), html.Td(id='41-stg-tight'),
         html.Td(), html.Td(),
-        html.Td(id='40-stg-incomparable'),
+        html.Td(id='41-stg-incomparable'),
         html.Td(), html.Td(),
-        html.Td(id='40-stg-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='40-generate-stage-button'))
+        html.Td(id='41-stg-non-empty'),
+        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-stage-button'))
     ]),
 ])])
 
@@ -91,14 +91,14 @@ layout = html.Div(
         html.H1('Create canonical AFs based on sets of extensions'),
         dbc.Row([
             dbc.Col([
-                html.B('Enter here your set of extensions'),
-                dbc.Textarea(id='40-extension-sets-textarea',
+                html.B('Enter your set of extensions here'),
+                dbc.Textarea(id='41-extension-sets-textarea',
                              placeholder='Put each set on a new line and represent sets as {X, Y, Z}.',
                              style={'height': '200px'}),
                 html.B('Properties and semantics'),
                 properties_table,
             ]),
-            dbc.Col(html.Div(id='40-canonical-output-div'))
+            dbc.Col(html.Div(id='41-canonical-output-div'))
         ])
     ]
 )
@@ -119,36 +119,36 @@ def read_extension_sets_from_str(extension_sets_str: str):
 
 
 @callback(
-    Output('40-tight-column', 'style'),
-    Output('40-conflict-sensitive-column', 'style'),
-    Output('40-downward-closed-column', 'style'),
-    Output('40-incomparable-column', 'style'),
-    Output('40-dcl-tight-column', 'style'),
-    Output('40-contains-empty-set-column', 'style'),
-    Output('40-nonempty-column', 'style'),
-    Output('40-unary-column', 'style'),
-    Output('40-generate-conflict-free-button', 'disabled'),
-    Output('40-generate-admissible-button', 'disabled'),
-    Output('40-generate-grounded-button', 'disabled'),
-    Output('40-generate-stable-button', 'disabled'),
-    Output('40-generate-naive-button', 'disabled'),
-    Output('40-generate-stage-button', 'disabled'),
-    Output('40-cf-tight', 'children'),
-    Output('40-cf-downward-closed', 'children'),
-    Output('40-cf-non-empty', 'children'),
-    Output('40-adm-conflict-sensitive', 'children'),
-    Output('40-adm-contains-empty', 'children'),
-    Output('40-adm-non-empty', 'children'),
-    Output('40-gr-unary', 'children'),
-    Output('40-stb-tight', 'children'),
-    Output('40-stb-incomparable', 'children'),
-    Output('40-na-incomparable', 'children'),
-    Output('40-na-dcl-tight', 'children'),
-    Output('40-na-non-empty', 'children'),
-    Output('40-stg-tight', 'children'),
-    Output('40-stg-incomparable', 'children'),
-    Output('40-stg-non-empty', 'children'),
-    Input('40-extension-sets-textarea', 'value')
+    Output('41-tight-column', 'style'),
+    Output('41-conflict-sensitive-column', 'style'),
+    Output('41-downward-closed-column', 'style'),
+    Output('41-incomparable-column', 'style'),
+    Output('41-dcl-tight-column', 'style'),
+    Output('41-contains-empty-set-column', 'style'),
+    Output('41-nonempty-column', 'style'),
+    Output('41-unary-column', 'style'),
+    Output('41-generate-conflict-free-button', 'disabled'),
+    Output('41-generate-admissible-button', 'disabled'),
+    Output('41-generate-grounded-button', 'disabled'),
+    Output('41-generate-stable-button', 'disabled'),
+    Output('41-generate-naive-button', 'disabled'),
+    Output('41-generate-stage-button', 'disabled'),
+    Output('41-cf-tight', 'children'),
+    Output('41-cf-downward-closed', 'children'),
+    Output('41-cf-non-empty', 'children'),
+    Output('41-adm-conflict-sensitive', 'children'),
+    Output('41-adm-contains-empty', 'children'),
+    Output('41-adm-non-empty', 'children'),
+    Output('41-gr-unary', 'children'),
+    Output('41-stb-tight', 'children'),
+    Output('41-stb-incomparable', 'children'),
+    Output('41-na-incomparable', 'children'),
+    Output('41-na-dcl-tight', 'children'),
+    Output('41-na-non-empty', 'children'),
+    Output('41-stg-tight', 'children'),
+    Output('41-stg-incomparable', 'children'),
+    Output('41-stg-non-empty', 'children'),
+    Input('41-extension-sets-textarea', 'value')
 )
 def fill_properties_table(extension_sets_str: str):
     input_extension_set = read_extension_sets_from_str(extension_sets_str)
@@ -237,14 +237,14 @@ def fill_properties_table(extension_sets_str: str):
 
 
 @callback(
-    Output('40-canonical-output-div', 'children'),
-    State('40-extension-sets-textarea', 'value'),
-    Input('40-generate-conflict-free-button', 'n_clicks'),
-    Input('40-generate-admissible-button', 'n_clicks'),
-    Input('40-generate-grounded-button', 'n_clicks'),
-    Input('40-generate-stable-button', 'n_clicks'),
-    Input('40-generate-naive-button', 'n_clicks'),
-    Input('40-generate-stage-button', 'n_clicks'),
+    Output('41-canonical-output-div', 'children'),
+    State('41-extension-sets-textarea', 'value'),
+    Input('41-generate-conflict-free-button', 'n_clicks'),
+    Input('41-generate-admissible-button', 'n_clicks'),
+    Input('41-generate-grounded-button', 'n_clicks'),
+    Input('41-generate-stable-button', 'n_clicks'),
+    Input('41-generate-naive-button', 'n_clicks'),
+    Input('41-generate-stage-button', 'n_clicks'),
     State('color-blind-mode', 'on'),
     prevent_initial_call=True
 )
@@ -260,17 +260,17 @@ def get_canonical_argumentation_framework(extension_sets_str: str,
 
     triggered_id = dash.ctx.triggered_id
 
-    if triggered_id == '40-generate-admissible-button':
+    if triggered_id == '41-generate-admissible-button':
         af = construct_af_adm.apply(input_extension_set)
-    elif triggered_id == '40-generate-conflict-free-button':
+    elif triggered_id == '41-generate-conflict-free-button':
         af = construct_af_cf.apply(input_extension_set)
-    elif triggered_id == '40-generate-grounded-button':
+    elif triggered_id == '41-generate-grounded-button':
         af = construct_af_grd.apply(input_extension_set)
-    elif triggered_id == '40-generate-naive-button':
+    elif triggered_id == '41-generate-naive-button':
         af = construct_af_naive.apply(input_extension_set)
-    elif triggered_id == '40-generate-stage-button':
+    elif triggered_id == '41-generate-stage-button':
         af = construct_af_stage.apply(input_extension_set)
-    elif triggered_id == '40-generate-stable-button':
+    elif triggered_id == '41-generate-stable-button':
         af = construct_af_stb.apply(input_extension_set)
     else:
         raise NotImplementedError
