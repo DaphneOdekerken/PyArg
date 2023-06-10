@@ -3,7 +3,6 @@ from typing import Set
 
 from py_arg.aba_classes.aba_framework import ABAF
 from py_arg.aba_classes.rule import Rule
-from py_arg.aba_classes.atom import Atom
 import py_arg.algorithms.canonical_constructions.aux_operators as aux
 
 
@@ -13,7 +12,7 @@ def apply(extension_set: Set) -> ABAF:
     language = assumptions.copy()
     contraries = {}
     for a in assumptions:
-        a_c = Atom(a.name + '_c')
+        a_c = a + '_c'
         language.add(a_c)
         contraries[a] = a_c
 

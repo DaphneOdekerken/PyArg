@@ -1,6 +1,5 @@
 from typing import Set
 
-from py_arg.aba_classes.atom import Atom
 from py_arg.abstract_argumentation_classes.argument import Argument
 
 
@@ -8,7 +7,7 @@ class InstantiatedArgument(Argument):
     """
     A Rule has a list of antecedents and a single consequent.
     """
-    def __init__(self, argument_id: str, premise: Set[Atom], conclusion: Atom):
+    def __init__(self, argument_id: str, premise: Set[str], conclusion: str):
         super().__init__(','.join([str(atom) for atom in sorted(premise)]) + '|-' + str(conclusion))
         self.id = str(argument_id)
         self.premise = premise

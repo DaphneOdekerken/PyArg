@@ -3,7 +3,6 @@ from typing import FrozenSet
 import itertools
 from typing import Set
 
-from py_arg.abstract_argumentation_classes.argument import Argument
 import py_arg.algorithms.canonical_constructions.check_union_closed as check_union_closed
 
 
@@ -99,21 +98,15 @@ def dcl(extension_set: Set) -> Set[FrozenSet]:
             out.add(s)
     return out
 
+
 @staticmethod
 def ucl(extension_set: Set) -> Set[FrozenSet]:
-    out, _ = ucl_(extension_set)
-    return out
-
-
-@staticmethod
-def ucl_(extension_set: Set):
-    if check_union_closed.apply(extension_set):
-        return extension_set, True
-    else:
-        for ext in extension_set:
-            potential, is_union_closed = ucl_(extension_set.difference({ext}))
-            if is_union_closed:
-                return potential, True
+    out = extension_set.copy()
+    out.add(frozenset())
+    new = set()
+    for a, b in tuples(extension_set):
+        new.add(frozenset(set(a).union(set(b))))
+    return out.union(new)
 
 
 @staticmethod

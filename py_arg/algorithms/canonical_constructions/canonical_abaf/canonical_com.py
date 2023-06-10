@@ -3,7 +3,6 @@ from typing import Set
 
 from py_arg.aba_classes.aba_framework import ABAF
 from py_arg.aba_classes.rule import Rule
-from py_arg.aba_classes.atom import Atom
 import py_arg.algorithms.canonical_constructions.aux_operators as aux
 import  py_arg.algorithms.canonical_constructions.canonical_abaf.canonical_adm as canonical_adm
 
@@ -23,7 +22,7 @@ def apply(extension_set: Set) -> ABAF:
 
     for ext_a, ext_b in aux.tuples(aux.reduce(extension_set).difference(frozenset())):
         for a in aux.unique_big_c(frozenset(set(ext_a).union(set(ext_b))), aux.reduce(extension_set)):
-            x_a_c = Atom('x_' + a.name + '_c')
+            x_a_c = 'x_' + a + '_c'
             rules.add(Rule('', set(ext_a).union(set(ext_b)), x_a_c))
 
     return ABAF(assumptions, rules, language, contraries)

@@ -2,7 +2,6 @@ from typing import Dict, List, Optional, Set
 
 from py_arg.aba_classes.instantiated_argument import InstantiatedArgument
 from py_arg.aba_classes.rule import Rule
-from py_arg.aba_classes.atom import Atom
 from py_arg.aba_classes import instantiated_argument
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import *
 from py_arg.abstract_argumentation_classes.defeat import *
@@ -11,10 +10,10 @@ from py_arg.abstract_argumentation_classes.argument import *
 
 class ABAF:
     def __init__(self,
-                 assumptions: Set[Atom],
+                 assumptions: Set[str],
                  rules: Set[Rule],
-                 language: Set[Atom],
-                 contraries: Dict[Atom, Atom]):
+                 language: Set[str],
+                 contraries: Dict[str, str]):
         self.assumptions = assumptions
         self.rules = rules
 
@@ -79,7 +78,7 @@ class ABAF:
     # A premise of an argument is a minimal set of assumptions implying an atom
     # Premises of an atom are determined recursively, going through all rules implying the atom
     # Dealing with all the combinations makes the code a bit convoluted, but basically it is only backtracking
-    def recursively_construct_argument(self, rules: Set[Rule], target: Atom, visited: Set[Atom]):
+    def recursively_construct_argument(self, rules: Set[Rule], target: str, visited: Set[str]):
         premises_set = set()
         relevant_rules = set()
         rest_rules = set()
@@ -118,3 +117,11 @@ class ABAF:
             for s2 in premise_set_set2:
                 out.add(s1.union(s2))
         return out
+
+    def reduce(self):
+        rm = set()
+        for rule1 in self.rules:
+            for rule2 in self.rules:
+                if rule1.head == rule2.head and rule1.body.issubset(rule2.body) and not rule2.body.issubset(rule1.body):
+                    rm.add(rule2)
+        self.rules = self.rules.difference(rm)

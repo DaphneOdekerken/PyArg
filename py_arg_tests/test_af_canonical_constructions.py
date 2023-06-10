@@ -74,7 +74,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         for defeat in af.defeats:
             print(defeat.from_argument.name + ' attacks ' + defeat.to_argument.name)
 
-    def test_cl_construction(self):
+    def test_cf_construction(self):
         a = Argument('a')
         b = Argument('b')
         c = Argument('c')
@@ -87,9 +87,9 @@ class TestCanonicalConstructions(unittest.TestCase):
 
         es = set({one, two, three, four})
 
-        af_cl = canonical_cf.apply(es)
-        print(af_cl.arguments)
-        for defeat in af_cl.defeats:
+        af_cf = canonical_cf.apply(es)
+        print(af_cf.arguments)
+        for defeat in af_cf.defeats:
             print(defeat.from_argument.name + ' attacks ' + defeat.to_argument.name)
 
     def test_sem_stb(self):

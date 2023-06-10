@@ -13,9 +13,9 @@ class TestCanonicalConstructions(unittest.TestCase):
 
     def test_grd_construction(self):
         af = AbstractArgumentationFrameworkGenerator(9, 8).generate()
-        es_original = set({frozenset(get_grounded_extension.get_grounded_extension(af))})
-        af_cl = canonical_cf.apply(es_original)
-        es_new = set({frozenset(get_grounded_extension.get_grounded_extension(af_cl))})
+        es_original = {frozenset(get_grounded_extension.get_grounded_extension(af))}
+        af_cf = canonical_cf.apply(es_original)
+        es_new = {frozenset(get_grounded_extension.get_grounded_extension(af_cf))}
 
         self.assertEqual(es_original, es_new)
         self.assertEqual(len(es_new), 1)
