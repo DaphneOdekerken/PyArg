@@ -25,6 +25,7 @@ navbar = dbc.NavbarSimple(
             children=[
                 dbc.DropdownMenuItem('Abstract', href='21-visualise-abstract', className='fw-bold'),
                 dbc.DropdownMenuItem('ASPIC+', href='22-visualise-aspic', className='fw-bold'),
+                dbc.DropdownMenuItem('ABA', href='23-visualise-aba', className='fw-bold'),
             ],
             nav=True,
             in_navbar=True,
@@ -40,8 +41,8 @@ navbar = dbc.NavbarSimple(
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Canonical representations', href='41-canonical-af', className='fw-bold'),
-                dbc.DropdownMenuItem('Canonical representations', href='42-canonical-abaf', className='fw-bold')
+                dbc.DropdownMenuItem('Canonical Construction AF', href='41-canonical-af', className='fw-bold'),
+                dbc.DropdownMenuItem('Canonical Construction ABAF', href='42-canonical-abaf', className='fw-bold')
             ],
             nav=True,
             in_navbar=True,
