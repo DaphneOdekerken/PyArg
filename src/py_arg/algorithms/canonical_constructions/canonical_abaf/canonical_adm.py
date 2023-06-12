@@ -1,0 +1,18 @@
+
+from typing import Set
+
+from src.py_arg.aba_classes.aba_framework import ABAF
+from src import py_arg as canonical_ucl, py_arg as canonical_cf
+
+
+@staticmethod
+def apply(extension_set: Set) -> ABAF:
+    abaf_cf = canonical_cf.apply(extension_set)
+    abaf_ucl = canonical_ucl.apply(extension_set)
+    assumptions = abaf_cf.assumptions.union(abaf_ucl.assumptions)
+    rules = abaf_cf.rules.union(abaf_ucl.rules)
+    language = abaf_cf.language.union(abaf_ucl.language)
+    contraries = abaf_cf.contraries
+    contraries.update(abaf_ucl.contraries)
+
+    return ABAF(assumptions, rules, language, contraries)

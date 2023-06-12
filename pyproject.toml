@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-argumentation"
+version = "0.0.1"
+authors = [
+    { name="Daphne Odekerken", email="d.odekerken@uu.nl" },
+    { name="AnneMarie Borg", email="a.borg@uu.nl" },
+    { name="Matti Berthold", email="berthold@informatik.uni-leipzig.de" },
+]
+description = "A package for computational argumentation algorithms in Python."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/DaphneOdekerken/PyArg"
+"Bug Tracker" = "https://github.com/DaphneOdekerken/PyArg/issues"
