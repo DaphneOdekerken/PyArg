@@ -15,3 +15,4 @@ ENV PYTHONPATH "${PYTHONPATH}:/usr/src/app/src"
 
 # Finally, run gunicorn.
 CMD ["uwsgi", "wsgi.ini"]
+
