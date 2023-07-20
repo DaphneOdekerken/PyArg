@@ -1,6 +1,6 @@
 import unittest
 
-from src.py_arg_tests.modgil_prakken_aij_tests import get_argumentation_theory
+from py_arg_tests.modgil_prakken_aij_tests import get_argumentation_theory
 
 
 class TestRecomputeArguments(unittest.TestCase):

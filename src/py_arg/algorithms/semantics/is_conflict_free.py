@@ -1,9 +1,9 @@
 import itertools
 from typing import Iterable
 
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg.abstract_argumentation_classes.argument import Argument
-from src.py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.abstract_argumentation_classes.defeat import Defeat
 
 
 def is_conflict_free(argument_set: Iterable[Argument], argumentation_framework: AbstractArgumentationFramework) -> bool:

@@ -1,7 +1,7 @@
 import json
 
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg.import_export.writer import Writer
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.import_export.writer import Writer
 
 
 class ArgumentationFrameworkToJSONWriter(Writer):

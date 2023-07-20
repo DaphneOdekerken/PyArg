@@ -1,8 +1,8 @@
 import json
 
-from src.py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
-from src.py_arg.import_export.writer import Writer
-from src.py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
+from py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
+from py_arg.import_export.writer import Writer
+from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 
 class IncompleteArgumentationTheoryToJSONWriter(Writer):

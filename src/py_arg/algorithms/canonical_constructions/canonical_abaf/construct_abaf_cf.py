@@ -1,9 +1,11 @@
 
 from typing import Set
 
-from src import py_arg as canonical_cf, py_arg as check_downward_closed
-import src.py_arg.algorithms.canonical_constructions.check_non_empty as check_non_empty
-from src.py_arg.aba_classes.aba_framework import ABAF
+from py_arg.algorithms.canonical_constructions import check_downward_closed
+from py_arg.algorithms.canonical_constructions.canonical_abaf import canonical_cf
+
+import py_arg.algorithms.canonical_constructions.check_non_empty as check_non_empty
+from py_arg.aba_classes.aba_framework import ABAF
 
 
 

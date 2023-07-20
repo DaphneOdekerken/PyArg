@@ -1,8 +1,8 @@
 import json
 
-from src.py_arg.abstract_argumentation_classes.argument import Argument
-from src.py_arg.abstract_argumentation_classes.defeat import Defeat
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 
 
 class ArgumentationFrameworkFromJsonReader:

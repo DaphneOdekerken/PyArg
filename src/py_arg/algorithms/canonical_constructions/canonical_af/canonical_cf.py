@@ -1,9 +1,9 @@
 
 from typing import Set
 
-from src import py_arg as aux
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg.abstract_argumentation_classes.defeat import Defeat
+import py_arg as aux
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.defeat import Defeat
 
 
 @staticmethod

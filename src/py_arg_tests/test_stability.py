@@ -2,10 +2,10 @@ import pathlib
 import unittest
 from typing import List
 
-from src.py_arg.algorithms.stability.stability_labeler import StabilityLabeler
-from src.py_arg.import_export.incomplete_argumentation_theory_from_lp_file_reader import \
+from py_arg.algorithms.stability.stability_labeler import StabilityLabeler
+from py_arg.import_export.incomplete_argumentation_theory_from_lp_file_reader import \
     IncompleteArgumentationTheoryFromLPFileReader
-from src.py_arg.import_export.incomplete_argumentation_theory_from_xlsx_reader import \
+from py_arg.import_export.incomplete_argumentation_theory_from_xlsx_reader import \
     IncompleteArgumentationTheoryFromXLSXFileReader
 
 

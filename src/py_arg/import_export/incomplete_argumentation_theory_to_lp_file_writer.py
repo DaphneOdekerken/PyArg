@@ -1,7 +1,7 @@
 from typing import Optional, List
 
-from src.py_arg.import_export.writer import Writer
-from src.py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
+from py_arg.import_export.writer import Writer
+from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 
 class IncompleteArgumentationTheoryToLPFileWriter(Writer):

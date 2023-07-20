@@ -1,22 +1,24 @@
 import unittest
 
-import src.py_arg.algorithms.canonical_constructions.canonical_abaf.canonical_st as canonical_st
-import src.py_arg.algorithms.canonical_constructions.canonical_abaf.construct_abaf_cf as construct_abaf_cf
-import src.py_arg.algorithms.canonical_constructions.canonical_abaf.construct_abaf_com as construct_abaf_com
-from src import py_arg as construct_abaf_adm, py_arg as aux, py_arg as check_downward_closed, \
-    py_arg as check_intersection_in, py_arg as check_union_closed, py_arg as check_set_com_closed
+import py_arg.algorithms.canonical_constructions.canonical_abaf.canonical_st as canonical_st
+import py_arg.algorithms.canonical_constructions.canonical_abaf.construct_abaf_cf as construct_abaf_cf
+import py_arg.algorithms.canonical_constructions.canonical_abaf.construct_abaf_com as construct_abaf_com
+from src import py_arg as construct_abaf_adm, py_arg as aux, py_arg as check_downward_closed
+import py_arg as check_intersection_in
+import py_arg as check_union_closed
+import py_arg as check_set_com_closed
 
-from src.py_arg.aba_classes.semantics import get_stable_extensions as get_stable_extensions, \
-    get_conflict_free_extensions as get_conflict_free_extensions, get_complete_extensions as get_complete_extensions, \
-    get_admissible_extensions as get_admissible_extensions
+from py_arg.aba_classes.semantics import get_complete_extensions as get_complete_extensions
+from py_arg.aba_classes.semantics import get_conflict_free_extensions as get_conflict_free_extensions, \
+    get_stable_extensions as get_stable_extensions, get_admissible_extensions as get_admissible_extensions
 
-from src.py_arg.aba_classes.aba_framework import ABAF
-from src.py_arg.aba_classes.instantiated_argument import InstantiatedArgument
-from src.py_arg.aba_classes.rule import Rule
+from py_arg.aba_classes.aba_framework import ABAF
+from py_arg.aba_classes.instantiated_argument import InstantiatedArgument
+from py_arg.aba_classes.rule import Rule
 
-from src.py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.abstract_argumentation_classes.defeat import Defeat
 
-import src.py_arg.algorithms.canonical_constructions.check_contains_empty as check_contains_empty
+import py_arg.algorithms.canonical_constructions.check_contains_empty as check_contains_empty
 
 
 class TestCanonicalConstructions(unittest.TestCase):

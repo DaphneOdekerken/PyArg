@@ -1,16 +1,19 @@
 import unittest
 
 from src import py_arg as get_stable_extensions, py_arg as aux_operators, py_arg as check_incomparable, \
-    py_arg as check_tight, py_arg as check_com_closed, py_arg as check_set_com_closed, py_arg as check_conf_sens, \
-    py_arg as check_set_conf_sens
+    py_arg as check_tight
+import py_arg as check_com_closed
+import py_arg as check_set_com_closed
+import py_arg as check_conf_sens
+import py_arg as check_set_conf_sens
 
-import src.py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
-import src.py_arg.algorithms.canonical_constructions.canonical_af.canonical_st as canonical_st
-import src.py_arg.algorithms.canonical_constructions.canonical_af.canonical_def as canonical_def
+import py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
+import py_arg.algorithms.canonical_constructions.canonical_af.canonical_st as canonical_st
+import py_arg.algorithms.canonical_constructions.canonical_af.canonical_def as canonical_def
 
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg.abstract_argumentation_classes.argument import Argument
-from src.py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.abstract_argumentation_classes.defeat import Defeat
 
 
 class TestCanonicalConstructions(unittest.TestCase):

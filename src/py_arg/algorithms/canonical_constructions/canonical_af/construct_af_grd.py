@@ -1,8 +1,8 @@
 
 from typing import Set
 
-from src import py_arg as aux_operators
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+import py_arg as aux_operators
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 
 
 @staticmethod

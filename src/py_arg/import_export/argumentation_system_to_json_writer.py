@@ -1,7 +1,7 @@
 import json
 
-from src.py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from src.py_arg.import_export.writer import Writer
+from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.import_export.writer import Writer
 
 
 class ArgumentationSystemToJSONWriter(Writer):

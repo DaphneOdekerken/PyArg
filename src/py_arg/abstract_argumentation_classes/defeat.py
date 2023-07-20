@@ -1,4 +1,4 @@
-from src.py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.abstract_argumentation_classes.argument import Argument
 
 
 class Defeat:

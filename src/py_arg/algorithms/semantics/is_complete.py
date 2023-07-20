@@ -1,10 +1,10 @@
 from typing import List
 
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg.abstract_argumentation_classes.argument import Argument
-from src.py_arg.abstract_argumentation_classes.defeat import Defeat
-from src.py_arg.algorithms.semantics.get_acceptable_with_respect_to import get_acceptable_with_respect_to
-from src.py_arg.algorithms.semantics.is_admissible import is_admissible
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.algorithms.semantics.get_acceptable_with_respect_to import get_acceptable_with_respect_to
+from py_arg.algorithms.semantics.is_admissible import is_admissible
 
 
 def is_complete(argument_set: List[Argument], argumentation_framework: AbstractArgumentationFramework) -> bool:

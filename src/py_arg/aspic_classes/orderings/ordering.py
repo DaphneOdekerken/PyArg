@@ -1,9 +1,9 @@
 from typing import Set
 
-from src.py_arg.aspic_classes.defeasible_rule import DefeasibleRule
-from src.py_arg.aspic_classes.literal import Literal
-from src.py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
-from src.py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
+from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
+from py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
 
 
 class Ordering:

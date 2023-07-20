@@ -1,8 +1,8 @@
 from typing import Dict
 
-from src.py_arg.algorithms.stability.stability_label import StabilityLabel
-from src.py_arg.aspic_classes.literal import Literal
-from src.py_arg.aspic_classes.rule import Rule
+from py_arg.algorithms.stability.stability_label import StabilityLabel
+from py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.rule import Rule
 
 
 class StabilityLabels:

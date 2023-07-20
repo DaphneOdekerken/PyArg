@@ -1,10 +1,10 @@
 import itertools
 from typing import List, Optional, Union
 
-from src.py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from src.py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from src.py_arg.aspic_classes.literal import Literal
-from src.py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
+from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
 
 
 class IncompleteArgumentationTheory:

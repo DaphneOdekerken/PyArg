@@ -1,10 +1,10 @@
 from typing import Iterable
 
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg.abstract_argumentation_classes.argument import Argument
-from src.py_arg.abstract_argumentation_classes.defeat import Defeat
-from src.py_arg.algorithms.semantics.is_acceptable_with_respect_to import is_acceptable_with_respect_to
-from src.py_arg.algorithms.semantics.is_conflict_free import is_conflict_free
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.algorithms.semantics.is_acceptable_with_respect_to import is_acceptable_with_respect_to
+from py_arg.algorithms.semantics.is_conflict_free import is_conflict_free
 
 
 def is_admissible(argument_set: Iterable[Argument], argumentation_framework: AbstractArgumentationFramework) -> bool:

@@ -1,9 +1,10 @@
 
 from typing import Set
 
-from src.py_arg.aba_classes.aba_framework import ABAF
-from src.py_arg.aba_classes.rule import Rule
-from src import py_arg as aux, py_arg as canonical_adm
+from py_arg.aba_classes.aba_framework import ABAF
+from py_arg.aba_classes.rule import Rule
+from src import py_arg as aux
+import py_arg as canonical_adm
 
 
 @staticmethod

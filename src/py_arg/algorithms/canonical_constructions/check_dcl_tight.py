@@ -1,7 +1,8 @@
 
 from typing import Set
 
-from src import py_arg as aux, py_arg as check_tight
+from py_arg.algorithms.canonical_constructions import check_tight
+from py_arg.algorithms.canonical_constructions import aux_operators as aux
 
 
 @staticmethod

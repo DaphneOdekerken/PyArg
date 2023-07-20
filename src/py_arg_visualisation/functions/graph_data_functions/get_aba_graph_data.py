@@ -1,7 +1,7 @@
 from typing import List, Dict
 
-from src.py_arg.aba_classes.aba_framework import ABAF
-from src.py_arg_visualisation.functions.graph_data_functions.get_color import get_color
+from py_arg.aba_classes.aba_framework import ABAF
+from py_arg_visualisation.functions.graph_data_functions.get_color import get_color
 
 
 def apply(abaf: ABAF, selected_arguments: Dict[str, List[str]],

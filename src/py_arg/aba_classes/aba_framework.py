@@ -1,9 +1,9 @@
 from typing import Dict, Set
 
-from src.py_arg.aba_classes.instantiated_argument import InstantiatedArgument
-from src.py_arg.aba_classes.rule import Rule
-from src.py_arg.aba_classes import instantiated_argument
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import *
+from py_arg.aba_classes.instantiated_argument import InstantiatedArgument
+from py_arg.aba_classes.rule import Rule
+from py_arg.aba_classes import instantiated_argument
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 
 
 class ABAF:

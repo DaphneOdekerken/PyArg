@@ -1,7 +1,7 @@
 from typing import Set
 
-from src.py_arg.aspic_classes.literal import Literal
-from src.py_arg.aspic_classes.strict_rule import StrictRule
+from py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.strict_rule import StrictRule
 
 
 def get_closure(literals: Set[Literal], strict_rules: Set[StrictRule]):

@@ -1,9 +1,9 @@
 import random
 from typing import Optional, List
 
-from src.py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from src.py_arg.aspic_classes.literal import Literal
-from src.py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
+from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic_classes.literal import Literal
+from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 
 class IncompleteArgumentationTheoryGenerator:

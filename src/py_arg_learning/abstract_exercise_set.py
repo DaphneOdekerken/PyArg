@@ -4,7 +4,7 @@ from typing import List
 import dash_bootstrap_components as dbc
 import visdcc
 
-from src.py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
+from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
 
 
 class AbstractExerciseSet(ABC):

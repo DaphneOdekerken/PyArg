@@ -1,6 +1,6 @@
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg.abstract_argumentation_classes.argument import Argument
-from src.py_arg.algorithms.explanation.reach_and_dist import get_reach
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.algorithms.explanation.reach_and_dist import get_reach
 
 
 def get_defending(argumentation_framework: AbstractArgumentationFramework, argument: Argument, extensions):

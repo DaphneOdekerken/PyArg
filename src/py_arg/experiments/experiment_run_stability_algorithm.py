@@ -2,10 +2,10 @@ import os
 import pathlib
 from typing import Tuple
 
-from src.py_arg.algorithms.stability.stability_labeler import StabilityLabeler
-from src.py_arg.algorithms.stability.stability_labels import StabilityLabels
-from src.py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from src.py_arg.import_export.incomplete_argumentation_theory_from_lp_file_reader import \
+from py_arg.algorithms.stability.stability_labeler import StabilityLabeler
+from py_arg.algorithms.stability.stability_labels import StabilityLabels
+from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.import_export.incomplete_argumentation_theory_from_lp_file_reader import \
     IncompleteArgumentationTheoryFromLPFileReader
 
 import datetime

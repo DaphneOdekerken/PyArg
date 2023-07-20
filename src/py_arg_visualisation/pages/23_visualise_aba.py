@@ -7,11 +7,11 @@ import visdcc
 from dash import html, callback, Input, Output, State, ALL, dcc
 from dash.exceptions import PreventUpdate
 
-from src.py_arg.aba_classes.rule import Rule
-from src.py_arg.aba_classes.aba_framework import ABAF
-from src.py_arg.aba_classes.instantiated_argument import InstantiatedArgument
-from src import py_arg_visualisation as get_accepted_assumptions, py_arg_visualisation as get_abaf_extensions, \
-    py_arg_visualisation as get_aba_graph_data
+from py_arg.aba_classes.rule import Rule
+from py_arg.aba_classes.aba_framework import ABAF
+from py_arg.aba_classes.instantiated_argument import InstantiatedArgument
+import py_arg_visualisation as get_abaf_extensions
+import py_arg_visualisation as get_aba_graph_data
 
 dash.register_page(__name__, name='Visualise ABA Framework', title='Visualise ABA Framework')
 

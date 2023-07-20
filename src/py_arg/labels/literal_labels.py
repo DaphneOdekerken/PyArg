@@ -1,7 +1,7 @@
 from typing import Dict
 
-from src.py_arg.aspic_classes.literal import Literal
-from src.py_arg.labels.label import Label
+from py_arg.aspic_classes.literal import Literal
+from py_arg.labels.label import Label
 
 
 class LiteralLabels:

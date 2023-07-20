@@ -7,11 +7,11 @@ import dash
 from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 
-from src.py_arg.algorithms.relevance.relevance_lister import FourBoolRelevanceLister
-from src.py_arg.algorithms.stability.stability_labeler import StabilityLabeler
-from src.py_arg.import_export.argumentation_system_from_json_reader import ArgumentationSystemFromJsonReader
-from src.py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
-from src.py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
+from py_arg.algorithms.relevance.relevance_lister import FourBoolRelevanceLister
+from py_arg.algorithms.stability.stability_labeler import StabilityLabeler
+from py_arg.import_export.argumentation_system_from_json_reader import ArgumentationSystemFromJsonReader
+from py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
+from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 dash.register_page(__name__, name='Inquiry Dialogue System', title='Inquiry Dialogue System')
 

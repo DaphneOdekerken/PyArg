@@ -1,16 +1,16 @@
 import itertools
 from typing import List, Dict, Optional, Set, Tuple
 
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg.abstract_argumentation_classes.defeat import Defeat
-from src.py_arg.aspic_classes.defeasible_rule import DefeasibleRule
-from src.py_arg.aspic_classes.literal import Literal
-from src.py_arg.aspic_classes.orderings.argument_orderings.last_link_ordering import LastLinkElitistOrdering
-from src.py_arg.aspic_classes.orderings.ordering import Ordering
-from src.py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
-from src.py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from src.py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
-from src.py_arg.aspic_classes.structured_argumentation_framework import StructuredArgumentationFramework
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
+from py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.orderings.argument_orderings.last_link_ordering import LastLinkElitistOrdering
+from py_arg.aspic_classes.orderings.ordering import Ordering
+from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
+from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
+from py_arg.aspic_classes.structured_argumentation_framework import StructuredArgumentationFramework
 
 
 class ArgumentationTheory:

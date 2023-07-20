@@ -1,9 +1,9 @@
 
 from typing import Set
 
-import src.py_arg.algorithms.canonical_constructions.canonical_af.canonical_def as canonical_def
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src import py_arg as check_conf_sens
+import py_arg.algorithms.canonical_constructions.canonical_af.canonical_def as canonical_def
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+import py_arg as check_conf_sens
 
 
 @staticmethod

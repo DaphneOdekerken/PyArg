@@ -1,7 +1,7 @@
 import pathlib
 
-from src.py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
-from src.py_arg.import_export.incomplete_argumentation_theory_from_xlsx_reader import \
+from py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
+from py_arg.import_export.incomplete_argumentation_theory_from_xlsx_reader import \
     IncompleteArgumentationTheoryFromXLSXFileReader
 
 

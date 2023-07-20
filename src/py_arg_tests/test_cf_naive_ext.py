@@ -1,10 +1,11 @@
 import unittest
 
-from src import py_arg as get_conflict_free_extensions
+import py_arg as get_conflict_free_extensions
 
-import src.py_arg.algorithms.canonical_constructions.canonical_af.construct_af_cf as construct_af_cf
-from src.py_arg.algorithms.canonical_constructions import check_tight, check_downward_closed
-from src.py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
+import py_arg.algorithms.canonical_constructions.canonical_af.construct_af_cf as construct_af_cf
+from py_arg.algorithms.canonical_constructions import check_tight
+from py_arg.algorithms.canonical_constructions import check_downward_closed
+from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
 
 

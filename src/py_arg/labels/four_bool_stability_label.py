@@ -2,7 +2,7 @@ from distutils.util import strtobool
 
 from parse import parse
 
-from src.py_arg.labels.label import Label
+from py_arg.labels.label import Label
 
 
 class FourBoolStabilityLabel(Label):

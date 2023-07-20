@@ -1,9 +1,11 @@
 from typing import Set
 
-from src import py_arg as canonical_com, py_arg as check_set_com_closed, py_arg as check_intersection_in
-import src.py_arg.algorithms.canonical_constructions.check_non_empty as check_non_empty
+import py_arg as canonical_com
+import py_arg as check_set_com_closed
+import py_arg as check_intersection_in
+import py_arg.algorithms.canonical_constructions.check_non_empty as check_non_empty
 
-from src.py_arg.aba_classes.aba_framework import ABAF
+from py_arg.aba_classes.aba_framework import ABAF
 
 
 @staticmethod

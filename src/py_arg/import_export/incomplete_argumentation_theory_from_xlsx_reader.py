@@ -4,10 +4,10 @@ from typing import Union
 import pandas as pd
 from openpyxl import load_workbook
 
-from src.py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from src.py_arg.aspic_classes.defeasible_rule import DefeasibleRule
-from src.py_arg.aspic_classes.literal import Literal
-from src.py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
+from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
+from py_arg.aspic_classes.literal import Literal
+from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 
 class IncompleteArgumentationTheoryFromXLSXFileReader:

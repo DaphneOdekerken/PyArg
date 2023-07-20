@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict
 
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg_visualisation.functions.graph_data_functions.get_color import get_color
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg_visualisation.functions.graph_data_functions.get_color import get_color
 
 
 def get_argumentation_framework_graph_data(arg_framework: AbstractArgumentationFramework,

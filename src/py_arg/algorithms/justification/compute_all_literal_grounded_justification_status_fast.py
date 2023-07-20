@@ -1,10 +1,10 @@
 from typing import Optional
 
-from src.py_arg.algorithms.classes.connected_literal import connect_parents_and_children
-from src.py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from src.py_arg.aspic_classes.orderings.ordering import Ordering
-from src.py_arg.labels.enum_justification_label import EnumJustificationLabel
-from src.py_arg.labels.literal_labels import LiteralLabels
+from py_arg.algorithms.classes.connected_literal import connect_parents_and_children
+from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic_classes.orderings.ordering import Ordering
+from py_arg.labels.enum_justification_label import EnumJustificationLabel
+from py_arg.labels.literal_labels import LiteralLabels
 
 
 def compute_all_literal_grounded_justification_status_fast(argumentation_theory: ArgumentationTheory,

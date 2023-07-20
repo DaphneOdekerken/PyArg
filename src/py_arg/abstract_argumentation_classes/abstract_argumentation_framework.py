@@ -1,7 +1,7 @@
 from typing import Optional, List
 
-from src.py_arg.abstract_argumentation_classes.argument import Argument
-from src.py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.abstract_argumentation_classes.defeat import Defeat
 
 
 class AbstractArgumentationFramework:

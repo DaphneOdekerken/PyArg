@@ -1,9 +1,9 @@
 from typing import List
 
-from src.py_arg.algorithms.semantics.get_grounded_extension import get_grounded_extension
-from src.py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
+from py_arg.algorithms.semantics.get_grounded_extension import get_grounded_extension
+from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
-from src.py_arg_learning.abstract_exercise_set import AbstractExerciseSet
+from py_arg_learning.abstract_exercise_set import AbstractExerciseSet
 
 
 class IdentifyGroundedExtension(AbstractExerciseSet):

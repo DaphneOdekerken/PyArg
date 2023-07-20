@@ -1,9 +1,9 @@
 from typing import Set, FrozenSet
 
-import src.py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg.abstract_argumentation_classes.argument import Argument
-from src.py_arg.abstract_argumentation_classes.defeat import Defeat
+import py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.abstract_argumentation_classes.defeat import Defeat
 
 
 @staticmethod

@@ -1,11 +1,11 @@
 from typing import Optional, Set
 
-from src.py_arg.abstract_argumentation_classes.argument import Argument
-from src.py_arg.aspic_classes.defeasible_rule import DefeasibleRule
-from src.py_arg.aspic_classes.literal import Literal
-from src.py_arg.aspic_classes.rule import Rule
-from src.py_arg.aspic_classes.strict_rule import StrictRule
-from src.py_arg.logic.is_c_consistent import is_c_consistent
+from py_arg.abstract_argumentation_classes.argument import Argument
+from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
+from py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.rule import Rule
+from py_arg.aspic_classes.strict_rule import StrictRule
+from py_arg.logic.is_c_consistent import is_c_consistent
 
 
 class InstantiatedArgument(Argument):

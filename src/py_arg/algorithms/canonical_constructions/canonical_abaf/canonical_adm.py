@@ -1,8 +1,9 @@
 
 from typing import Set
 
-from src.py_arg.aba_classes.aba_framework import ABAF
-from src import py_arg as canonical_ucl, py_arg as canonical_cf
+from py_arg.aba_classes.aba_framework import ABAF
+import py_arg as canonical_cf
+from py_arg.algorithms.canonical_constructions.canonical_abaf import canonical_ucl
 
 
 @staticmethod

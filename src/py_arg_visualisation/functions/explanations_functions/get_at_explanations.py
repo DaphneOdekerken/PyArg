@@ -1,6 +1,6 @@
-from src.py_arg.algorithms.explanation.defending import get_defending, get_dir_defending
-from src.py_arg.algorithms.explanation.not_defending import get_not_defending, get_no_dir_defending, get_no_self_defense
-from src.py_arg.algorithms.explanation.suff_nec import get_sufficient_or_necessary
+from py_arg.algorithms.explanation.defending import get_defending, get_dir_defending
+from py_arg.algorithms.explanation.not_defending import get_not_defending, get_no_dir_defending, get_no_self_defense
+from py_arg.algorithms.explanation.suff_nec import get_sufficient_or_necessary
 
 
 def get_str_explanations(argumentation_theory, semantics, ordering_specification, extensions, accepted_formulas,

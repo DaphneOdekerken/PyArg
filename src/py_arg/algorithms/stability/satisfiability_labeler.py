@@ -1,6 +1,6 @@
-from src.py_arg.algorithms.stability.stability_label import StabilityLabel
-from src.py_arg.algorithms.stability.stability_labels import StabilityLabels
-from src.py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
+from py_arg.algorithms.stability.stability_label import StabilityLabel
+from py_arg.algorithms.stability.stability_labels import StabilityLabels
+from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 
 class SatisfiabilityLabeler:

@@ -1,10 +1,10 @@
 from typing import Dict, List, Optional, Set
 
-from src.py_arg.aspic_classes.defeasible_rule import DefeasibleRule
-from src.py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
-from src.py_arg.aspic_classes.rule import Rule
-from src.py_arg.aspic_classes.strict_rule import StrictRule
-from src.py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
+from py_arg.aspic_classes.rule import Rule
+from py_arg.aspic_classes.strict_rule import StrictRule
+from py_arg.aspic_classes.literal import Literal
 
 
 class ArgumentationSystem:

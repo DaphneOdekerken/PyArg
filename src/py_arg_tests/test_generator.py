@@ -1,17 +1,17 @@
 import pathlib
 import unittest
 
-from src.py_arg.experiments.experiment_generate_incomplete_argumentation_theory import \
+from py_arg.experiments.experiment_generate_incomplete_argumentation_theory import \
     instantiate_incomplete_argumentation_theory_generator
-from src.py_arg.import_export.argumentation_system_from_json_reader import ArgumentationSystemFromJsonReader
-from src.py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
-from src.py_arg.import_export.incomplete_argumentation_theory_from_json_reader import \
+from py_arg.import_export.argumentation_system_from_json_reader import ArgumentationSystemFromJsonReader
+from py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
+from py_arg.import_export.incomplete_argumentation_theory_from_json_reader import \
     IncompleteArgumentationTheoryFromJsonReader
-from src.py_arg.import_export.incomplete_argumentation_theory_from_lp_file_reader import \
+from py_arg.import_export.incomplete_argumentation_theory_from_lp_file_reader import \
     IncompleteArgumentationTheoryFromLPFileReader
-from src.py_arg.import_export.incomplete_argumentation_theory_to_json_writer import \
+from py_arg.import_export.incomplete_argumentation_theory_to_json_writer import \
     IncompleteArgumentationTheoryToJSONWriter
-from src.py_arg.import_export.incomplete_argumentation_theory_to_lp_file_writer import \
+from py_arg.import_export.incomplete_argumentation_theory_to_lp_file_writer import \
     IncompleteArgumentationTheoryToLPFileWriter
 
 

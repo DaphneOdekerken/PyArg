@@ -1,6 +1,6 @@
 from typing import Set
 
-from src import py_arg as aux
+import py_arg as aux
 
 
 @staticmethod

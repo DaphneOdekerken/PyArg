@@ -1,6 +1,6 @@
-from src.py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
+from py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
     LayeredArgumentationSystemGenerator
-from src.py_arg.generators.incomplete_argumentation_theory_generators.incomplete_argumentation_theory_generator import \
+from py_arg.generators.incomplete_argumentation_theory_generators.incomplete_argumentation_theory_generator import \
     IncompleteArgumentationTheoryGenerator
 
 

@@ -1,8 +1,8 @@
 import json
 
-from src.py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
-from src.py_arg.import_export.argumentation_system_from_json_reader import ArgumentationSystemFromJsonReader
-from src.py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
+from py_arg.import_export.argumentation_system_from_json_reader import ArgumentationSystemFromJsonReader
+from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 
 class IncompleteArgumentationTheoryFromJsonReader:

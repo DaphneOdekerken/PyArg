@@ -2,9 +2,9 @@ import dash
 from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 
-from src.py_arg_learning.identify_grounded_extension import IdentifyGroundedExtension
-from src.py_arg_learning.list_complete_extensions import ListCompleteExtensions
-from src.py_arg_learning.list_preferred_extensions import ListPreferredExtensions
+from py_arg_learning.identify_grounded_extension import IdentifyGroundedExtension
+from py_arg_learning.list_complete_extensions import ListCompleteExtensions
+from py_arg_learning.list_preferred_extensions import ListPreferredExtensions
 
 dash.register_page(__name__, name='Learn', title='Learn')
 

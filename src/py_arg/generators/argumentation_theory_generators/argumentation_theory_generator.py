@@ -1,7 +1,7 @@
 import random
 
-from src.py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from src.py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
 
 
 class ArgumentationTheoryGenerator:

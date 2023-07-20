@@ -7,22 +7,22 @@ import visdcc
 from dash import html, callback, Input, Output, State, ALL, dcc
 from dash.exceptions import PreventUpdate
 
-from src.py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from src.py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from src.py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
-from src.py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
+from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
+from py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
     LayeredArgumentationSystemGenerator
-from src.py_arg.generators.argumentation_theory_generators.argumentation_theory_generator import \
+from py_arg.generators.argumentation_theory_generators.argumentation_theory_generator import \
     ArgumentationTheoryGenerator
-from src.py_arg_visualisation.functions.explanations_functions.explanation_function_options import \
+from py_arg_visualisation.functions.explanations_functions.explanation_function_options import \
     EXPLANATION_FUNCTION_OPTIONS
-from src.py_arg_visualisation.functions.explanations_functions.get_at_explanations import get_str_explanations
-from src.py_arg_visualisation.functions.extensions_functions.get_accepted_formulas import get_accepted_formulas
-from src.py_arg_visualisation.functions.extensions_functions.get_af_extensions import get_argumentation_framework_extensions
-from src.py_arg_visualisation.functions.graph_data_functions.get_at_graph_data import get_argumentation_theory_graph_data
-from src.py_arg_visualisation.functions.import_functions.read_argumentation_theory_functions import \
+from py_arg_visualisation.functions.explanations_functions.get_at_explanations import get_str_explanations
+from py_arg_visualisation.functions.extensions_functions.get_accepted_formulas import get_accepted_formulas
+from py_arg_visualisation.functions.extensions_functions.get_af_extensions import get_argumentation_framework_extensions
+from py_arg_visualisation.functions.graph_data_functions.get_at_graph_data import get_argumentation_theory_graph_data
+from py_arg_visualisation.functions.import_functions.read_argumentation_theory_functions import \
     read_argumentation_theory
-from src.py_arg_visualisation.functions.ordering_functions.get_ordering_by_specification import \
+from py_arg_visualisation.functions.ordering_functions.get_ordering_by_specification import \
     get_ordering_by_specification
 
 dash.register_page(__name__, name='Visualise ASPIC+ AT', title='Visualise ASPIC+ AT')

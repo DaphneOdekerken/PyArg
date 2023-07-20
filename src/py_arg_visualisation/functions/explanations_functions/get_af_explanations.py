@@ -1,9 +1,9 @@
 from typing import List, Set
 
-from src.py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from src.py_arg.algorithms.explanation.defending import get_defending, get_dir_defending
-from src.py_arg.algorithms.explanation.not_defending import get_not_defending, get_no_dir_defending, get_no_self_defense
-from src.py_arg.algorithms.explanation.suff_nec import get_sufficient_or_necessary
+from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.algorithms.explanation.defending import get_defending, get_dir_defending
+from py_arg.algorithms.explanation.not_defending import get_not_defending, get_no_dir_defending, get_no_self_defense
+from py_arg.algorithms.explanation.suff_nec import get_sufficient_or_necessary
 
 
 def get_argumentation_framework_explanations(arg_framework: AbstractArgumentationFramework, extensions: List[Set],

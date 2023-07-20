@@ -1,8 +1,8 @@
-from src.py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
-from src.py_arg.aspic_classes.orderings.set_orderings.democratic_ordering import DemocraticOrdering
-from src.py_arg.aspic_classes.orderings.set_orderings.elitist_ordering import ElitistOrdering
-from src.py_arg.aspic_classes.orderings.ordering import Ordering
-from src.py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
+from py_arg.aspic_classes.orderings.set_orderings.democratic_ordering import DemocraticOrdering
+from py_arg.aspic_classes.orderings.set_orderings.elitist_ordering import ElitistOrdering
+from py_arg.aspic_classes.orderings.ordering import Ordering
+from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
 
 
 class LastLinkOrdering(Ordering):
