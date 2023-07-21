@@ -2,7 +2,7 @@
 from typing import Set
 
 import py_arg.algorithms.canonical_constructions.canonical_abaf.canonical_st as canonical_st
-import py_arg as check_incomparable
+import py_arg.algorithms.canonical_constructions.check_incomparable as check_incomparable
 import py_arg.algorithms.canonical_constructions.check_non_empty as check_non_empty
 from py_arg.aba_classes.aba_framework import ABAF
 

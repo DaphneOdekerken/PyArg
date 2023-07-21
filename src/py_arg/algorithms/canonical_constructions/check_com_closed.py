@@ -1,6 +1,6 @@
 from typing import Set
 
-import py_arg as aux
+import py_arg.algorithms.canonical_constructions.aux_operators as aux
 
 
 @staticmethod

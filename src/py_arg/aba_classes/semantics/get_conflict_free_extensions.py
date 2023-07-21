@@ -1,7 +1,7 @@
 from typing import Set, FrozenSet
 
 from py_arg.aba_classes.aba_framework import ABAF
-import py_arg as aux
+import py_arg.algorithms.canonical_constructions.aux_operators as aux
 
 
 def apply(abaf: ABAF) -> Set[FrozenSet[str]]:

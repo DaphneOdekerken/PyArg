@@ -1,11 +1,10 @@
 import unittest
 
-from src import py_arg as get_stable_extensions, py_arg as aux_operators, py_arg as check_incomparable, \
-    py_arg as check_tight
-import py_arg as check_com_closed
-import py_arg as check_set_com_closed
-import py_arg as check_conf_sens
-import py_arg as check_set_conf_sens
+import py_arg.algorithms.semantics.get_stable_extensions as get_stable_extensions
+import py_arg.algorithms.canonical_constructions.check_com_closed as check_com_closed
+import py_arg.algorithms.canonical_constructions.check_set_com_closed as check_set_com_closed
+import py_arg.algorithms.canonical_constructions.check_conf_sens as check_conf_sens
+import py_arg.algorithms.canonical_constructions.check_set_conf_sens as check_set_conf_sens
 
 import py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
 import py_arg.algorithms.canonical_constructions.canonical_af.canonical_st as canonical_st
@@ -14,6 +13,7 @@ import py_arg.algorithms.canonical_constructions.canonical_af.canonical_def as c
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.algorithms.canonical_constructions import aux_operators, check_incomparable, check_tight
 
 
 class TestCanonicalConstructions(unittest.TestCase):

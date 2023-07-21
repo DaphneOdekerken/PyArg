@@ -1,6 +1,6 @@
 import unittest
 
-import py_arg as get_conflict_free_extensions
+import py_arg.algorithms.semantics.get_conflict_free_extensions as get_conflict_free_extensions
 
 import py_arg.algorithms.canonical_constructions.canonical_af.construct_af_cf as construct_af_cf
 from py_arg.algorithms.canonical_constructions import check_tight

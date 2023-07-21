@@ -2,7 +2,7 @@
 from typing import Set
 
 from py_arg.aba_classes.aba_framework import ABAF
-import py_arg as canonical_cf
+from py_arg.algorithms.canonical_constructions.canonical_abaf import canonical_cf
 from py_arg.algorithms.canonical_constructions.canonical_abaf import canonical_ucl
 
 

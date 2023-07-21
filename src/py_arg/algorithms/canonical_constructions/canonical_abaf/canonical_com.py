@@ -3,8 +3,8 @@ from typing import Set
 
 from py_arg.aba_classes.aba_framework import ABAF
 from py_arg.aba_classes.rule import Rule
-from src import py_arg as aux
-import py_arg as canonical_adm
+import py_arg.algorithms.canonical_constructions.aux_operators as aux
+import py_arg.algorithms.canonical_constructions.canonical_abaf.canonical_adm as canonical_adm
 
 
 @staticmethod

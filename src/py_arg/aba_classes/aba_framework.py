@@ -4,6 +4,7 @@ from py_arg.aba_classes.instantiated_argument import InstantiatedArgument
 from py_arg.aba_classes.rule import Rule
 from py_arg.aba_classes import instantiated_argument
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation_classes.defeat import Defeat
 
 
 class ABAF:

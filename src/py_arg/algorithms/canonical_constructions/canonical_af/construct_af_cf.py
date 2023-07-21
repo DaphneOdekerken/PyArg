@@ -3,7 +3,7 @@ from typing import Set
 
 import py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-import py_arg as check_downward_closed
+import py_arg.algorithms.canonical_constructions.check_downward_closed as check_downward_closed
 from py_arg.algorithms.canonical_constructions import check_tight
 
 

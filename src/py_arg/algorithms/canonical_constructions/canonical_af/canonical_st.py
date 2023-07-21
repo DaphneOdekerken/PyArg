@@ -2,7 +2,7 @@
 from typing import Set
 
 import py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
-import py_arg as get_stable_extensions
+import py_arg.algorithms.semantics.get_stable_extensions as get_stable_extensions
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.argument import Argument
 from py_arg.abstract_argumentation_classes.defeat import Defeat

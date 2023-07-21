@@ -1,8 +1,6 @@
 
 from typing import Set
-
-import py_arg as aux
-
+from py_arg.algorithms.canonical_constructions import aux_operators as aux
 
 @staticmethod
 def apply(extension_set: Set) -> bool:

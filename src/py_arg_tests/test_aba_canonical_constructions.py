@@ -3,10 +3,12 @@ import unittest
 import py_arg.algorithms.canonical_constructions.canonical_abaf.canonical_st as canonical_st
 import py_arg.algorithms.canonical_constructions.canonical_abaf.construct_abaf_cf as construct_abaf_cf
 import py_arg.algorithms.canonical_constructions.canonical_abaf.construct_abaf_com as construct_abaf_com
-from src import py_arg as construct_abaf_adm, py_arg as aux, py_arg as check_downward_closed
-import py_arg as check_intersection_in
-import py_arg as check_union_closed
-import py_arg as check_set_com_closed
+from py_arg.algorithms.canonical_constructions.canonical_abaf import construct_abaf_adm
+import py_arg.algorithms.canonical_constructions.check_intersection_in as check_intersection_in
+import py_arg.algorithms.canonical_constructions.check_union_closed as check_union_closed
+import py_arg.algorithms.canonical_constructions.check_set_com_closed as check_set_com_closed
+import py_arg.algorithms.canonical_constructions.check_downward_closed as check_downward_closed
+import py_arg.algorithms.canonical_constructions.aux_operators as aux
 
 from py_arg.aba_classes.semantics import get_complete_extensions as get_complete_extensions
 from py_arg.aba_classes.semantics import get_conflict_free_extensions as get_conflict_free_extensions, \

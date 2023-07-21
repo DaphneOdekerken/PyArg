@@ -3,7 +3,7 @@ from typing import Set
 
 from py_arg.aba_classes.aba_framework import ABAF
 from py_arg.aba_classes.rule import Rule
-import py_arg as aux
+import py_arg.algorithms.canonical_constructions.aux_operators as aux
 
 
 @staticmethod
