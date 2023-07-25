@@ -145,7 +145,7 @@ def read_extension_sets_from_str(extension_sets_str: str):
     Output('42-naive-incomparable', 'children'),
     Output('42-naive-non-empty', 'children'),
     Output('42-adm-non-empty', 'children'),
-    Output('42-adm-set-conf-sens', 'children'),
+    Output('42-adm-set-conf-sensitive', 'children'),
     Output('42-adm-contains-empty', 'children'),
     Output('42-com-non-empty', 'children'),
     Output('42-com-set-comp-closed', 'children'),
