@@ -70,4 +70,4 @@ app.layout = html.Div([navbar, dbc.Col(html.Div([dash.page_container]), width={'
 
 # Running the app.
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)

@@ -2,7 +2,6 @@ from typing import Dict, Set
 
 from py_arg.aba_classes.instantiated_argument import InstantiatedArgument
 from py_arg.aba_classes.rule import Rule
-from py_arg.aba_classes import instantiated_argument
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.defeat import Defeat
 
@@ -48,18 +47,14 @@ class ABAF:
         defeats = set()
 
         for assumption in self.assumptions:
-            arguments.add(instantiated_argument.InstantiatedArgument('', {assumption}, assumption))
+            arguments.add(InstantiatedArgument('', {assumption}, assumption))
 
         for assumption in self.assumptions:
             arguments.add(InstantiatedArgument('', {assumption}, assumption))
 
             contrary = self.contraries[assumption]
             contrary_premises_set = self.recursively_construct_argument(self.rules, contrary, {contrary})
-            # print()
-            # print(assumption)
-            # print(contrary)
-            # print(contrary_premises_set)
-            # print()
+
             for contrary_premise in contrary_premises_set:
                 arguments.add(InstantiatedArgument('', set(contrary_premise), contrary))
 

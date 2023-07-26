@@ -275,3 +275,27 @@ class TestCanonicalConstructions(unittest.TestCase):
         es_n = get_complete_extensions.apply(canonical_aba1)
 
         self.assertEqual(es1, es_n)
+
+        es2 = {set_empty, set_c}
+
+        self.assertTrue(check_set_com_closed.apply(es2))
+        self.assertTrue(check_intersection_in.apply(es2))
+        canonical_aba2 = construct_abaf_com.apply(es2)
+        canonical_aba2.reduce()
+        es_n = get_complete_extensions.apply(canonical_aba2)
+
+        self.assertEqual(es2, es_n)
+
+        es3 = {set_c}
+
+        self.assertTrue(check_set_com_closed.apply(es3))
+        self.assertTrue(check_intersection_in.apply(es3))
+        canonical_aba3 = construct_abaf_com.apply(es3)
+        canonical_aba3.reduce()
+        es_n = get_complete_extensions.apply(canonical_aba3)
+
+        self.assertEqual(es3, es_n)
+        # MB: This test will fail. I think that I translated the canonical SETAF construction correctly to ABA.
+        # The bug is there. I will doublecheck as soon as I see the authors of
+        # "On the Expressive Power of Collective Attacks"
+        # Wolfgang Dvorak, Jorge Fandinno, Stefan Woltran

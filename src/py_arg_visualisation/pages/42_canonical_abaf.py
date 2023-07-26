@@ -117,7 +117,7 @@ def read_extension_sets_from_str(extension_sets_str: str):
     for extension in extensions_set:
         extension = extension.replace('{', '').replace('}', '')
         argument_strs = [argument_str.strip() for argument_str in extension.split(',')]
-        argument_set = frozenset(Argument(argument_str) for argument_str in argument_strs
+        argument_set = frozenset(argument_str for argument_str in argument_strs
                                  if argument_str)
         input_extension_set.add(argument_set)
     return input_extension_set
