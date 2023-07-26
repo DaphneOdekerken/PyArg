@@ -61,7 +61,8 @@ class ABAF:
         for arg1 in arguments:
             for premise in arg1.premise:
                 for arg2 in arguments:
-                    if arg1 != arg2 and self.contraries[premise] == arg2.conclusion:
+                    # if arg1 != arg2 and self.contraries[premise] == arg2.conclusion:
+                    if self.contraries[premise] == arg2.conclusion:
                         arg1.add_ingoing_defeat(arg2)
                         arg2.add_outgoing_defeat(arg1)
                         defeats.add(Defeat(arg2, arg1))

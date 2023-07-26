@@ -296,6 +296,5 @@ class TestCanonicalConstructions(unittest.TestCase):
 
         self.assertEqual(es3, es_n)
         # MB: This test will fail. I think that I translated the canonical SETAF construction correctly to ABA.
-        # The bug is there. I will doublecheck as soon as I see the authors of
+        # The bug is there, I think. I will doublecheck as soon as I see one of the authors of
         # "On the Expressive Power of Collective Attacks"
-        # Wolfgang Dvorak, Jorge Fandinno, Stefan Woltran
