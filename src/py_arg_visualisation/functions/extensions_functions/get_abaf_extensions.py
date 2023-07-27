@@ -1,10 +1,12 @@
 from py_arg.aba_classes.aba_framework import ABAF
 import py_arg.aba_classes.semantics.get_stable_extensions as get_stable_extensions
-from src import py_arg as get_preferred_extensions, py_arg as get_naive_extensions, py_arg as get_admissible_extensions
-import py_arg as get_complete_extensions
-import py_arg as get_semi_stable_extensions
-import py_arg as get_ground_extensions
+import py_arg.aba_classes.semantics.get_complete_extensions as get_complete_extensions
 import py_arg.aba_classes.semantics.get_conflict_free_extensions as get_conflict_free_extensions
+import py_arg.aba_classes.semantics.get_admissible_extensions as get_admissible_extensions
+import py_arg.aba_classes.semantics.get_preferred_extensions as get_preferred_extensions
+import py_arg.aba_classes.semantics.get_semi_stable_extensions as get_semi_stable_extensions
+import py_arg.aba_classes.semantics.get_ground_extensions as get_ground_extensions
+import py_arg.aba_classes.semantics.get_naive_extensions as get_naive_extensions
 
 
 def apply(abaf: ABAF, semantics_specification: str):
