@@ -106,6 +106,21 @@ layout = html.Div(
 )
 
 
+def read_aba(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str):
+    """
+    Read the ABA framework from the str (in the four text fields).
+    """
+    atoms = {atom for atom in aba_l_str.replace(' ', '').replace('.', '').split('\n') if atom}
+    rules = {Rule(rule_str, set(rule_str.split('<-')[1].split(',')), rule_str.split('<-')[0])
+             for rule_str in aba_r_str.replace(' ', '').replace('.', '').split('\n')
+             if rule_str}
+    assumptions = {atom for atom in aba_a_str.replace(' ', '').replace('.', '').split('\n') if atom}
+    cleaned_contrary_str = aba_c_str.replace(' ', '').replace('.', '').replace('(', '').replace(')', '')
+    contraries = {con[0]: con[1] for con in cleaned_contrary_str.split(',') if con}
+
+    return ABAF(atoms, rules, assumptions, contraries)
+
+
 @callback(
     Output('23-ABA-instantiated-graph', 'data'),
     Input('23-ABA-L', 'value'),
@@ -118,16 +133,7 @@ layout = html.Div(
 )
 def create_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str,
                 selected_arguments: Dict[str, List[str]], color_blind_mode: bool):
-    # Read ABA
-    l = {atom for atom in aba_l_str.replace(' ', '').replace('.', '').split('\n')}
-    r = {Rule(r, set(r.split('<-')[2].split(',')), r.split('<-')[1])
-         for r in aba_r_str.replace(' ', '').replace('.', '').split('\n')}
-    a = {atom for atom in aba_a_str.replace(' ', '').replace('.', '').split('\n')}
-    c = {}
-    for con in aba_c_str.replace(' ', '').replace('.', '').replace('(', '').replace(')', '').split(','):
-        c[con[1]] = con[2]
-
-    abaf = ABAF(l, r, a, c)
+    abaf = read_aba(aba_l_str, aba_r_str, aba_a_str, aba_c_str)
     # Generate the graph data for this argumentation theory
     return get_aba_graph_data.apply(abaf, abaf.generate_af(), selected_arguments, color_blind_mode)
 
@@ -150,16 +156,7 @@ def evaluate_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str
 
     # Read the argumentation theory
     try:
-        # Read ABA
-        l = {atom for atom in aba_l_str.replace(' ', '').replace('.', '').split('\n')}
-        r = {Rule(r, set(r.split('<-')[2].split(',')), r.split('<-')[1])
-             for r in aba_r_str.replace(' ', '').replace('.', '').split('\n')}
-        a = {atom for atom in aba_a_str.replace(' ', '').replace('.', '').split('\n')}
-        c = {}
-        for con in aba_c_str.replace(' ', '').replace('.', '').replace('(', '').replace(')', '').split(','):
-            c[con[1]] = con[2]
-
-        abaf = ABAF(l, r, a, c)
+        abaf = read_aba(aba_l_str, aba_r_str, aba_a_str, aba_c_str)
     except ValueError:
         abaf = ABAF(set(), set(), set(), {})
 
