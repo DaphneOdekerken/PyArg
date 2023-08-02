@@ -17,3 +17,7 @@ th.rotate > div > span {
   border-bottom: 1px solid #ccc;
   padding: 5px 10px;
 }
+
+td {
+  text-align: center;
+}
