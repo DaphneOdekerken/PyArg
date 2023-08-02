@@ -12,53 +12,60 @@ navbar = dbc.NavbarSimple(
     children=[
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Random Abstract AF', href='01-generate-abstract', className='fw-bold'),
-                # dbc.DropdownMenuItem('Random ASPIC+ AT', href='02-generate-random-aspic'),
-                dbc.DropdownMenuItem('Layered ASPIC+ AS', href='03-generate-layered-aspic', className='fw-bold'),
+                dbc.DropdownMenuItem('Random Abstract AF', href='01-generate-abstract', className='fw-bold text-white'),
+                dbc.DropdownMenuItem('Layered ASPIC+ AS', href='03-generate-layered-aspic',
+                                     className='fw-bold text-white'),
             ],
             nav=True,
             in_navbar=True,
             label='Generate',
             className='fw-bold',
+            toggle_style={'color': 'white'},
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Abstract', href='21-visualise-abstract', className='fw-bold'),
-                dbc.DropdownMenuItem('ASPIC+', href='22-visualise-aspic', className='fw-bold'),
-                dbc.DropdownMenuItem('ABA', href='23-visualise-aba', className='fw-bold'),
+                dbc.DropdownMenuItem('Abstract', href='21-visualise-abstract', className='fw-bold text-white'),
+                dbc.DropdownMenuItem('ASPIC+', href='22-visualise-aspic', className='fw-bold text-white'),
+                dbc.DropdownMenuItem('ABA', href='23-visualise-aba', className='fw-bold text-white'),
             ],
             nav=True,
             in_navbar=True,
             label='Visualise', className='fw-bold',
+            toggle_style={'color': 'white'}
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Practice', href='30-learn', className='fw-bold'),
+                dbc.DropdownMenuItem('Practice', href='30-learn', className='fw-bold text-white'),
             ],
             nav=True,
             in_navbar=True,
             label='Learn', className='fw-bold',
+            toggle_style={'color': 'white'}
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Canonical Construction AF', href='41-canonical-af', className='fw-bold'),
-                dbc.DropdownMenuItem('Canonical Construction ABAF', href='42-canonical-abaf', className='fw-bold')
+                dbc.DropdownMenuItem('Canonical Construction AF', href='41-canonical-af',
+                                     className='fw-bold text-white'),
+                dbc.DropdownMenuItem('Canonical Construction ABAF', href='42-canonical-abaf',
+                                     className='fw-bold text-white')
             ],
             nav=True,
             in_navbar=True,
             label='Algorithms', className='fw-bold',
+            toggle_style={'color': 'white'},
         ),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem('Chat', href='50-chat', className='fw-bold'),
+                dbc.DropdownMenuItem('Chat', href='50-chat', className='fw-bold text-white'),
             ],
             nav=True,
             in_navbar=True,
             label='Applications', className='fw-bold',
+            toggle_style={'color': 'white'},
         ),
         # dbc.DropdownMenuItem('About', href='/', className='fw-bold'),
         daq.BooleanSwitch(id='color-blind-mode', on=False, className='mt-2'),
-        dbc.DropdownMenuItem('Colorblind mode', className='fw-bold text-light')
+        dbc.DropdownMenuItem('Colorblind mode', className='fw-bold text-white')
     ],
     brand='PyArg',
     brand_href='/',
