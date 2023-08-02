@@ -159,19 +159,19 @@ def create_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str,
 
 
 @callback(
-    Output('ABA-evaluation', 'children'),
-    State('ABA-L', 'value'),
-    State('ABA-R', 'value'),
-    State('ABA-A', 'value'),
-    State('ABA-C', 'value'),
-    Input('ABA-evaluation-accordion', 'active_item'),
-    Input('ABA-evaluation-semantics', 'value'),
-    Input('ABA-evaluation-strategy', 'value'),
+    Output('23-ABA-evaluation', 'children'),
+    State('23-ABA-L', 'value'),
+    State('23-ABA-R', 'value'),
+    State('23-ABA-A', 'value'),
+    State('23-ABA-C', 'value'),
+    Input('23-ABA-evaluation-accordion', 'active_item'),
+    Input('23-ABA-evaluation-semantics', 'value'),
+    Input('23-ABA-evaluation-strategy', 'value'),
     prevent_initial_call=True
 )
 def evaluate_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str,
                   active_item: str, semantics_specification: str, acceptance_strategy_specification: str):
-    if active_item != 'Evaluation':
+    if active_item != '23-ABA-Evaluation':
         raise PreventUpdate
 
     # Read the argumentation theory

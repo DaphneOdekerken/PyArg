@@ -6,7 +6,7 @@ def apply(extensions, strategy_specification: str):
     :param strategy_specification: The evaluation strategy (e.g., skeptical or credulous).
     """
     if strategy_specification == 'Skeptical':
-        return set.intersection(*extensions)
+        return frozenset().intersection(*extensions)
     if strategy_specification == 'Credulous':
-        return set.union(*extensions)
+        return frozenset().union(*extensions)
     return {}
