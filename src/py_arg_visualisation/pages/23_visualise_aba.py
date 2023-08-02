@@ -119,8 +119,11 @@ def read_aba(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str):
     for rule_str in cleaned_rule_str.split('\n'):
         if '<-' in rule_str:
             before_rule, after_rule = rule_str.split('<-', 2)
-            if before_rule and after_rule:
-                antecedents = set(after_rule.split(','))
+            if before_rule:
+                if after_rule:
+                    antecedents = set(after_rule.split(','))
+                else:
+                    antecedents = set()
                 rules.add(Rule(rule_str, antecedents, before_rule))
 
     # Read assumptions
