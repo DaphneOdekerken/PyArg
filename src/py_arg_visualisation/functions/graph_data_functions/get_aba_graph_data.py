@@ -25,7 +25,7 @@ def apply(abaf: ABAF, selected_arguments: Dict[str, List[str]],
 
     argument_long_str_to_id = {}
     data_nodes = []
-    for argument_id, argument in abaf.generate_af().arguments:
+    for argument_id, argument in enumerate(abaf.generate_af().arguments):
         readable_id = 'A' + str(argument_id + 1)
         argument_long_str_to_id[argument.name] = readable_id
         if argument.name in blue:
@@ -38,7 +38,7 @@ def apply(abaf: ABAF, selected_arguments: Dict[str, List[str]],
             color = get_color('red', color_blind_mode)
         else:
             color = get_color('gray', color_blind_mode)
-        data_nodes.append({'id': readable_id, 'label': argument.short_name, 'color': color})
+        data_nodes.append({'id': readable_id, 'label': argument.name, 'color': color})
 
     data_edges = []
     for defeat in abaf.generate_af().defeats:

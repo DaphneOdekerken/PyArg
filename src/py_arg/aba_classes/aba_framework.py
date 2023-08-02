@@ -15,25 +15,22 @@ class ABAF:
         self.assumptions = assumptions
         self.rules = rules
 
-        if self.assumptions.difference(language).__len__() > 0:
-            raise NotImplementedError
+        if any(assumption not in language for assumption in self.assumptions):
+            raise ValueError('Some assumption is not in the language.')
 
         self.language = language
-        # self.language = language.union(assumptions)
 
         for rule in rules:
-            if rule.get_signature().difference(self.language).__len__() > 0:
-                raise NotImplementedError
-            # self.language = language.union(rule.get_signature())
+            if any(rule_part not in self.language for rule_part in rule.get_signature()):
+                raise ValueError('Some part of the rule ' + str(rule) + ' is not in the language.')
 
         self.contraries = contraries
 
         self.is_flat = True
-
         for rule in rules:
             if rule.head in assumptions:
                 self.is_flat = False
-                raise NotImplementedError
+                raise ValueError('This ABA framework is not flat. At this point, we only support flat ABA.')
 
     def __eq__(self, other):
         return self.assumptions == other.assumptions and \

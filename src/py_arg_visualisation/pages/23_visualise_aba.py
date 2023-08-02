@@ -110,15 +110,32 @@ def read_aba(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str):
     """
     Read the ABA framework from the str (in the four text fields).
     """
+    # Read atoms (language)
     atoms = {atom for atom in aba_l_str.replace(' ', '').replace('.', '').split('\n') if atom}
-    rules = {Rule(rule_str, set(rule_str.split('<-')[1].split(',')), rule_str.split('<-')[0])
-             for rule_str in aba_r_str.replace(' ', '').replace('.', '').split('\n')
-             if rule_str}
-    assumptions = {atom for atom in aba_a_str.replace(' ', '').replace('.', '').split('\n') if atom}
-    cleaned_contrary_str = aba_c_str.replace(' ', '').replace('.', '').replace('(', '').replace(')', '')
-    contraries = {con[0]: con[1] for con in cleaned_contrary_str.split(',') if con}
 
-    return ABAF(atoms, rules, assumptions, contraries)
+    # Read rules
+    cleaned_rule_str = aba_r_str.replace(' ', '').replace('.', '')
+    rules = set()
+    for rule_str in cleaned_rule_str.split('\n'):
+        if '<-' in rule_str:
+            before_rule, after_rule = rule_str.split('<-', 2)
+            if before_rule and after_rule:
+                antecedents = set(after_rule.split(','))
+                rules.add(Rule(rule_str, antecedents, before_rule))
+
+    # Read assumptions
+    assumptions = {atom for atom in aba_a_str.replace(' ', '').replace('.', '').split('\n') if atom}
+
+    # Read contraries
+    cleaned_contrary_str = aba_c_str.replace(' ', '').replace('.', '').replace('(', '').replace(')', '')
+    contraries = {}
+    for contrary_str in cleaned_contrary_str.split('\n'):
+        if ',' in contrary_str:
+            before_comma, after_comma = contrary_str.split(',', 2)
+            if before_comma and after_comma:
+                contraries[before_comma] = after_comma
+
+    return ABAF(assumptions, rules, atoms, contraries)
 
 
 @callback(
@@ -135,7 +152,7 @@ def create_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str,
                 selected_arguments: Dict[str, List[str]], color_blind_mode: bool):
     abaf = read_aba(aba_l_str, aba_r_str, aba_a_str, aba_c_str)
     # Generate the graph data for this argumentation theory
-    return get_aba_graph_data.apply(abaf, abaf.generate_af(), selected_arguments, color_blind_mode)
+    return get_aba_graph_data.apply(abaf, selected_arguments, color_blind_mode)
 
 
 @callback(
