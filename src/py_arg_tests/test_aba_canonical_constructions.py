@@ -201,6 +201,11 @@ class TestCanonicalConstructions(unittest.TestCase):
         es_n = get_conflict_free_extensions.apply(aba)
         self.assertEqual(es1, es_n)
 
+        es2 = {set_empty, set_a, set_b, set_c, set_ab, set_ac, set_bc}
+        aba = construct_abaf_cf.apply(es2)
+        es_n = get_conflict_free_extensions.apply(aba)
+        self.assertEqual(es2, es_n)
+
     def test_canonical_adm(self):
         a = 'a'
         b = 'b'

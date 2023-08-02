@@ -19,7 +19,7 @@ def apply(extension_set: Set) -> ABAF:
     rules = set()
     for ext in extension_set:
         for a in assumptions.difference(ext):
-            if ext.union({a}) in aux.big_p(extension_set):
+            if ext.union({a}) not in aux.dcl(extension_set):
                 rules.add(Rule('', ext, contraries[a]))
 
     return ABAF(assumptions, rules, language, contraries)
