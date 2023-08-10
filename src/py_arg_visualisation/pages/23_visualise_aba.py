@@ -74,6 +74,7 @@ def get_aba_evaluation_specification_div():
                 dbc.Col(html.B('Semantics')),
                 dbc.Col(dbc.Select(options=[
                     {'label': 'Stable', 'value': 'Stable'},
+                    {'label': 'Semi-Stable', 'value': 'SemiStable'},
                     {'label': 'Preferred', 'value': 'Preferred'},
                     {'label': 'Conflict-Free', 'value': 'Conflict-Free'},
                     {'label': 'Naive', 'value': 'Naive'},
@@ -119,6 +120,14 @@ def read_aba(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str):
     for rule_str in cleaned_rule_str.split('\n'):
         if '<-' in rule_str:
             before_rule, after_rule = rule_str.split('<-', 2)
+            if before_rule:
+                if after_rule:
+                    antecedents = set(after_rule.split(','))
+                else:
+                    antecedents = set()
+                rules.add(Rule(rule_str, antecedents, before_rule))
+        if ':-' in rule_str:
+            before_rule, after_rule = rule_str.split(':-', 2)
             if before_rule:
                 if after_rule:
                     antecedents = set(after_rule.split(','))
@@ -183,33 +192,21 @@ def evaluate_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str
     extensions = get_abaf_extensions.apply(abaf, semantics_specification)
     accepted_assumptions = get_accepted_assumptions.apply(extensions, acceptance_strategy_specification)
 
-    af = abaf.generate_af()
+    print(len(extensions))
+    print(extensions)
+    print(len(accepted_assumptions))
+    print(accepted_assumptions)
 
     extension_buttons = []
-    formula_arguments = af.arguments
     for extension in extensions:
-        for argument in extension:
-            assert isinstance(argument, InstantiatedArgument)
-            accepted_formula = argument.conclusion
-            formula_arguments[accepted_formula.s1].append(argument.name)
+        extension_readable_str = '{' + ', '.join(assumption for assumption in extension) + '}'
 
-        out_arguments = {attacked for attacked in af.arguments
-                         if any(argument in af.get_incoming_defeat_arguments(attacked)
-                                for argument in extension)}
-        undecided_arguments = {argument for argument in af.arguments
-                               if argument not in extension and argument not in out_arguments}
-        extension_readable_str = '{' + ', '.join(argument.short_name for argument in extension) + '}'
+        extension_buttons.append(dbc.Button(extension_readable_str, color='secondary',
+                                            id={'type': 'extension-button', 'index': extension_readable_str}))
 
-        extension_in_str = '+'.join(argument.name for argument in sorted(extension))
-        extension_out_str = '+'.join(argument.name for argument in sorted(out_arguments))
-        extension_undecided_str = '+'.join(argument.name for argument in sorted(undecided_arguments))
-        extension_long_str = '|'.join([extension_in_str, extension_undecided_str, extension_out_str])
-        extension_buttons.append(dbc.Button([extension_readable_str], color='secondary',
-                                            id={'type': 'extension-button', 'index': extension_long_str}))
-
-    accepted_assumptions_buttons = [dbc.Button(assumption.s1, color='secondary',
+    accepted_assumptions_buttons = [dbc.Button(assumption, color='secondary',
                                                id={'type': 'formula-button-structured',
-                                                   'index': '+'.join(formula_arguments[assumption.s1])})
+                                                   'index': '+'.join(assumption)})
                                     for assumption in sorted(accepted_assumptions)]
 
     return [html.B('The extension(s):'),
@@ -217,24 +214,3 @@ def evaluate_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str
             html.B('The accepted assumptions(s):'),
             html.Div(accepted_assumptions_buttons)]
 
-
-@callback(
-    Output('23-selected-argument-store-structured', 'data'),
-    Input({'type': 'extension-button', 'index': ALL}, 'n_clicks'),
-    Input({'type': 'formula-button-structured', 'index': ALL}, 'n_clicks'),
-    State('23-selected-argument-store-structured', 'data'),
-)
-def mark_extension_in_graph(_nr_of_clicks_values_extension, _nr_of_clicks_values_formula,
-                            old_selected_data: List[str]):
-    button_clicked_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
-    if button_clicked_id == '':
-        return old_selected_data
-    button_clicked_id_content = json.loads(button_clicked_id)
-    button_clicked_id_type = button_clicked_id_content['type']
-    button_clicked_id_index = button_clicked_id_content['index']
-    if button_clicked_id_type == 'extension-button':
-        in_part, undecided_part, out_part = button_clicked_id_index.split('|', 3)
-        return {'green': in_part.split('+'), 'yellow': undecided_part.split('+'), 'red': out_part.split('+')}
-    elif button_clicked_id_type == 'formula-button-structured':
-        return {'blue': button_clicked_id_index.split('+')}
-    return []

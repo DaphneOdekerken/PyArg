@@ -24,5 +24,5 @@ def apply(abaf: ABAF, semantics_specification: str):
         return get_complete_extensions.apply(abaf)
     if semantics_specification == 'SemiStable':
         return get_semi_stable_extensions.apply(abaf)
-    if semantics_specification == 'Ground':
+    if semantics_specification == 'Grounded':
         return get_ground_extensions.apply(abaf)
