@@ -1,7 +1,7 @@
 from typing import Set
 from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
 from py_arg.abstract_argumentation_classes.argument import Argument
-import py_arg as get_conflict_free_extensions
+import py_arg.algorithms.semantics.get_conflict_free_extensions as get_conflict_free_extensions
 
 
 def apply(argumentation_framework: AbstractArgumentationFramework) -> Set[frozenset[Argument]]:

@@ -67,7 +67,6 @@ class ABAF:
         return AbstractArgumentationFramework('', arguments=list(arguments), defeats=list(defeats))
 
     def generate_af_full(self) -> AbstractArgumentationFramework:
-        print('asd')
         arguments = set()
         defeats = set()
 
