@@ -192,11 +192,6 @@ def evaluate_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str
     extensions = get_abaf_extensions.apply(abaf, semantics_specification)
     accepted_assumptions = get_accepted_assumptions.apply(extensions, acceptance_strategy_specification)
 
-    print(len(extensions))
-    print(extensions)
-    print(len(accepted_assumptions))
-    print(accepted_assumptions)
-
     extension_buttons = []
     for extension in extensions:
         extension_readable_str = '{' + ', '.join(assumption for assumption in extension) + '}'
