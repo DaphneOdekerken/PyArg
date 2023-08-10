@@ -66,6 +66,35 @@ class ABAF:
 
         return AbstractArgumentationFramework('', arguments=list(arguments), defeats=list(defeats))
 
+    def generate_af_full(self) -> AbstractArgumentationFramework:
+        print('asd')
+        arguments = set()
+        defeats = set()
+
+        for assumption in self.assumptions:
+            arguments.add(InstantiatedArgument('', {assumption}, assumption))
+
+        for assumption in self.assumptions:
+            arguments.add(InstantiatedArgument('', {assumption}, assumption))
+
+        for atom in self.language.difference(self.assumptions):
+
+            atom_premises_set = self.recursively_construct_argument(self.rules, atom, {atom})
+
+            for atom_premise in atom_premises_set:
+                arguments.add(InstantiatedArgument('', set(atom_premise), atom))
+
+        for arg1 in arguments:
+            for premise in arg1.premise:
+                for arg2 in arguments:
+                    # if arg1 != arg2 and self.contraries[premise] == arg2.conclusion:
+                    if self.contraries[premise] == arg2.conclusion:
+                        arg1.add_ingoing_defeat(arg2)
+                        arg2.add_outgoing_defeat(arg1)
+                        defeats.add(Defeat(arg2, arg1))
+
+        return AbstractArgumentationFramework('', arguments=list(arguments), defeats=list(defeats))
+
     # I am basically reimplementing Prolog?
     # A premise of an argument is a minimal set of assumptions implying an atom
     # Premises of an atom are determined recursively, going through all rules implying the atom

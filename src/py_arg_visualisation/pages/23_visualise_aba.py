@@ -9,7 +9,6 @@ from dash.exceptions import PreventUpdate
 
 from py_arg.aba_classes.rule import Rule
 from py_arg.aba_classes.aba_framework import ABAF
-from py_arg.aba_classes.instantiated_argument import InstantiatedArgument
 from py_arg_visualisation.functions.extensions_functions import get_abaf_extensions
 from py_arg_visualisation.functions.extensions_functions import get_accepted_assumptions
 from py_arg_visualisation.functions.graph_data_functions import get_aba_graph_data
