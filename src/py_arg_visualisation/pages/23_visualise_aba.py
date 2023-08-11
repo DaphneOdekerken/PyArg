@@ -3,7 +3,7 @@ from typing import List, Dict
 import dash
 import dash_bootstrap_components as dbc
 import visdcc
-from dash import html, callback, Input, Output, State, ALL, dcc
+from dash import html, callback, Input, Output, State, dcc
 from dash.exceptions import PreventUpdate
 
 from py_arg.aba_classes.rule import Rule
@@ -40,7 +40,12 @@ def get_aba_setting_specification_div():
                 dbc.Col([dbc.Select(id='23-ABA-choose-predefined',
                                     options=[
                                        {'label': '-', 'value': 'none'},
-                                       {'label': 'ABA tutorial example 3.1', 'value': 'lasagna'}
+                                       {'label': 'ABA tutorial example 3.1', 'value': 'lasagna'},
+                                       {'label': 'ABA tutorial example 5.1', 'value': 'semantics_test'},
+                                       {'label': 'ABA tutorial example 5.2', 'value': 'semantics_test_2'},
+                                       {'label': 'ABA tutorial example 5.3', 'value': 'semantics_test_3'},
+                                       {'label': 'ABA tutorial example 5.4', 'value': 'semantics_test_4'},
+                                       {'label': 'ABA tutorial Tweety example', 'value': 'tweety'},
                                     ], value='none')])]),
             dbc.Row([
                 dbc.Col([html.B('Atoms')]),
@@ -174,7 +179,56 @@ def prefill_predefined(predefined_value):
         assumptions = 'eating \nno_fork \ndirty_hands'
         contraries = '(eating, not_eating) \n(no_fork, fork) \n(dirty_hands, clean_hands)'
         return language, rules, assumptions, contraries
+    if predefined_value == 'semantics_test':
+        language = 'a\nb\nca\ncb'
+        rules = 'ca <- a\nca <- b\ncb <- a'
+        assumptions = 'a\nb'
+        contraries = '(a, ca)\n(b, cb)'
+        return language, rules, assumptions, contraries
+    if predefined_value == 'semantics_test_2':
+        language = 'a\nb\nc\nd\ne\nf\nca\ncb\ncc\ncd\nce\ncf'
+        rules = 'ca <- a\nca <- b\ncb <- a\ncc <- d\ncd <- c\nce <- c\nce <- d\ncf <- e'
+        assumptions = 'a\nb\nc\nd\ne\nf'
+        contraries = '(a, ca)\n(b, cb)\n(c, cc)\n(d, cd)\n(e, ce)\n(f, cf)'
+        return language, rules, assumptions, contraries
+    if predefined_value == 'semantics_test_3':
+        language = 'a\nb\nc\nca\ncb\ncc'
+        rules = 'ca <- b\ncb <- a\ncc <- b\ncc<- c'
+        assumptions = 'a\nb\nc'
+        contraries = '(a, ca)\n(b, cb)\n(c, cc)'
+        return language, rules, assumptions, contraries
+    if predefined_value == 'semantics_test_4':
+        language = 'a\nb\nc\nd\np\nq\nr\ns\nt'
+        rules = 'p <- q, a\nq<- \nr<- b, c'
+        assumptions = 'a\nb\nc\nd'
+        contraries = '(a, r)\n(b, s)\n(c, t)\n(d, p)'
+        return language, rules, assumptions, contraries
+    if predefined_value == 'tweety':
+        language = 'normal[tweety]\n' \
+                   'normal[joe]\n' \
+                   'fly[tweety]\n' \
+                   'fly[joe]\n' \
+                   'bird[tweety]\n' \
+                   'bird[joe]\n' \
+                   'not_fly[tweety]\n' \
+                   'not_fly[joe]\n' \
+                   'penguin[tweety]\n' \
+                   'penguin[joe]'
+        rules = 'fly[tweety] <- bird[tweety], normal[tweety]\n' \
+                'fly[joe] <- bird[joe], normal[joe]\n' \
+                'not_fly[tweety] <- penguin[tweety]\n' \
+                'not_fly[joe] <- penguin[joe]\n' \
+                'bird[tweety] <- penguin[tweety]\n' \
+                'bird[joe] <- penguin[joe]\n' \
+                'penguin[tweety] <- \n' \
+                'bird[joe] <-'
+        assumptions = 'normal[tweety]\n' \
+                      'normal[joe]'
+        contraries = '(normal[tweety], not_fly[tweety])\n' \
+                     '(normal[joe], not_fly[joe])'
+        return language, rules, assumptions, contraries
     return NotImplementedError
+
 
 @callback(
     Output('23-ABA-instantiated-graph', 'data'),
@@ -244,4 +298,3 @@ def evaluate_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str
             html.Div(extension_buttons),
             html.B('The accepted assumptions(s):'),
             html.Div(accepted_assumptions_buttons)]
-
