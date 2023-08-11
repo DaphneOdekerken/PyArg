@@ -59,7 +59,8 @@ def get_aba_setting_specification_div():
                                       value='', style={'height': '200px'})]),
                 dbc.Col([dbc.Textarea(id='23-ABA-C',
                                       placeholder='Add one assignment of a contrary per line. '
-                                                  'For example:\n (a,p) \n (b,q)',
+                                                  'For example:\n (a,p) \n (b,q) \n'
+                                                  'This means that the contrary of a is p and the contrary of b is q.',
                                       value='', style={'height': '200px'}), ]),
             ]),
         ])
