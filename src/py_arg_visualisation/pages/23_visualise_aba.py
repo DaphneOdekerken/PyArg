@@ -1,4 +1,3 @@
-import json
 from typing import List, Dict
 
 import dash
@@ -36,7 +35,13 @@ def get_aba_setting_specification_div():
     return html.Div(children=[
         dcc.Store(id='23-selected-argument-store-structured'),
         dbc.Col([
-            # dbc.Row(dbc.Button('Generate random', id='23-generate-random-arg-theory-button', n_clicks=0)),
+            dbc.Row([
+                dbc.Col([html.B('Choose a predefined ABA framework (optional)')]),
+                dbc.Col([dbc.Select(id='23-ABA-choose-predefined',
+                                    options=[
+                                       {'label': '-', 'value': 'none'},
+                                       {'label': 'ABA tutorial example 3.1', 'value': 'lasagna'}
+                                    ], value='none')])]),
             dbc.Row([
                 dbc.Col([html.B('Atoms')]),
                 dbc.Col([html.B('Rules')]),
@@ -152,6 +157,24 @@ def read_aba(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str):
 
     return ABAF(assumptions, rules, atoms, contraries)
 
+
+@callback(
+    Output('23-ABA-L', 'value'),
+    Output('23-ABA-R', 'value'),
+    Output('23-ABA-A', 'value'),
+    Output('23-ABA-C', 'value'),
+    Input('23-ABA-choose-predefined', 'value'),
+)
+def prefill_predefined(predefined_value):
+    if predefined_value == 'none':
+        return '', '', '', ''
+    if predefined_value == 'lasagna':
+        language = 'happy \neating \ngood_food \nnot_eating \nno_fork \ndirty_hands \nfork \nclean_hands'
+        rules = 'happy <- good_food, eating \ngood_food <- \nnot_eating <- no_fork, dirty_hands'
+        assumptions = 'eating \nno_fork \ndirty_hands'
+        contraries = '(eating, not_eating) \n(no_fork, fork) \n(dirty_hands, clean_hands)'
+        return language, rules, assumptions, contraries
+    return NotImplementedError
 
 @callback(
     Output('23-ABA-instantiated-graph', 'data'),
