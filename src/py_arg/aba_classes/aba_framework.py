@@ -15,17 +15,29 @@ class ABAF:
         self.assumptions = assumptions
         self.rules = rules
 
+        # Verify that every assumption is in the language.
         if any(assumption not in language for assumption in self.assumptions):
             raise ValueError('Some assumption is not in the language.')
 
         self.language = language
 
+        # Verify that every item in the body or head of the rule is in the language.
         for rule in rules:
             if any(rule_part not in self.language for rule_part in rule.get_signature()):
                 raise ValueError('Some part of the rule ' + str(rule) + ' is not in the language.')
 
         self.contraries = contraries
 
+        # Verify that each assumption has a contrary.
+        if any(assumption not in self.contraries.keys() for assumption in self.assumptions):
+            raise ValueError('Some assumption does not have a contrary.')
+
+        # Verify that each contrary element is in the language.
+        if any(assumption not in self.assumptions or contrary not in self.language
+               for assumption, contrary in self.contraries.items()):
+            raise ValueError('Some contrary pair does not consist of an assumption and an atom.')
+
+        # Verify that the framework is flat (assumptions cannot be in the rule head).
         self.is_flat = True
         for rule in rules:
             if rule.head in assumptions:

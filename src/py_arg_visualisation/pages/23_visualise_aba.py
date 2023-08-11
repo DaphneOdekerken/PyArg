@@ -63,6 +63,9 @@ def get_aba_setting_specification_div():
                                                   'This means that the contrary of a is p and the contrary of b is q.',
                                       value='', style={'height': '200px'}), ]),
             ]),
+            dbc.Row([
+                dbc.Col([dbc.Alert(id='23-ABA-error-explanation', color='warning', is_open=False)])
+            ])
         ])
     ])
 
@@ -152,6 +155,8 @@ def read_aba(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str):
 
 @callback(
     Output('23-ABA-instantiated-graph', 'data'),
+    Output('23-ABA-error-explanation', 'children'),
+    Output('23-ABA-error-explanation', 'is_open'),
     Input('23-ABA-L', 'value'),
     Input('23-ABA-R', 'value'),
     Input('23-ABA-A', 'value'),
@@ -162,9 +167,17 @@ def read_aba(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str):
 )
 def create_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str,
                 selected_arguments: Dict[str, List[str]], color_blind_mode: bool):
-    abaf = read_aba(aba_l_str, aba_r_str, aba_a_str, aba_c_str)
-    # Generate the graph data for this argumentation theory
-    return get_aba_graph_data.apply(abaf, selected_arguments, color_blind_mode)
+    try:
+        # Generate the graph data for this argumentation theory
+        aba_framework = read_aba(aba_l_str, aba_r_str, aba_a_str, aba_c_str)
+        error_message = ''
+        alert_open = False
+    except ValueError as value_error:
+        aba_framework = ABAF(set(), set(), set(), {})
+        error_message = str(value_error)
+        alert_open = True
+    graph_data = get_aba_graph_data.apply(aba_framework, selected_arguments, color_blind_mode)
+    return graph_data, error_message, alert_open
 
 
 @callback(
