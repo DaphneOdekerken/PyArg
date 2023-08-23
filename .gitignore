@@ -129,5 +129,6 @@ dmypy.json
 .DS_Store
 *.pyc
 
-/docs/
-docs/_build
+# Sphinx documentation
+docs/_build/
+docs/pyarg.*
