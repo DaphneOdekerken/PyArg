@@ -15,9 +15,6 @@ Visualisation
 If you only want to use the visualisation of PyArg, go to
 https://pyarg.npai.science.uu.nl/.
 
-.. image:: images/abstract_af_windows.PNG
-   :width: 600
-
 Installing the package
 ----------------------
 
