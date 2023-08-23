@@ -15,13 +15,13 @@ Toni, Francesca. A tutorial on assumption-based argumentation. *Argument & Compu
 
 
     language = {'happy',
-                    'eating',
-                    'good_food',
-                    'not_eating',
-                    'no_fork',
-                    'dirty_hands',
-                    'fork',
-                    'clean_hands'}
+                'eating',
+                'good_food',
+                'not_eating',
+                'no_fork',
+                'dirty_hands',
+                'fork',
+                'clean_hands'}
     rules = {Rule('Rule1', {'good_food', 'eating'}, 'happy'),
              Rule('Rule2', set(), 'good_food'),
              Rule('Rule3', {'no_fork', 'dirty_hands'}, 'not_eating')}
