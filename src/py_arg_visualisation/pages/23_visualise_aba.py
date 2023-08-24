@@ -46,6 +46,8 @@ def get_aba_setting_specification_div():
                                        {'label': 'ABA tutorial example 5.3', 'value': 'semantics_test_3'},
                                        {'label': 'ABA tutorial example 5.4', 'value': 'semantics_test_4'},
                                        {'label': 'ABA tutorial Tweety example', 'value': 'tweety'},
+                                       {'label': 'Difference Asms vs. Arg Semantics Semi-Stable', 'value':
+                                           'semantics_exm_ss'},
                                     ], value='none')])]),
             dbc.Row([
                 dbc.Col([html.B('Atoms')]),
@@ -226,6 +228,11 @@ def prefill_predefined(predefined_value):
                       'normal[joe]'
         contraries = '(normal[tweety], not_fly[tweety])\n' \
                      '(normal[joe], not_fly[joe])'
+    if predefined_value == 'semantics_exm_ss':
+        language = 'a\nb\nc\nd\nca\ncb\ncc\ncd'
+        rules = 'cc <- c\nca <- b\ncb<- a\ncc<- c, a\ncd<- d, b'
+        assumptions = 'a\nb\nc\nd'
+        contraries = '(a, ca)\n(b, cb)\n(c, cc)\n(d, cd)'
         return language, rules, assumptions, contraries
     return NotImplementedError
 
