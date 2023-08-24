@@ -228,6 +228,7 @@ def prefill_predefined(predefined_value):
                       'normal[joe]'
         contraries = '(normal[tweety], not_fly[tweety])\n' \
                      '(normal[joe], not_fly[joe])'
+        return language, rules, assumptions, contraries
     if predefined_value == 'semantics_exm_ss':
         language = 'a\nb\nc\nd\nca\ncb\ncc\ncd'
         rules = 'cc <- c\nca <- b\ncb<- a\ncc<- c, a\ncd<- d, b'
