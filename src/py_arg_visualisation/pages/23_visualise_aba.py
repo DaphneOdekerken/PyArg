@@ -231,7 +231,7 @@ def prefill_predefined(predefined_value):
         return language, rules, assumptions, contraries
     if predefined_value == 'semantics_exm_ss':
         language = 'a\nb\nc\nd\nca\ncb\ncc\ncd'
-        rules = 'cc <- c\nca <- b\ncb<- a\ncc<- c, a\ncd<- d, b'
+        rules = 'cc <- c\nca <- b\ncb <- a\ncc <- c, a\ncd <- d, b'
         assumptions = 'a\nb\nc\nd'
         contraries = '(a, ca)\n(b, cb)\n(c, cc)\n(d, cd)'
         return language, rules, assumptions, contraries
@@ -304,5 +304,5 @@ def evaluate_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str
 
     return [html.B('The extension(s):'),
             html.Div(extension_buttons),
-            html.B('The accepted assumptions(s):'),
+            html.B('The accepted assumption(s):'),
             html.Div(accepted_assumptions_buttons)]

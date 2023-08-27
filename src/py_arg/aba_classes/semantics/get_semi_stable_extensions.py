@@ -4,7 +4,7 @@ from py_arg.aba_classes.aba_framework import ABAF
 import py_arg.aba_classes.semantics.get_complete_extensions as get_complete_extensions
 
 
-# We thank Anh Kiet Nguyen for reminding us that semi-stable assumption extensions
+# We thank Anh Kiet Nguyen for pointing out that semi-stable assumption extensions
 # cannot in general be attained from the instantiated af.
 # cf. 'ON THE DIFFERENCE BETWEEN ASSUMPTION-BASED ARGUMENTATION AND ABSTRACT ARGUMENTATION'
 def apply(abaf: ABAF) -> Set[FrozenSet[str]]:

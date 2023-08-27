@@ -10,16 +10,19 @@ import py_arg.algorithms.canonical_constructions.canonical_abaf.canonical_adm as
 @staticmethod
 def apply(extension_set: Set) -> ABAF:
     extension_set_star = aux.dcl(aux.reduce(extension_set)).intersection(aux.ucl(aux.reduce(extension_set)))
-
+    assumptions = set(aux.big_a(extension_set))
     abaf_adm_star = canonical_adm.apply(extension_set_star)
-    abaf_adm = canonical_adm.apply(extension_set)
 
-    assumptions = abaf_adm.assumptions.union(abaf_adm_star.assumptions)
+    assumptions = assumptions.union(abaf_adm_star.assumptions)
+    contraries = {}
+    language = set()
+    for a in assumptions:
+        a_c = a + '_c'
+        language.add(a)
+        language.add(a_c)
+        contraries[a] = a_c
+
     rules = abaf_adm_star.rules
-    language = abaf_adm.language.union(abaf_adm_star.language)
-    contraries = abaf_adm.contraries
-    contraries.update(abaf_adm_star.contraries)
-
     for ext_a, ext_b in aux.tuples(aux.reduce(extension_set).difference(frozenset())):
         for a in aux.unique_big_c(frozenset(set(ext_a).union(set(ext_b))), aux.reduce(extension_set)):
             x_a_c = 'x_' + a + '_c'
