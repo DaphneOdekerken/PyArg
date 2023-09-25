@@ -20,8 +20,8 @@ def apply(extension_set: Set) -> ABAF:
         language.add(a_c)
         contraries[a] = a_c
 
-        x_a = 'x_' + a
-        x_a_c = 'x_' + a + '_c'
+        x_a = 'χ_' + a
+        x_a_c = 'χ_' + a + '_c'
         new_assumptions.add(x_a)
         language.add(x_a)
         language.add(x_a_c)
