@@ -161,7 +161,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         self.assertEqual(canonical_aba1.language, {a, b, c, a_c, b_c, c_c})
         self.assertEqual(canonical_aba1.rules, {Rule('', {a, b}, c_c), Rule('', {a, c}, b_c), Rule('', {b, c}, a_c)})
         self.assertEqual(canonical_aba1.contraries, {a: a_c, b: b_c, c: c_c})
-        self.assertEqual(get_stable_extensions.apply(canonical_aba1), es1)
+        self.assertEqual(get_stable_extensions.get_stable_extensions(canonical_aba1), es1)
 
         es2 = {set_a, set_b, set_c}
         canonical_aba2 = canonical_st.apply(es2)
@@ -171,7 +171,7 @@ class TestCanonicalConstructions(unittest.TestCase):
                                                 Rule('', {b}, a_c), Rule('', {b}, c_c),
                                                 Rule('', {c}, a_c), Rule('', {c}, b_c)})
         self.assertEqual(canonical_aba2.contraries, {a: a_c, b: b_c, c: c_c})
-        self.assertEqual(get_stable_extensions.apply(canonical_aba2), es2)
+        self.assertEqual(get_stable_extensions.get_stable_extensions(canonical_aba2), es2)
 
     def test_canonical_cf(self):
         a = 'a'
@@ -198,12 +198,12 @@ class TestCanonicalConstructions(unittest.TestCase):
 
         es1 = {set_empty, set_a, set_b, set_c, set_ab}
         aba = construct_abaf_cf.apply(es1)
-        es_n = get_conflict_free_extensions.apply(aba)
+        es_n = get_conflict_free_extensions.get_conflict_free_extensions(aba)
         self.assertEqual(es1, es_n)
 
         es2 = {set_empty, set_a, set_b, set_c, set_ab, set_ac, set_bc}
         aba = construct_abaf_cf.apply(es2)
-        es_n = get_conflict_free_extensions.apply(aba)
+        es_n = get_conflict_free_extensions.get_conflict_free_extensions(aba)
         self.assertEqual(es2, es_n)
 
     def test_canonical_adm(self):
@@ -232,7 +232,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         es1 = {set_empty, set_c, set_ab, set_abc}
         canonical_aba1 = construct_abaf_adm.apply(es1)
         canonical_aba1.reduce()
-        es_n = get_admissible_extensions.apply(canonical_aba1)
+        es_n = get_admissible_extensions.get_admissible_extensions(canonical_aba1)
 
         self.assertEqual(es1, es_n)
 
@@ -277,7 +277,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         self.assertTrue(check_intersection_in.apply(es1))
         canonical_aba1 = construct_abaf_com.apply(es1)
         canonical_aba1.reduce()
-        es_n = get_complete_extensions.apply(canonical_aba1)
+        es_n = get_complete_extensions.get_complete_extensions(canonical_aba1)
 
         self.assertEqual(es1, es_n)
 
@@ -287,7 +287,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         self.assertTrue(check_intersection_in.apply(es2))
         canonical_aba2 = construct_abaf_com.apply(es2)
         canonical_aba2.reduce()
-        es_n = get_complete_extensions.apply(canonical_aba2)
+        es_n = get_complete_extensions.get_complete_extensions(canonical_aba2)
 
         self.assertEqual(es2, es_n)
 
@@ -297,6 +297,6 @@ class TestCanonicalConstructions(unittest.TestCase):
         self.assertTrue(check_intersection_in.apply(es3))
         canonical_aba3 = construct_abaf_com.apply(es3)
         canonical_aba3.reduce()
-        es_n = get_complete_extensions.apply(canonical_aba3)
+        es_n = get_complete_extensions.get_complete_extensions(canonical_aba3)
 
         self.assertEqual(es3, es_n)
