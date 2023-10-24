@@ -239,7 +239,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         es2 = {set_empty, set_ab, set_ac, set_bc}
         canonical_aba2 = construct_abaf_adm.apply(es2)
         canonical_aba2.reduce()
-        es_n = get_admissible_extensions.apply(canonical_aba2)
+        es_n = get_admissible_extensions.get_admissible_extensions(canonical_aba2)
 
         self.assertEqual(es2, es_n)
 
