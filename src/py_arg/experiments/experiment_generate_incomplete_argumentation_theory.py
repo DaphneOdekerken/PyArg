@@ -4,9 +4,7 @@ from py_arg.generators.incomplete_argumentation_theory_generators.incomplete_arg
     IncompleteArgumentationTheoryGenerator
 
 
-def instantiate_incomplete_argumentation_theory_generator():
-    nr_of_literals = 10000
-    nr_of_rules = 15000
+def instantiate_incomplete_argumentation_theory_generator(nr_of_literals, nr_of_rules):
     rule_antecedent_distribution = {1: int(nr_of_rules / 3),
                                     2: int(nr_of_rules / 3),
                                     3: int(nr_of_rules / 9),
@@ -42,7 +40,9 @@ def instantiate_incomplete_argumentation_theory_generator():
     )
 
 
-generator = instantiate_incomplete_argumentation_theory_generator()
-iaf = generator.generate()
-i = 0
-
+if __name__ == "__main__":
+    for nr_of_literals in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150]:
+        for nr_of_rules in [nr_of_literals / 2, nr_of_literals, 3 * nr_of_literals / 2]:
+            generator = instantiate_incomplete_argumentation_theory_generator(nr_of_literals, nr_of_rules)
+            for instance in range(50):
+                iaf = generator.generate()
