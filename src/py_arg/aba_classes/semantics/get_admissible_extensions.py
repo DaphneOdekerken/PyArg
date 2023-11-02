@@ -5,16 +5,16 @@ import py_arg.algorithms.semantics.is_admissible as is_admissible_af
 import py_arg.algorithms.canonical_constructions.aux_operators as aux
 
 
-def apply(abaf: ABAF) -> Set[FrozenSet[str]]:
-    af = abaf.generate_af()
+def get_admissible_extensions(aba_framework: ABAF) -> Set[FrozenSet[str]]:
+    af = aba_framework.generate_af()
 
-    abaf_extensions = set()
-    for ext in aux.powerset(abaf.assumptions):
+    aba_framework_extensions = set()
+    for ext in aux.powerset(aba_framework.assumptions):
         af_ext = set()
         for arg in af.arguments:
             if arg.premise.issubset(ext):
                 af_ext.add(arg)
         if is_admissible_af.is_admissible(af_ext, af):
-            abaf_extensions.add(ext)
+            aba_framework_extensions.add(ext)
 
-    return abaf_extensions
+    return aba_framework_extensions

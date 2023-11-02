@@ -44,8 +44,7 @@ def instantiate_incomplete_argumentation_theory_generator(nr_of_literals, nr_of_
     ), topics
 
 
-# literal_sizes = [50, 100, 150, 200, 250, 500, 1000, 2500]
-literal_sizes = [60, 70, 80, 90]
+literal_sizes = [20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
 rule_literal_ratios = [0.5, 1, 1.5]
 
 for literal_size in literal_sizes:

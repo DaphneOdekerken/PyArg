@@ -3,6 +3,7 @@ import parse
 from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.literal import Literal
+from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
 from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
 
 
@@ -20,6 +21,7 @@ class IncompleteArgumentationTheoryFromLPFileReader:
         defeasible_rule_bodies = [(r[0], r[1]) for r in parse.findall('body({}, {})', lines)]
         defeasible_rule_heads = [(r[0], r[1]) for r in parse.findall('head({}, {})', lines)]
         contradiction_pairs = [(r[0], r[1]) for r in parse.findall('neg({}, {})', lines)]
+        preferred_pairs = [(r[0], r[1]) for r in parse.findall('preferred({}, {})', lines)]
 
         all_positive_literals = set(positive_queryable_strs)
         for axiom in axiom_strs:
@@ -48,11 +50,22 @@ class IncompleteArgumentationTheoryFromLPFileReader:
                                              language[rule_head])
             defeasible_rules.append(defeasible_rule)
 
-        argumentation_system = ArgumentationSystem(language, contraries_and_contradictories, [], defeasible_rules,
-                                                   add_defeasible_rule_literals=False)
+        def_rules_lookup = {defeasible_rule.id: defeasible_rule for defeasible_rule in defeasible_rules}
+        preference_preorder = PreferencePreorder(
+            [(def_rules_lookup[rule_a], def_rules_lookup[rule_b])
+             for rule_a, rule_b in preferred_pairs])
+
+        argumentation_system = ArgumentationSystem(
+            language=language, contraries_and_contradictories=contraries_and_contradictories,
+            strict_rules=[], defeasible_rules=defeasible_rules,
+            defeasible_rule_preferences=preference_preorder, add_defeasible_rule_literals=False)
 
         negative_queryable_strs = ['-' + queryable for queryable in positive_queryable_strs]
         queryables = [language[queryable] for queryable in positive_queryable_strs + negative_queryable_strs]
         knowledge_base_axioms = [language[axiom_str] for axiom_str in axiom_strs]
 
-        return IncompleteArgumentationTheory(argumentation_system, queryables, knowledge_base_axioms, [])
+        return IncompleteArgumentationTheory(
+            argumentation_system=argumentation_system, queryables=queryables,
+            knowledge_base_axioms=knowledge_base_axioms, knowledge_base_ordinary_premises=[],
+            ordinary_premise_preferences=None
+        )

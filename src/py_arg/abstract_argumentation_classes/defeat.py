@@ -9,6 +9,13 @@ class Defeat:
     def __str__(self):
         return str(self.from_argument) + ' defeats ' + str(self.to_argument)
 
+    def __lt__(self, other):
+        return self.from_argument < other.from_argument or self.from_argument == other.from_argument and \
+            self.to_argument < other.to_argument
+
+    def __repr__(self):
+        return '(' + str(self.from_argument) + ', ' + str(self.to_argument) + ')'
+
     def __eq__(self, other):
         return self.from_argument == other.from_argument and self.to_argument == other.to_argument
 

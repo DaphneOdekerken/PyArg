@@ -4,15 +4,15 @@ from py_arg.aba_classes.aba_framework import ABAF
 import py_arg.algorithms.semantics.get_stable_extensions as get_stable_extensions_af
 
 
-def apply(abaf: ABAF) -> Set[FrozenSet[str]]:
-    af = abaf.generate_af()
+def get_stable_extensions(aba_framework: ABAF) -> Set[FrozenSet[str]]:
+    af = aba_framework.generate_af()
     af_extensions = get_stable_extensions_af.get_stable_extensions(af)
-    abaf_extensions = set()
+    aba_framework_extensions = set()
     for af_ext in af_extensions:
         aba_ext = set()
         for arg in af_ext:
-            if arg.conclusion in abaf.assumptions:
+            if arg.conclusion in aba_framework.assumptions:
                 aba_ext.add(arg.conclusion)
-        abaf_extensions.add(frozenset(aba_ext))
+        aba_framework_extensions.add(frozenset(aba_ext))
 
-    return abaf_extensions
+    return aba_framework_extensions

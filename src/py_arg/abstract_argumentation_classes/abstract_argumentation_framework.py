@@ -24,6 +24,16 @@ class AbstractArgumentationFramework:
             defeat.from_argument.add_outgoing_defeat(defeat.to_argument)
             defeat.to_argument.add_ingoing_defeat(defeat.from_argument)
 
+    def __repr__(self):
+        return '( [' + ', '.join(argument.name for argument in self.arguments) + \
+            '], [' + ', '.join(defeat.__repr__() for defeat in self.defeats) + '] )'
+
+    def __eq__(self, other):
+        return isinstance(other, AbstractArgumentationFramework) and \
+            self.name == other.name and \
+            self.arguments == other.arguments and \
+            self.defeats == other.defeats
+
     def get_incoming_defeat_arguments(self, argument: Argument) -> List[Argument]:
         """
         Get a list of arguments that defeat this argument.

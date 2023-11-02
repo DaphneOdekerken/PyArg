@@ -25,4 +25,3 @@ class InstantiatedArgument(Argument):
 
     def __lt__(self, other):
         return self.arg_hash < other.arg_hash
-
