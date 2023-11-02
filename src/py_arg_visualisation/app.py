@@ -13,6 +13,9 @@ navbar = dbc.NavbarSimple(
         dbc.DropdownMenu(
             children=[
                 dbc.DropdownMenuItem('Random Abstract AF', href='01-generate-abstract', className='fw-bold text-white'),
+                dbc.DropdownMenuItem('Random Erdos-Renyi AF', href='04-generate-erdos-renyi', className='fw-bold text-white'),
+                dbc.DropdownMenuItem('Random Watts-Strogatz AF', href='05-generate-watts-strogatz', className='fw-bold text-white'),
+                dbc.DropdownMenuItem('Random Barabasi-Albert AF', href='06-generate-barabasi-albert', className='fw-bold text-white'),
                 dbc.DropdownMenuItem('Layered ASPIC+ AS', href='03-generate-layered-aspic',
                                      className='fw-bold text-white'),
             ],
@@ -25,6 +28,7 @@ navbar = dbc.NavbarSimple(
         dbc.DropdownMenu(
             children=[
                 dbc.DropdownMenuItem('Abstract', href='21-visualise-abstract', className='fw-bold text-white'),
+                dbc.DropdownMenuItem('Tweety API Test', href='24-visualise-tweety-services-test', className='fw-bold text-white'),
                 dbc.DropdownMenuItem('ASPIC+', href='22-visualise-aspic', className='fw-bold text-white'),
                 dbc.DropdownMenuItem('ABA', href='23-visualise-aba', className='fw-bold text-white'),
             ],

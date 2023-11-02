@@ -132,3 +132,5 @@ dmypy.json
 # Sphinx documentation
 docs/_build/
 docs/pyarg.*
+
+settings.json
