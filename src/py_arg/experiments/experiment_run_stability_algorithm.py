@@ -52,8 +52,7 @@ def get_all_literals_stability(lp_file_name: str):
 
 
 if __name__ == "__main__":
-    get_literal_is_stable('generated_iat.lp', 'l0')
-    with os.scandir(r'C:\Users\Daphne\PycharmProjects\py_arg\py_arg\experiments\generated_data') as entries:
+    with os.scandir(r'generated_data') as entries:
         for entry in entries:
             filename = entry.name
             st, st2, et = get_all_literals_stability(filename)

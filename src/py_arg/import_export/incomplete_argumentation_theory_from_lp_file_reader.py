@@ -1,5 +1,3 @@
-import parse
-
 from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic_classes.literal import Literal
@@ -13,15 +11,29 @@ class IncompleteArgumentationTheoryFromLPFileReader:
 
     @staticmethod
     def read_from_lp_file(file_path: str) -> IncompleteArgumentationTheory:
-        with open(file_path, 'r') as reader:
-            lines = reader.read()
 
-        positive_queryable_strs = [r[0] for r in parse.findall('queryable({})', lines)]
-        axiom_strs = [r[0] for r in parse.findall('axiom({})', lines)]
-        defeasible_rule_bodies = [(r[0], r[1]) for r in parse.findall('body({}, {})', lines)]
-        defeasible_rule_heads = [(r[0], r[1]) for r in parse.findall('head({}, {})', lines)]
-        contradiction_pairs = [(r[0], r[1]) for r in parse.findall('neg({}, {})', lines)]
-        preferred_pairs = [(r[0], r[1]) for r in parse.findall('preferred({}, {})', lines)]
+        positive_queryable_strs = []
+        axiom_strs = []
+        defeasible_rule_bodies = []
+        defeasible_rule_heads = []
+        contradiction_pairs = []
+        preferred_pairs = []
+
+        reader = open(file_path, 'r')
+        for line in reader:
+            if line.startswith('queryable'):
+                positive_queryable_strs.append(line.split('(', 1)[1].split(')', 1)[0])
+            if line.startswith('axiom'):
+                axiom_strs.append(line.split('(', 1)[1].split(')', 1)[0])
+            if line.startswith('body'):
+                defeasible_rule_bodies.append((line.split('(', 1)[1].split(')', 1)[0]).split(', ', 1))
+            if line.startswith('head'):
+                defeasible_rule_heads.append((line.split('(', 1)[1].split(')', 1)[0]).split(', ', 1))
+            if line.startswith('neg'):
+                contradiction_pairs.append((line.split('(', 1)[1].split(')', 1)[0]).split(', ', 1))
+            if line.startswith('preferred'):
+                preferred_pairs.append((line.split('(', 1)[1].split(')', 1)[0]).split(', ', 1))
+        reader.close()
 
         all_positive_literals = set(positive_queryable_strs)
         for axiom in axiom_strs:
