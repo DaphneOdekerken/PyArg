@@ -5,13 +5,14 @@ import dash_bootstrap_components as dbc
 import visdcc
 from dash import html, callback, Input, Output, State
 
-from py_arg.abstract_argumentation_classes.argument import Argument
-from py_arg.algorithms.canonical_constructions import check_incomparable
-from py_arg.algorithms.canonical_constructions import check_non_empty, check_tight
-from py_arg.algorithms.canonical_constructions import check_conf_sens, check_dcl_tight, check_contains_empty, \
-    check_unary, check_downward_closed
-from py_arg.algorithms.canonical_constructions.canonical_af import construct_af_stage, construct_af_cf, \
-    construct_af_naive, construct_af_adm, construct_af_grd, construct_af_stb
+from py_arg.abstract_argumentation.classes.argument import Argument
+from py_arg.abstract_argumentation.canonical_constructions import check_incomparable, check_contains_empty, \
+    check_unary, check_conf_sens, check_non_empty, check_tight
+from py_arg.abstract_argumentation.canonical_constructions import check_dcl_tight, check_downward_closed
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af import construct_af_stage, construct_af_adm, \
+    construct_af_grd
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af import construct_af_stb, construct_af_cf, \
+    construct_af_naive
 from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
 
 dash.register_page(__name__, name='Canonical', title='Canonical')

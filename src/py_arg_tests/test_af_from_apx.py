@@ -1,6 +1,6 @@
 import unittest
 
-from py_arg.import_export.argumentation_framework_from_aspartix_format_reader import \
+from py_arg.abstract_argumentation.import_export.argumentation_framework_from_aspartix_format_reader import \
     ArgumentationFrameworkFromASPARTIXFormatReader
 
 

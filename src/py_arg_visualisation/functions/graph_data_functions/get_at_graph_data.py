@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic.classes.argumentation_theory import ArgumentationTheory
 from py_arg_visualisation.functions.graph_data_functions.get_color import get_color
 from py_arg_visualisation.functions.ordering_functions.get_ordering_by_specification \
     import get_ordering_by_specification

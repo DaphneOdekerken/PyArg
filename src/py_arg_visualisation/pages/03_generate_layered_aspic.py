@@ -4,9 +4,9 @@ import dash
 from dash import html, dcc, callback, Input, Output, State, MATCH
 import dash_bootstrap_components as dbc
 
-from py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
+from py_arg.aspic.generators.argumentation_system_generators.layered_argumentation_system_generator import \
     LayeredArgumentationSystemGenerator
-from py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
+from py_arg.aspic.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
 
 dash.register_page(__name__, name='GenerateLayeredAspic', title='Generate Layered ASPIC+ AS')
 

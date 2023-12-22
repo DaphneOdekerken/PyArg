@@ -1,26 +1,26 @@
 import unittest
 
-import py_arg.algorithms.canonical_constructions.canonical_abaf.canonical_st as canonical_st
-import py_arg.algorithms.canonical_constructions.canonical_abaf.construct_abaf_cf as construct_abaf_cf
-import py_arg.algorithms.canonical_constructions.canonical_abaf.construct_abaf_com as construct_abaf_com
-from py_arg.algorithms.canonical_constructions.canonical_abaf import construct_abaf_adm
-import py_arg.algorithms.canonical_constructions.check_intersection_in as check_intersection_in
-import py_arg.algorithms.canonical_constructions.check_union_closed as check_union_closed
-import py_arg.algorithms.canonical_constructions.check_set_com_closed as check_set_com_closed
-import py_arg.algorithms.canonical_constructions.check_downward_closed as check_downward_closed
-import py_arg.algorithms.canonical_constructions.aux_operators as aux
+import py_arg.assumption_based_argumentation.canonical_constructions.canonical_st as canonical_st
+import py_arg.assumption_based_argumentation.canonical_constructions.construct_abaf_cf as construct_abaf_cf
+import py_arg.assumption_based_argumentation.canonical_constructions.construct_abaf_com as construct_abaf_com
+from py_arg.assumption_based_argumentation.canonical_constructions import construct_abaf_adm
+import py_arg.abstract_argumentation.canonical_constructions.check_intersection_in as check_intersection_in
+import py_arg.abstract_argumentation.canonical_constructions.check_union_closed as check_union_closed
+import py_arg.abstract_argumentation.canonical_constructions.check_set_com_closed as check_set_com_closed
+import py_arg.abstract_argumentation.canonical_constructions.check_downward_closed as check_downward_closed
+import py_arg.abstract_argumentation.canonical_constructions.aux_operators as aux
 
-from py_arg.aba_classes.semantics import get_complete_extensions as get_complete_extensions
-from py_arg.aba_classes.semantics import get_conflict_free_extensions as get_conflict_free_extensions, \
+from py_arg.assumption_based_argumentation.semantics import get_complete_extensions as get_complete_extensions
+from py_arg.assumption_based_argumentation.semantics import get_conflict_free_extensions as get_conflict_free_extensions, \
     get_stable_extensions as get_stable_extensions, get_admissible_extensions as get_admissible_extensions
 
-from py_arg.aba_classes.aba_framework import ABAF
-from py_arg.aba_classes.instantiated_argument import InstantiatedArgument
-from py_arg.aba_classes.rule import Rule
+from py_arg.assumption_based_argumentation.classes.aba_framework import AssumptionBasedArgumentationFramework
+from py_arg.assumption_based_argumentation.classes.instantiated_argument import InstantiatedArgument
+from py_arg.assumption_based_argumentation.classes.rule import Rule
 
-from py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.abstract_argumentation.classes.defeat import Defeat
 
-import py_arg.algorithms.canonical_constructions.check_contains_empty as check_contains_empty
+import py_arg.abstract_argumentation.canonical_constructions.check_contains_empty as check_contains_empty
 
 
 class TestCanonicalConstructions(unittest.TestCase):
@@ -50,7 +50,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         r_5 = Rule('', set(), q)
         rules = {r_1, r_2, r_3, r_4, r_5}
 
-        aba = ABAF(assumptions, rules, atoms, contraries)
+        aba = AssumptionBasedArgumentationFramework(assumptions, rules, atoms, contraries)
         af = aba.generate_af()
 
         a_to_a = InstantiatedArgument('', {a}, a)

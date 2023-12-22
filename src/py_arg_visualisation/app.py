@@ -13,9 +13,12 @@ navbar = dbc.NavbarSimple(
         dbc.DropdownMenu(
             children=[
                 dbc.DropdownMenuItem('Random Abstract AF', href='01-generate-abstract', className='fw-bold text-white'),
-                dbc.DropdownMenuItem('Random Erdos-Renyi AF', href='04-generate-erdos-renyi', className='fw-bold text-white'),
-                dbc.DropdownMenuItem('Random Watts-Strogatz AF', href='05-generate-watts-strogatz', className='fw-bold text-white'),
-                dbc.DropdownMenuItem('Random Barabasi-Albert AF', href='06-generate-barabasi-albert', className='fw-bold text-white'),
+                dbc.DropdownMenuItem('Random Erdos-Renyi AF', href='04-generate-erdos-renyi',
+                                     className='fw-bold text-white'),
+                dbc.DropdownMenuItem('Random Watts-Strogatz AF', href='05-generate-watts-strogatz',
+                                     className='fw-bold text-white'),
+                dbc.DropdownMenuItem('Random Barabasi-Albert AF', href='06-generate-barabasi-albert',
+                                     className='fw-bold text-white'),
                 dbc.DropdownMenuItem('Layered ASPIC+ AS', href='03-generate-layered-aspic',
                                      className='fw-bold text-white'),
             ],

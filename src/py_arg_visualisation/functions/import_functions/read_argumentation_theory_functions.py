@@ -1,11 +1,11 @@
 from typing import List, Tuple, Set
 
-from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
-from py_arg.aspic_classes.literal import Literal
-from py_arg.aspic_classes.orderings.preference_preorder import PreferencePreorder
-from py_arg.aspic_classes.strict_rule import StrictRule
+from py_arg.aspic.classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic.classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic.classes.defeasible_rule import DefeasibleRule
+from py_arg.aspic.classes.literal import Literal
+from py_arg.aspic.classes.orderings.preference_preorder import PreferencePreorder
+from py_arg.aspic.classes.strict_rule import StrictRule
 
 
 def _read_axioms_and_ordinary_premises(axioms_or_ordinary_premises_str) -> List[str]:

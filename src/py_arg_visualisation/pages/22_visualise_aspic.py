@@ -7,12 +7,12 @@ import visdcc
 from dash import html, callback, Input, Output, State, ALL, dcc
 from dash.exceptions import PreventUpdate
 
-from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
-from py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
+from py_arg.aspic.classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic.classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic.classes.instantiated_argument import InstantiatedArgument
+from py_arg.aspic.generators.argumentation_system_generators.layered_argumentation_system_generator import \
     LayeredArgumentationSystemGenerator
-from py_arg.generators.argumentation_theory_generators.argumentation_theory_generator import \
+from py_arg.aspic.generators.argumentation_theory_generators.argumentation_theory_generator import \
     ArgumentationTheoryGenerator
 from py_arg_visualisation.functions.explanations_functions.explanation_function_options import \
     EXPLANATION_FUNCTION_OPTIONS

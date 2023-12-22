@@ -1,13 +1,12 @@
 import unittest
 
-import py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
+import py_arg.abstract_argumentation.canonical_constructions.canonical_af.canonical_cf as canonical_cf
 
-from py_arg.algorithms.canonical_constructions import check_incomparable
-from py_arg.algorithms.canonical_constructions import check_tight
-from py_arg.algorithms.canonical_constructions import check_conf_sens
-from py_arg.algorithms.canonical_constructions.canonical_af import construct_af_adm, construct_af_grd, construct_af_stb
-from py_arg.algorithms.semantics import get_grounded_extension, get_stable_extensions, get_admissible_sets
-from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator \
+from py_arg.abstract_argumentation.canonical_constructions import check_incomparable, check_conf_sens, check_tight
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af import construct_af_adm, construct_af_grd
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af import construct_af_stb
+from py_arg.abstract_argumentation.semantics import get_grounded_extension, get_stable_extensions, get_admissible_sets
+from py_arg.abstract_argumentation.generators.abstract_argumentation_framework_generator \
     import AbstractArgumentationFrameworkGenerator
 
 

@@ -1,11 +1,11 @@
 import random
 
 from py_arg.experiments.utils import path_to_resources
-from py_arg.import_export.incomplete_argumentation_theory_from_xlsx_reader import \
+from py_arg.incomplete_aspic.import_export.incomplete_argumentation_theory_from_xlsx_reader import \
     IncompleteArgumentationTheoryFromXLSXFileReader
 
 # Load argumentation system and queryables for the fraud system.
-from py_arg.import_export.incomplete_argumentation_theory_to_lp_file_writer import \
+from py_arg.incomplete_aspic.import_export.incomplete_argumentation_theory_to_lp_file_writer import \
     IncompleteArgumentationTheoryToLPFileWriter
 
 asr = IncompleteArgumentationTheoryFromXLSXFileReader()

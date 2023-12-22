@@ -1,19 +1,19 @@
 import pathlib
 import unittest
 
-from py_arg.generators.argumentation_system_generators.layered_argumentation_system_generator import \
+from py_arg.aspic.generators.argumentation_system_generators.layered_argumentation_system_generator import \
     LayeredArgumentationSystemGenerator
-from py_arg.generators.incomplete_argumentation_theory_generators.incomplete_argumentation_theory_generator import \
+from py_arg.incomplete_aspic.generators.incomplete_argumentation_theory_generator import \
     IncompleteArgumentationTheoryGenerator
-from py_arg.import_export.argumentation_system_from_json_reader import ArgumentationSystemFromJsonReader
-from py_arg.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
-from py_arg.import_export.incomplete_argumentation_theory_from_json_reader import \
+from py_arg.aspic.import_export.argumentation_system_from_json_reader import ArgumentationSystemFromJsonReader
+from py_arg.aspic.import_export.argumentation_system_to_json_writer import ArgumentationSystemToJSONWriter
+from py_arg.incomplete_aspic.import_export.incomplete_argumentation_theory_from_json_reader import \
     IncompleteArgumentationTheoryFromJsonReader
-from py_arg.import_export.incomplete_argumentation_theory_from_lp_file_reader import \
+from py_arg.incomplete_aspic.import_export.incomplete_argumentation_theory_from_lp_file_reader import \
     IncompleteArgumentationTheoryFromLPFileReader
-from py_arg.import_export.incomplete_argumentation_theory_to_json_writer import \
+from py_arg.incomplete_aspic.import_export.incomplete_argumentation_theory_to_json_writer import \
     IncompleteArgumentationTheoryToJSONWriter
-from py_arg.import_export.incomplete_argumentation_theory_to_lp_file_writer import \
+from py_arg.incomplete_aspic.import_export.incomplete_argumentation_theory_to_lp_file_writer import \
     IncompleteArgumentationTheoryToLPFileWriter
 
 

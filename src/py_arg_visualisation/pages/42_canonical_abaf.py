@@ -5,13 +5,11 @@ import dash_bootstrap_components as dbc
 import visdcc
 from dash import html, callback, Input, Output, State
 
-from py_arg.abstract_argumentation_classes.argument import Argument
-from py_arg.algorithms.canonical_constructions import check_incomparable, check_intersection_in, check_set_com_closed, check_set_conf_sens
-from py_arg.algorithms.canonical_constructions import check_non_empty
-from py_arg.algorithms.canonical_constructions import check_contains_empty, check_downward_closed
-from py_arg.algorithms.canonical_constructions.canonical_abaf import construct_abaf_com, construct_abaf_naive, construct_abaf_adm
-from py_arg.algorithms.canonical_constructions.canonical_abaf import construct_abaf_prf, construct_abaf_cf, \
-    construct_abaf_st
+from py_arg.abstract_argumentation.canonical_constructions import check_incomparable, check_intersection_in, \
+    check_set_com_closed, check_contains_empty, check_non_empty
+from py_arg.abstract_argumentation.canonical_constructions import check_set_conf_sens, check_downward_closed
+from py_arg.assumption_based_argumentation.canonical_constructions import construct_abaf_com, construct_abaf_prf, \
+    construct_abaf_st, construct_abaf_cf, construct_abaf_naive, construct_abaf_adm
 from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
 
 dash.register_page(__name__, name='CanonicalABAF', title='CanonicalABAF')

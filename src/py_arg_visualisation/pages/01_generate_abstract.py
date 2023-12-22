@@ -5,17 +5,18 @@ import dash
 from dash import html, callback, Input, Output, State, MATCH, dcc
 import dash_bootstrap_components as dbc
 
-from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from py_arg.abstract_argumentation_classes.argument import Argument
-from py_arg.abstract_argumentation_classes.defeat import Defeat
-from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation.classes.argument import Argument
+from py_arg.abstract_argumentation.classes.defeat import Defeat
+from py_arg.abstract_argumentation.generators.abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
-from py_arg.import_export.argumentation_framework_to_aspartix_format_writer import \
+from py_arg.abstract_argumentation.import_export.argumentation_framework_to_aspartix_format_writer import \
     ArgumentationFrameworkToASPARTIXFormatWriter
-from py_arg.import_export.argumentation_framework_to_iccma23_format_writer import \
+from py_arg.abstract_argumentation.import_export.argumentation_framework_to_iccma23_format_writer import \
     ArgumentationFrameworkToICCMA23FormatWriter
-from py_arg.import_export.argumentation_framework_to_json_writer import ArgumentationFrameworkToJSONWriter
-from py_arg.import_export.argumentation_framework_to_trivial_graph_format_writer import \
+from py_arg.abstract_argumentation.import_export.argumentation_framework_to_json_writer import \
+    ArgumentationFrameworkToJSONWriter
+from py_arg.abstract_argumentation.import_export.argumentation_framework_to_trivial_graph_format_writer import \
     ArgumentationFrameworkToTrivialGraphFormatWriter
 
 dash.register_page(__name__, name='GenerateAbstract', title='Generate Abstract AF')

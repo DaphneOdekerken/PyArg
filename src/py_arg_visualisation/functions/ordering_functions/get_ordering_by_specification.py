@@ -1,7 +1,7 @@
-from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from py_arg.aspic_classes.orderings.argument_orderings.last_link_ordering import LastLinkDemocraticOrdering, \
+from py_arg.aspic.classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic.classes.orderings.argument_orderings.last_link_ordering import LastLinkDemocraticOrdering, \
     LastLinkElitistOrdering
-from py_arg.aspic_classes.orderings.argument_orderings.weakest_link_ordering import WeakestLinkDemocraticOrdering, \
+from py_arg.aspic.classes.orderings.argument_orderings.weakest_link_ordering import WeakestLinkDemocraticOrdering, \
     WeakestLinkElitistOrdering
 
 

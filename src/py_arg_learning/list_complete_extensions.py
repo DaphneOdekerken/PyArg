@@ -1,7 +1,7 @@
 from typing import List
 
-from py_arg.algorithms.semantics.get_complete_extensions import get_complete_extensions
-from py_arg.generators.abstract_argumentation_framework_generators.abstract_argumentation_framework_generator import \
+from py_arg.abstract_argumentation.semantics.get_complete_extensions import get_complete_extensions
+from py_arg.abstract_argumentation.generators.abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
 from py_arg_learning.abstract_exercise_set import AbstractExerciseSet
 

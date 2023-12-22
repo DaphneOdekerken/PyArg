@@ -1,8 +1,8 @@
 import unittest
 
-from py_arg.aba_classes.rule import Rule
-from py_arg.aba_classes.aba_framework import ABAF
-from py_arg.aba_classes.semantics import get_preferred_extensions
+from py_arg.assumption_based_argumentation.classes.rule import Rule
+from py_arg.assumption_based_argumentation.classes.aba_framework import AssumptionBasedArgumentationFramework
+from py_arg.assumption_based_argumentation.semantics import get_preferred_extensions
 
 
 class TestABALasagneExample(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestABALasagneExample(unittest.TestCase):
                       'no_fork': 'fork',
                       'dirty_hands': 'clean_hands'}
 
-        aba_framework = ABAF(assumptions, rules, language, contraries)
+        aba_framework = AssumptionBasedArgumentationFramework(assumptions, rules, language, contraries)
         # Get preferred extensions
         extensions = get_preferred_extensions.get_preferred_extensions(aba_framework)
         self.assertSetEqual(extensions, {frozenset({'dirty_hands', 'no_fork'})})

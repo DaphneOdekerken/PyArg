@@ -6,8 +6,8 @@ import visdcc
 from dash import html, callback, Input, Output, State, dcc
 from dash.exceptions import PreventUpdate
 
-from py_arg.aba_classes.rule import Rule
-from py_arg.aba_classes.aba_framework import ABAF
+from py_arg.assumption_based_argumentation.classes.rule import Rule
+from py_arg.assumption_based_argumentation.classes.aba_framework import AssumptionBasedArgumentationFramework
 from py_arg_visualisation.functions.extensions_functions import get_abaf_extensions
 from py_arg_visualisation.functions.extensions_functions import get_accepted_assumptions
 from py_arg_visualisation.functions.graph_data_functions import get_aba_graph_data
@@ -162,7 +162,7 @@ def read_aba(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str):
             if before_comma and after_comma:
                 contraries[before_comma] = after_comma
 
-    return ABAF(assumptions, rules, atoms, contraries)
+    return AssumptionBasedArgumentationFramework(assumptions, rules, atoms, contraries)
 
 
 @callback(
@@ -258,7 +258,7 @@ def create_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str,
         error_message = ''
         alert_open = False
     except ValueError as value_error:
-        aba_framework = ABAF(set(), set(), set(), {})
+        aba_framework = AssumptionBasedArgumentationFramework(set(), set(), set(), {})
         error_message = str(value_error)
         alert_open = True
     graph_data = get_aba_graph_data.apply(aba_framework, selected_arguments, color_blind_mode)
@@ -285,7 +285,7 @@ def evaluate_abaf(aba_l_str: str, aba_r_str: str, aba_a_str: str, aba_c_str: str
     try:
         abaf = read_aba(aba_l_str, aba_r_str, aba_a_str, aba_c_str)
     except ValueError:
-        abaf = ABAF(set(), set(), set(), {})
+        abaf = AssumptionBasedArgumentationFramework(set(), set(), set(), {})
 
     extensions = get_abaf_extensions.apply(abaf, semantics_specification)
     accepted_assumptions = get_accepted_assumptions.apply(extensions, acceptance_strategy_specification)

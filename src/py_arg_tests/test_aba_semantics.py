@@ -1,8 +1,8 @@
 import unittest
 
-import py_arg.algorithms.canonical_constructions.canonical_abaf.canonical_st as canonical_st
+import py_arg.assumption_based_argumentation.canonical_constructions.canonical_st as canonical_st
 
-from py_arg.aba_classes.rule import Rule
+from py_arg.assumption_based_argumentation.classes.rule import Rule
 
 
 class TestCanonicalConstructions(unittest.TestCase):

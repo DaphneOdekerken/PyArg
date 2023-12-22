@@ -1,16 +1,16 @@
 import unittest
 
-from py_arg.aspic_classes.argumentation_system import ArgumentationSystem
-from py_arg.aspic_classes.argumentation_theory import ArgumentationTheory
-from py_arg.aspic_classes.defeasible_rule import DefeasibleRule
-from py_arg.aspic_classes.orderings.set_orderings.elitist_ordering import ElitistOrdering
-from py_arg.aspic_classes.orderings.argument_orderings.last_link_ordering import LastLinkElitistOrdering, \
+from py_arg.aspic.classes.argumentation_system import ArgumentationSystem
+from py_arg.aspic.classes.argumentation_theory import ArgumentationTheory
+from py_arg.aspic.classes.defeasible_rule import DefeasibleRule
+from py_arg.aspic.classes.orderings.argument_orderings.last_link_ordering import LastLinkElitistOrdering, \
     LastLinkDemocraticOrdering
-from py_arg.aspic_classes.literal import Literal
-from py_arg.aspic_classes.strict_rule import StrictRule
-from py_arg.aspic_classes.orderings.argument_orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
+from py_arg.aspic.classes.literal import Literal
+from py_arg.aspic.classes.orderings.set_orderings.elitist_ordering import ElitistOrdering
+from py_arg.aspic.classes.strict_rule import StrictRule
+from py_arg.aspic.classes.orderings.argument_orderings.weakest_link_ordering import WeakestLinkElitistOrdering, \
     WeakestLinkDemocraticOrdering
-from py_arg.aspic_classes.instantiated_argument import InstantiatedArgument
+from py_arg.aspic.classes.instantiated_argument import InstantiatedArgument
 
 
 def get_argumentation_theory(include_d: bool = False, include_e: bool = False) -> ArgumentationTheory:

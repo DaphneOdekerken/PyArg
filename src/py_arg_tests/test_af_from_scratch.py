@@ -1,8 +1,8 @@
 import unittest
 
-from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from py_arg.abstract_argumentation_classes.argument import Argument
-from py_arg.abstract_argumentation_classes.defeat import Defeat
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation.classes.argument import Argument
+from py_arg.abstract_argumentation.classes.defeat import Defeat
 
 
 class TestAFFromScratch(unittest.TestCase):

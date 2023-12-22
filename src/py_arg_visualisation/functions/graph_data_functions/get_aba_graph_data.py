@@ -1,10 +1,10 @@
 from typing import List, Dict
 
-from py_arg.aba_classes.aba_framework import ABAF
+from py_arg.assumption_based_argumentation.classes.aba_framework import AssumptionBasedArgumentationFramework
 from py_arg_visualisation.functions.graph_data_functions.get_color import get_color
 
 
-def apply(abaf: ABAF, selected_arguments: Dict[str, List[str]],
+def apply(abaf: AssumptionBasedArgumentationFramework, selected_arguments: Dict[str, List[str]],
           color_blind_mode: bool):
     if selected_arguments and 'blue' in selected_arguments:
         blue = selected_arguments['blue']
