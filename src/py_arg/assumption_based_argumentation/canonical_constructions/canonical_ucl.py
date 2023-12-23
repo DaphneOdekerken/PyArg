@@ -1,9 +1,11 @@
 
 from typing import Set
 
-from py_arg.assumption_based_argumentation.classes.aba_framework import AssumptionBasedArgumentationFramework
+from py_arg.assumption_based_argumentation.classes.aba_framework import \
+    AssumptionBasedArgumentationFramework
 from py_arg.assumption_based_argumentation.classes.rule import Rule
-import py_arg.abstract_argumentation.canonical_constructions.aux_operators as aux
+import py_arg.abstract_argumentation.canonical_constructions.aux_operators as \
+    aux
 
 
 @staticmethod
@@ -34,6 +36,8 @@ def apply(extension_set: Set) -> AssumptionBasedArgumentationFramework:
 
     for ext in extension_set:
         for a in ext:
-            rules.add(Rule('', ext, contraries[corresponding_self_attackers[a]]))
+            rules.add(Rule('', ext,
+                           contraries[corresponding_self_attackers[a]]))
 
-    return AssumptionBasedArgumentationFramework(assumptions, rules, language, contraries)
+    return AssumptionBasedArgumentationFramework(assumptions, rules, language,
+                                                 contraries)

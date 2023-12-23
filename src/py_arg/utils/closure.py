@@ -12,7 +12,8 @@ def get_closure(literals: Set[Literal], strict_rules: Set[StrictRule]):
         interesting_strict_rules = {strict_rule for strict_rule in strict_rules
                                     if strict_rule.consequent not in closure}
         for strict_rule in interesting_strict_rules:
-            if all([antecedent in closure for antecedent in strict_rule.antecedents]):
+            if all([antecedent in closure
+                    for antecedent in strict_rule.antecedents]):
                 closure.add(strict_rule.consequent)
                 change = True
     return closure

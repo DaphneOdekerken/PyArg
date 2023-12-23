@@ -11,15 +11,21 @@ class ArgumentationSystemToJSONWriter(Writer):
     @staticmethod
     def to_dict(argumentation_system: ArgumentationSystem):
         return {'language': list(argumentation_system.language.keys()),
-                'contraries': {lit_str: [str(con_lit) for con_lit in lit.contraries_and_contradictories]
-                               for lit_str, lit in argumentation_system.language.items()},
-                'defeasible_rules': [(defeasible_rule.id, str(defeasible_rule))
-                                     for defeasible_rule in argumentation_system.defeasible_rules],
-                'strict_rules': [(strict_rule.id, str(strict_rule))
-                                 for strict_rule in argumentation_system.strict_rules],
-                'rule_preferences': [(rule_preference_tuple[0].id, rule_preference_tuple[1].id)
-                                     for rule_preference_tuple in
-                                     argumentation_system.rule_preferences.preference_tuples]
+                'contraries': {lit_str: [
+                    str(con_lit)
+                    for con_lit in lit.contraries_and_contradictories]
+                    for lit_str, lit in argumentation_system.language.items()},
+                'defeasible_rules': [
+                    (defeasible_rule.id, str(defeasible_rule))
+                    for defeasible_rule in
+                    argumentation_system.defeasible_rules],
+                'strict_rules': [
+                    (strict_rule.id, str(strict_rule))
+                    for strict_rule in argumentation_system.strict_rules],
+                'rule_preferences': [
+                    (rule_preference_tuple[0].id, rule_preference_tuple[1].id)
+                    for rule_preference_tuple in
+                    argumentation_system.rule_preferences.preference_tuples]
                 }
 
     def write(self, argumentation_system: ArgumentationSystem, file_name: str):

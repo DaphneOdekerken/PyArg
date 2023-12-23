@@ -5,7 +5,8 @@ from py_arg.abstract_argumentation.classes.argument import Argument
 
 class InstantiatedArgument(Argument):
     def __init__(self, argument_id: str, premise: Set[str], conclusion: str):
-        super().__init__(', '.join([str(atom) for atom in sorted(premise)]) + ' ⊢ ' + str(conclusion))
+        super().__init__(', '.join([str(atom) for atom in sorted(premise)]) +
+                         ' ⊢ ' + str(conclusion))
         self.id = str(argument_id)
         self.premise = premise
         self.conclusion = conclusion

@@ -1,8 +1,9 @@
-
 from typing import Set
 
-import py_arg.abstract_argumentation.canonical_constructions.aux_operators as aux
-from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+import py_arg.abstract_argumentation.canonical_constructions.aux_operators as \
+    aux
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 
 

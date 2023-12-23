@@ -1,9 +1,8 @@
 import dash
-from dash import html, dcc, callback, Input, Output
-import dash_bootstrap_components as dbc
+from dash import html
 
-
-dash.register_page(__name__, name='GenerateRandomAspic', title='Generate Random ASPIC+ AT')
+dash.register_page(__name__, name='GenerateRandomAspic',
+                   title='Generate Random ASPIC+ AT')
 
 layout = html.Div(
     children=[

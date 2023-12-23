@@ -1,19 +1,29 @@
 import unittest
 
-import py_arg.abstract_argumentation.semantics.get_stable_extensions as get_stable_extensions
-import py_arg.abstract_argumentation.canonical_constructions.check_com_closed as check_com_closed
-import py_arg.abstract_argumentation.canonical_constructions.check_set_com_closed as check_set_com_closed
-import py_arg.abstract_argumentation.canonical_constructions.check_conf_sens as check_conf_sens
-import py_arg.abstract_argumentation.canonical_constructions.check_set_conf_sens as check_set_conf_sens
+import py_arg.abstract_argumentation.semantics.get_stable_extensions as \
+    get_stable_extensions
+import py_arg.abstract_argumentation.canonical_constructions.check_com_closed \
+    as check_com_closed
+import py_arg.abstract_argumentation.canonical_constructions.\
+    check_set_com_closed as check_set_com_closed
+import py_arg.abstract_argumentation.canonical_constructions.\
+    check_conf_sens as check_conf_sens
+import py_arg.abstract_argumentation.canonical_constructions.\
+    check_set_conf_sens as check_set_conf_sens
 
-import py_arg.abstract_argumentation.canonical_constructions.canonical_af.canonical_cf as canonical_cf
-import py_arg.abstract_argumentation.canonical_constructions.canonical_af.canonical_st as canonical_st
-import py_arg.abstract_argumentation.canonical_constructions.canonical_af.canonical_def as canonical_def
+import py_arg.abstract_argumentation.canonical_constructions.\
+    canonical_af.canonical_cf as canonical_cf
+import py_arg.abstract_argumentation.canonical_constructions.\
+    canonical_af.canonical_st as canonical_st
+import py_arg.abstract_argumentation.canonical_constructions.\
+    canonical_af.canonical_def as canonical_def
 
-from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
-from py_arg.abstract_argumentation.canonical_constructions import aux_operators, check_incomparable, check_tight
+from py_arg.abstract_argumentation.canonical_constructions import \
+    aux_operators, check_incomparable, check_tight
 
 
 class TestCanonicalConstructions(unittest.TestCase):
@@ -65,10 +75,12 @@ class TestCanonicalConstructions(unittest.TestCase):
         def2 = Defeat(a, c)
         def3 = Defeat(b, c)
 
-        af = AbstractArgumentationFramework('', arguments=[a, b, c], defeats=[def1, def2, def3])
+        af = AbstractArgumentationFramework('', arguments=[a, b, c],
+                                            defeats=[def1, def2, def3])
         print(af.arguments)
         for defeat in af.defeats:
-            print(defeat.from_argument.name + ' attacks ' + defeat.to_argument.name)
+            print(defeat.from_argument.name + ' attacks ' +
+                  defeat.to_argument.name)
 
     def test_cf_construction(self):
         a = Argument('a')
@@ -86,7 +98,8 @@ class TestCanonicalConstructions(unittest.TestCase):
         af_cf = canonical_cf.apply(es)
         print(af_cf.arguments)
         for defeat in af_cf.defeats:
-            print(defeat.from_argument.name + ' attacks ' + defeat.to_argument.name)
+            print(defeat.from_argument.name + ' attacks ' +
+                  defeat.to_argument.name)
 
     def test_sem_stb(self):
         a = Argument('a')
@@ -96,7 +109,8 @@ class TestCanonicalConstructions(unittest.TestCase):
         def2 = Defeat(b, a)
         def3 = Defeat(b, c)
 
-        af = AbstractArgumentationFramework('', arguments=[a, b, c], defeats=[def1, def2, def3])
+        af = AbstractArgumentationFramework('', arguments=[a, b, c],
+                                            defeats=[def1, def2, def3])
 
         stable_ext = get_stable_extensions.get_stable_extensions(af)
 
@@ -118,7 +132,8 @@ class TestCanonicalConstructions(unittest.TestCase):
         af = canonical_st.apply(es)
         print(af.arguments)
         for defeats in af.defeats:
-            print(defeats.from_argument.name + ' attacks ' + defeats.to_argument.name)
+            print(defeats.from_argument.name + ' attacks ' +
+                  defeats.to_argument.name)
 
     def test_defence_formula(self):
         a = Argument('a')
@@ -155,4 +170,5 @@ class TestCanonicalConstructions(unittest.TestCase):
 
         print(af.arguments)
         for defeat in af.defeats:
-            print(defeat.from_argument.name + ' attacks ' + defeat.to_argument.name)
+            print(defeat.from_argument.name + ' attacks ' +
+                  defeat.to_argument.name)

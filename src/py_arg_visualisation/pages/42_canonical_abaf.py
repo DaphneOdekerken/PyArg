@@ -5,12 +5,17 @@ import dash_bootstrap_components as dbc
 import visdcc
 from dash import html, callback, Input, Output, State
 
-from py_arg.abstract_argumentation.canonical_constructions import check_incomparable, check_intersection_in, \
+from py_arg.abstract_argumentation.canonical_constructions import \
+    check_incomparable, check_intersection_in, \
     check_set_com_closed, check_contains_empty, check_non_empty
-from py_arg.abstract_argumentation.canonical_constructions import check_set_conf_sens, check_downward_closed
-from py_arg.assumption_based_argumentation.canonical_constructions import construct_abaf_com, construct_abaf_prf, \
-    construct_abaf_st, construct_abaf_cf, construct_abaf_naive, construct_abaf_adm
-from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
+from py_arg.abstract_argumentation.canonical_constructions import \
+    check_set_conf_sens, check_downward_closed
+from py_arg.assumption_based_argumentation.canonical_constructions import \
+    construct_abaf_com, construct_abaf_prf, \
+    construct_abaf_st, construct_abaf_cf, construct_abaf_naive, \
+    construct_abaf_adm
+from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data \
+    import get_argumentation_framework_graph_data
 
 dash.register_page(__name__, name='CanonicalABAF', title='CanonicalABAF')
 
@@ -31,10 +36,12 @@ properties_table = html.Div([html.Table([
         html.Th(html.Div(html.Span('Incomparable')), className='rotate'),
         html.Th(html.Div(html.Span('Non-Empty')), className='rotate'),
         html.Th(html.Div(html.Span('Downward-closed')), className='rotate'),
-        html.Th(html.Div(html.Span('Set-Conflict-Sensitive')), className='rotate'),
+        html.Th(html.Div(html.Span('Set-Conflict-Sensitive')),
+                className='rotate'),
         html.Th(html.Div(html.Span('Contains Empty Set')), className='rotate'),
         html.Th(html.Div(html.Span('Set-Comp-Closed')), className='rotate'),
-        html.Th(html.Div(html.Span('Contains-Intersection')), className='rotate'),
+        html.Th(html.Div(html.Span('Contains-Intersection')),
+                className='rotate'),
         html.Th(),
     ]),
     html.Tr([
@@ -96,7 +103,8 @@ layout = html.Div(
             dbc.Col([
                 html.B('Enter your set of extensions here'),
                 dbc.Textarea(id='42-extension-sets-textarea',
-                             placeholder='Put each set on a new line and represent sets as {X, Y, Z}.',
+                             placeholder='Put each set on a new line and '
+                                         'represent sets as {X, Y, Z}.',
                              style={'height': '200px'}),
                 html.B('Properties and semantics'),
                 properties_table,
@@ -114,7 +122,8 @@ def read_extension_sets_from_str(extension_sets_str: str):
     input_extension_set = set()
     for extension in extensions_set:
         extension = extension.replace('{', '').replace('}', '')
-        argument_strs = [argument_str.strip() for argument_str in extension.split(',')]
+        argument_strs = [argument_str.strip()
+                         for argument_str in extension.split(',')]
         argument_set = frozenset(argument_str for argument_str in argument_strs
                                  if argument_str)
         input_extension_set.add(argument_set)
@@ -217,9 +226,11 @@ def fill_properties_table(extension_sets_str: str):
     adm_realizable = non_empty and set_conf_sens and contains_empty
     com_realizable = non_empty and set_comp_closed and intersection_in
 
-    return incomparable_style, non_empty_style, downward_closed_style, set_conf_sens_style, contains_empty_style, \
+    return incomparable_style, non_empty_style, downward_closed_style, \
+        set_conf_sens_style, contains_empty_style, \
         set_comp_closed_style, intersection_in_style, \
-        not stb_realizable, not pref_realizable, not cf_realizable, not naive_realizable, not adm_realizable, \
+        not stb_realizable, not pref_realizable, not cf_realizable, \
+        not naive_realizable, not adm_realizable, \
         not com_realizable, \
         incomparable_value, \
         incomparable_value, non_empty_value, \
@@ -268,15 +279,20 @@ def get_canonical_argumentation_framework(extension_sets_str: str,
     else:
         raise NotImplementedError
 
-    graph_data = get_argumentation_framework_graph_data(abaf.generate_af(), None, color_blind_mode)
+    graph_data = get_argumentation_framework_graph_data(abaf.generate_af(),
+                                                        None, color_blind_mode)
 
     return [
         html.B('Canonical ABA framework'),
-        dbc.Col(html.P('D = (L, R, A, C) where L = {{{l}}}, R = {{{r}}}, A = {{{a}}} and C = {{{c}}}.'.format(
-            l=', '.join(str(atom) for atom in abaf.language),
-            r='; '.join(str(rule) for rule in abaf.rules),
-            a=', '.join(str(atom) for atom in abaf.assumptions),
-            c='; '.join('(' + str(atom) + ', ' + str(abaf.contraries[atom]) + ')'
-                        for atom in abaf.contraries.keys())))),
-        dbc.Col(visdcc.Network(data=graph_data, options={'height': '500px'}, id='canonical-graph')),
+        dbc.Col(html.P(
+            'D = (L, R, A, C) where L = {{{l}}}, R = {{{r}}}, '
+            'A = {{{a}}} and C = {{{c}}}.'.format(
+                l=', '.join(str(atom) for atom in abaf.language),
+                r='; '.join(str(rule) for rule in abaf.rules),
+                a=', '.join(str(atom) for atom in abaf.assumptions),
+                c='; '.join('(' + str(atom) + ', ' +
+                            str(abaf.contraries[atom]) + ')'
+                            for atom in abaf.contraries.keys())))),
+        dbc.Col(visdcc.Network(data=graph_data, options={'height': '500px'},
+                               id='canonical-graph')),
     ]

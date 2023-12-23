@@ -24,7 +24,8 @@ class Argument:
 
     def add_ingoing_defeat(self, other: 'Argument'):
         """
-        Add ingoing defeat from the other argument. NOTE: does not add an outgoing defeat from other to this argument!
+        Add ingoing defeat from the other argument. NOTE: does not add an
+        outgoing defeat from other to this argument!
 
         :param other: The argument defeating this argument.
         """
@@ -32,7 +33,8 @@ class Argument:
 
     def add_outgoing_defeat(self, other: 'Argument'):
         """
-        Add outgoing defeat to the other argument. NOTE: does not add an ingoing defeat to the other argument!
+        Add outgoing defeat to the other argument. NOTE: does not add an
+        ingoing defeat to the other argument!
 
         :param other: The argument defeated by this argument.
         """

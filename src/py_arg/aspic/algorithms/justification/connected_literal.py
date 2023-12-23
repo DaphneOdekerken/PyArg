@@ -2,7 +2,8 @@ from typing import Union
 
 from py_arg.aspic.classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic.classes.literal import Literal
-from py_arg.incomplete_aspic.classes.incomplete_argumentation_theory import IncompleteArgumentationTheory
+from py_arg.incomplete_aspic.classes.incomplete_argumentation_theory import \
+    IncompleteArgumentationTheory
 
 
 class ConnectedLiteral(Literal):
@@ -21,7 +22,9 @@ class ConnectedLiteral(Literal):
         return self.s1_hash
 
 
-def connect_parents_and_children(argumentation_theory: Union[ArgumentationTheory, IncompleteArgumentationTheory]):
+def connect_parents_and_children(
+        argumentation_theory: Union[
+            ArgumentationTheory, IncompleteArgumentationTheory]):
     for literal in argumentation_theory.argumentation_system.language.values():
         literal.__class__ = ConnectedLiteral
         literal.init_connected_literal()

@@ -1,18 +1,29 @@
-from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from py_arg.abstract_argumentation.semantics.get_admissible_sets import get_admissible_sets
-from py_arg.abstract_argumentation.semantics import get_complete_extensions
-from py_arg.abstract_argumentation.semantics.get_eager_extension import get_eager_extension
-from py_arg.abstract_argumentation.semantics.get_grounded_extension import get_grounded_extension
-from py_arg.abstract_argumentation.semantics.get_ideal_extension import get_ideal_extension
-from py_arg.abstract_argumentation.semantics import get_preferred_extensions
-from py_arg.abstract_argumentation.semantics.get_semistable_extensions import get_semistable_extensions
-from py_arg.abstract_argumentation.semantics.get_stable_extensions import get_stable_extensions
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
+from py_arg.abstract_argumentation.semantics.get_admissible_sets \
+    import get_admissible_sets
+from py_arg.abstract_argumentation.semantics.get_complete_extensions import \
+    get_complete_extensions
+from py_arg.abstract_argumentation.semantics.get_eager_extension \
+    import get_eager_extension
+from py_arg.abstract_argumentation.semantics.get_grounded_extension \
+    import get_grounded_extension
+from py_arg.abstract_argumentation.semantics.get_ideal_extension \
+    import get_ideal_extension
+from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
+    get_preferred_extensions
+from py_arg.abstract_argumentation.semantics.get_semistable_extensions \
+    import get_semistable_extensions
+from py_arg.abstract_argumentation.semantics.get_stable_extensions \
+    import get_stable_extensions
 
 
-def get_argumentation_framework_extensions(argumentation_framework: AbstractArgumentationFramework,
-                                           semantics_specification: str):
+def get_argumentation_framework_extensions(
+        argumentation_framework: AbstractArgumentationFramework,
+        semantics_specification: str):
     """
-    Calculate the set of extensions from the given abstract argumentation framework and chosen semantics
+    Calculate the set of extensions from the given abstract argumentation
+    framework and chosen semantics
 
     :param argumentation_framework: The abstract argumentation framework.
     :param semantics_specification: The chosen semantics.

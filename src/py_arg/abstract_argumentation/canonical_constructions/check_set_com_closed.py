@@ -1,7 +1,7 @@
-
 from typing import Set
 
-import py_arg.abstract_argumentation.canonical_constructions.aux_operators as aux
+import py_arg.abstract_argumentation.canonical_constructions.aux_operators as\
+    aux
 
 
 @staticmethod

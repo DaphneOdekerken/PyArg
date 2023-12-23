@@ -1,8 +1,10 @@
 
 from typing import Set
 
-from py_arg.assumption_based_argumentation.classes.aba_framework import AssumptionBasedArgumentationFramework
-from py_arg.assumption_based_argumentation.canonical_constructions import canonical_ucl, canonical_cf
+from py_arg.assumption_based_argumentation.classes.aba_framework import \
+    AssumptionBasedArgumentationFramework
+from py_arg.assumption_based_argumentation.canonical_constructions import \
+    canonical_ucl, canonical_cf
 
 
 @staticmethod
@@ -15,4 +17,5 @@ def apply(extension_set: Set) -> AssumptionBasedArgumentationFramework:
     contraries = abaf_cf.contraries
     contraries.update(abaf_ucl.contraries)
 
-    return AssumptionBasedArgumentationFramework(assumptions, rules, language, contraries)
+    return AssumptionBasedArgumentationFramework(assumptions, rules, language,
+                                                 contraries)

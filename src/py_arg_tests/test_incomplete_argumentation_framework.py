@@ -1,9 +1,11 @@
 import unittest
 
-from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
-from py_arg.incomplete_argumentation_frameworks.classes.incomplete_argumentation_framework import IncompleteArgumentationFramework
+from py_arg.incomplete_argumentation_frameworks.classes.\
+    incomplete_argumentation_framework import IncompleteArgumentationFramework
 
 
 a = Argument('a')
@@ -96,8 +98,8 @@ class TestPartialCompletions(unittest.TestCase):
         self.assertIn(iaf1, all_partial_completions)
 
         cert_iaf1 = iaf1.certain_projection
-        self.assertEqual(cert_iaf1, AbstractArgumentationFramework(arguments=[a, b, c, d, e],
-                                                                   defeats=[ab, bc, cb, dc, de, ed]))
+        self.assertEqual(cert_iaf1, AbstractArgumentationFramework(
+            arguments=[a, b, c, d, e], defeats=[ab, bc, cb, dc, de, ed]))
 
         iaf2 = IncompleteArgumentationFramework(
             arguments=[b, c, e],
@@ -108,8 +110,8 @@ class TestPartialCompletions(unittest.TestCase):
         self.assertIn(iaf2, all_partial_completions)
 
         cert_iaf2 = iaf2.certain_projection
-        self.assertEqual(cert_iaf2, AbstractArgumentationFramework(arguments=[b, c, e],
-                                                                   defeats=[bc]))
+        self.assertEqual(cert_iaf2, AbstractArgumentationFramework(
+            arguments=[b, c, e], defeats=[bc]))
 
         iaf3 = IncompleteArgumentationFramework(
             arguments=[a, b, c, e],
@@ -119,5 +121,5 @@ class TestPartialCompletions(unittest.TestCase):
         )
         self.assertIn(iaf3, all_partial_completions)
         cert_iaf3 = iaf3.certain_projection
-        self.assertEqual(cert_iaf3, AbstractArgumentationFramework(arguments=[a, b, c, e],
-                                                                   defeats=[ab, bc]))
+        self.assertEqual(cert_iaf3, AbstractArgumentationFramework(
+            arguments=[a, b, c, e], defeats=[ab, bc]))

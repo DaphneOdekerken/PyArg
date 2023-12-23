@@ -6,14 +6,19 @@ import visdcc
 from dash import html, callback, Input, Output, State
 
 from py_arg.abstract_argumentation.classes.argument import Argument
-from py_arg.abstract_argumentation.canonical_constructions import check_incomparable, check_contains_empty, \
+from py_arg.abstract_argumentation.canonical_constructions import \
+    check_incomparable, check_contains_empty, \
     check_unary, check_conf_sens, check_non_empty, check_tight
-from py_arg.abstract_argumentation.canonical_constructions import check_dcl_tight, check_downward_closed
-from py_arg.abstract_argumentation.canonical_constructions.canonical_af import construct_af_stage, construct_af_adm, \
+from py_arg.abstract_argumentation.canonical_constructions import \
+    check_dcl_tight, check_downward_closed
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af \
+    import construct_af_stage, construct_af_adm, \
     construct_af_grd
-from py_arg.abstract_argumentation.canonical_constructions.canonical_af import construct_af_stb, construct_af_cf, \
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af \
+    import construct_af_stb, construct_af_cf, \
     construct_af_naive
-from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
+from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data \
+    import get_argumentation_framework_graph_data
 
 dash.register_page(__name__, name='Canonical', title='Canonical')
 
@@ -48,7 +53,8 @@ properties_table = html.Div([html.Table([
         html.Td(id='41-cf-downward-closed'),
         html.Td(), html.Td(), html.Td(),
         html.Td(id='41-cf-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-conflict-free-button'))
+        html.Td(), html.Td(dbc.Button('Generate',
+                                      id='41-generate-conflict-free-button'))
     ]),
     html.Tr([
         html.Td('Admissible'), html.Td(),
@@ -56,7 +62,8 @@ properties_table = html.Div([html.Table([
         html.Td(), html.Td(),
         html.Td(id='41-adm-contains-empty'),
         html.Td(id='41-adm-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-admissible-button'))
+        html.Td(), html.Td(dbc.Button('Generate',
+                                      id='41-generate-admissible-button'))
     ]),
     html.Tr([
         html.Td('Grounded'), html.Td(), html.Td(), html.Td(),
@@ -69,14 +76,16 @@ properties_table = html.Div([html.Table([
         html.Td(), html.Td(), html.Td(id='41-stb-incomparable'),
         html.Td(),
         html.Td(), html.Td(),
-        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-stable-button'))
+        html.Td(), html.Td(dbc.Button('Generate',
+                                      id='41-generate-stable-button'))
     ]),
     html.Tr([
         html.Td('Naive'), html.Td(), html.Td(), html.Td(),
         html.Td(id='41-na-incomparable'),
         html.Td(id='41-na-dcl-tight'), html.Td(),
         html.Td(id='41-na-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-naive-button'))
+        html.Td(), html.Td(dbc.Button('Generate',
+                                      id='41-generate-naive-button'))
     ]),
     html.Tr([
         html.Td('Stage'), html.Td(id='41-stg-tight'),
@@ -84,7 +93,8 @@ properties_table = html.Div([html.Table([
         html.Td(id='41-stg-incomparable'),
         html.Td(), html.Td(),
         html.Td(id='41-stg-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-stage-button'))
+        html.Td(), html.Td(dbc.Button('Generate',
+                                      id='41-generate-stage-button'))
     ]),
 ])])
 
@@ -95,7 +105,8 @@ layout = html.Div(
             dbc.Col([
                 html.B('Enter your set of extensions here'),
                 dbc.Textarea(id='41-extension-sets-textarea',
-                             placeholder='Put each set on a new line and represent sets as {X, Y, Z}.',
+                             placeholder='Put each set on a new line and '
+                                         'represent sets as {X, Y, Z}.',
                              style={'height': '200px'}),
                 html.B('Properties and semantics'),
                 properties_table,
@@ -113,8 +124,10 @@ def read_extension_sets_from_str(extension_sets_str: str):
     input_extension_set = set()
     for extension in extensions_set:
         extension = extension.replace('{', '').replace('}', '')
-        argument_strs = [argument_str.strip() for argument_str in extension.split(',')]
-        argument_set = frozenset(Argument(argument_str) for argument_str in argument_strs
+        argument_strs = [argument_str.strip()
+                         for argument_str in extension.split(',')]
+        argument_set = frozenset(Argument(argument_str)
+                                 for argument_str in argument_strs
                                  if argument_str)
         input_extension_set.add(argument_set)
     return input_extension_set
@@ -226,9 +239,11 @@ def fill_properties_table(extension_sets_str: str):
     naive_realizable = non_empty and incomparable and dcl_tight
     stg_realizable = tight and incomparable and non_empty
 
-    return tight_style, conf_sens_style, downward_closed_style, incomparable_style, dcl_tight_style, \
+    return tight_style, conf_sens_style, downward_closed_style, \
+        incomparable_style, dcl_tight_style, \
         contains_empty_style, non_empty_style, unary_style, \
-        not cf_realizable, not adm_realizable, not grd_realizable, not stb_realizable, not naive_realizable, \
+        not cf_realizable, not adm_realizable, not grd_realizable, \
+        not stb_realizable, not naive_realizable, \
         not stg_realizable, \
         tight_value, downward_closed_value, non_empty_value, \
         conf_sens_value, contains_empty_value, non_empty_value, \
@@ -277,13 +292,16 @@ def get_canonical_argumentation_framework(extension_sets_str: str,
     else:
         raise NotImplementedError
 
-    graph_data = get_argumentation_framework_graph_data(af, None, color_blind_mode)
+    graph_data = get_argumentation_framework_graph_data(af, None,
+                                                        color_blind_mode)
 
     return [
         html.B('Canonical argumentation framework'),
         dbc.Col(html.P('AF = (A, D) where A = {{{a}}} and D = {{{d}}}.'.format(
             a=', '.join(str(arg) for arg in af.arguments),
-            d='; '.join('(' + str(defeat.from_argument) + ', ' + str(defeat.to_argument) + ')'
+            d='; '.join('(' + str(defeat.from_argument) + ', ' + str(
+                defeat.to_argument) + ')'
                         for defeat in af.defeats)))),
-        dbc.Col(visdcc.Network(data=graph_data, options={'height': '500px'}, id='canonical-graph')),
+        dbc.Col(visdcc.Network(data=graph_data, options={'height': '500px'},
+                               id='canonical-graph')),
     ]

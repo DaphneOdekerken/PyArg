@@ -9,7 +9,9 @@ class Rule:
         self.id = str(rule_id)
         self.body = body
         self.head = head
-        self.rule_str = str(self.head) + '<-' + ','.join([str(atom) for atom in sorted(self.body)])
+        self.rule_str = \
+            str(self.head) + '<-' + \
+            ','.join([str(atom) for atom in sorted(self.body)])
         self.rule_hash = hash(self.rule_str)
 
     def get_signature(self) -> Set[str]:

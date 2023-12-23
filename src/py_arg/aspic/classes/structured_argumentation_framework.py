@@ -7,13 +7,15 @@ class StructuredArgumentationFramework:
     def __init__(self, name: str = '',
                  arguments: Optional[List[Argument]] = None,
                  attacks: Optional[List[Tuple[Argument, Argument]]] = None,
-                 argument_preference_relation: Optional[List[Tuple[Argument, Argument]]] = None):
+                 argument_preference_relation:
+                 Optional[List[Tuple[Argument, Argument]]] = None):
         self.name = name
 
         if arguments is None:
             self._arguments = {}
         else:
-            self._arguments = {argument.name: argument for argument in arguments}
+            self._arguments = {argument.name: argument
+                               for argument in arguments}
 
         if attacks is None:
             self.attacks = []
@@ -21,6 +23,8 @@ class StructuredArgumentationFramework:
             self.attacks = attacks
 
         if argument_preference_relation is None:
-            self.argument_preference_relation = [(argument, argument) for argument in self._arguments.values()]
+            self.argument_preference_relation = [
+                (argument, argument)
+                for argument in self._arguments.values()]
         else:
             self.argument_preference_relation = argument_preference_relation

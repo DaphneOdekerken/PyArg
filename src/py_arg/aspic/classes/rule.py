@@ -7,11 +7,14 @@ class Rule:
     """
     A Rule has a list of antecedents and a single consequent.
     """
-    def __init__(self, rule_id: str, antecedents: Set[Literal], consequent: Literal):
+    def __init__(self, rule_id: str, antecedents: Set[Literal],
+                 consequent: Literal):
         self.id = str(rule_id)
         self.antecedents = sorted(antecedents)
         self.consequent = consequent
-        self.rule_str = ','.join([str(antecedent) for antecedent in self.antecedents]) + '=>' + str(self.consequent)
+        self.rule_str = ','.join([str(antecedent)
+                                  for antecedent in self.antecedents]) + \
+                        '=>' + str(self.consequent)
         self.rule_hash = hash(self.rule_str)
 
     def is_rule_for(self, literal: Literal) -> bool:

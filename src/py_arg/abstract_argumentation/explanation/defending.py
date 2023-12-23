@@ -1,18 +1,24 @@
-from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.explanation.reach_and_dist import get_reach
 
 
-def get_defending(argumentation_framework: AbstractArgumentationFramework, argument: Argument, extensions):
+def get_defending(argumentation_framework: AbstractArgumentationFramework,
+                  argument: Argument, extensions):
     """
-    Obtain for each extension with the argument te set of arguments that (in)directly defend the argument.
+    Obtain for each extension with the argument te set of arguments that
+    (in)directly defend the argument.
 
     In papers: Defending.
 
-    :param argumentation_framework: the argumentation framework the explanation should be about
+    :param argumentation_framework: the argumentation framework the explanation
+        should be about
     :param argument: the argument that is accepted
-    :param extensions: the extensions (sets of accepted arguments) of the argumentation framework.
-    :return: a list of sets of arguments, each representing one or more extensions, containing the arguments from the
+    :param extensions: the extensions (sets of accepted arguments) of the
+        argumentation framework.
+    :return: a list of sets of arguments, each representing one or more
+        extensions, containing the arguments from the
         extension that (in)directly defend the argument.
     """
     reach, distance = get_reach(argumentation_framework, argument)
@@ -35,16 +41,21 @@ def get_defending(argumentation_framework: AbstractArgumentationFramework, argum
     return defending_sets
 
 
-def get_dir_defending(argumentation_framework: AbstractArgumentationFramework, argument: Argument, extensions):
+def get_dir_defending(argumentation_framework: AbstractArgumentationFramework,
+                      argument: Argument, extensions):
     """
-    Obtain for each extension with the argument te set of arguments that directly defend the argument.
+    Obtain for each extension with the argument te set of arguments that
+    directly defend the argument.
 
     In papers: DirDefending.
 
-    :param argumentation_framework: the argumentation framework the explanation should be about
+    :param argumentation_framework: the argumentation framework the explanation
+        should be about
     :param argument: the argument that is accepted
-    :param extensions: the extensions (sets of accepted arguments) of the argumentation framework.
-    :return: a list of sets of arguments, each representing one or more extensions, containing the arguments from the
+    :param extensions: the extensions (sets of accepted arguments) of the
+        argumentation framework.
+    :return: a list of sets of arguments, each representing one or more
+        extensions, containing the arguments from the
         extension that directly defend the argument.
     """
     reach, distance = get_reach(argumentation_framework, argument)

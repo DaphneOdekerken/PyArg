@@ -1,6 +1,7 @@
-
 from typing import Set
-from py_arg.abstract_argumentation.canonical_constructions import aux_operators as aux
+from py_arg.abstract_argumentation.canonical_constructions import \
+    aux_operators as aux
+
 
 @staticmethod
 def apply(extension_set: Set) -> bool:

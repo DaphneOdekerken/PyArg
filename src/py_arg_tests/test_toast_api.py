@@ -18,7 +18,9 @@ class TestToastAPI(unittest.TestCase):
             'axioms': []
         }
         json_str = json.dumps(input_dict)
-        response = requests.post('http://toast.arg-tech.org/api/evaluate', json_str)
+        response = requests.post('http://toast.arg-tech.org/api/evaluate',
+                                 json_str)
         result = response.json()
         self.assertEqual(len(result['arguments']), 4)
-        self.assertListEqual(result['acceptableConclusions']['0'], ['p', 'q', 't'])
+        self.assertListEqual(result['acceptableConclusions']['0'],
+                             ['p', 'q', 't'])

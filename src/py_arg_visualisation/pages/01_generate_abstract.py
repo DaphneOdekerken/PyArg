@@ -5,35 +5,46 @@ import dash
 from dash import html, callback, Input, Output, State, MATCH, dcc
 import dash_bootstrap_components as dbc
 
-from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
-from py_arg.abstract_argumentation.generators.abstract_argumentation_framework_generator import \
+from py_arg.abstract_argumentation.generators.\
+    abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
-from py_arg.abstract_argumentation.import_export.argumentation_framework_to_aspartix_format_writer import \
+from py_arg.abstract_argumentation.import_export.\
+    argumentation_framework_to_aspartix_format_writer import \
     ArgumentationFrameworkToASPARTIXFormatWriter
-from py_arg.abstract_argumentation.import_export.argumentation_framework_to_iccma23_format_writer import \
+from py_arg.abstract_argumentation.import_export.\
+    argumentation_framework_to_iccma23_format_writer import \
     ArgumentationFrameworkToICCMA23FormatWriter
-from py_arg.abstract_argumentation.import_export.argumentation_framework_to_json_writer import \
+from py_arg.abstract_argumentation.import_export.\
+    argumentation_framework_to_json_writer import \
     ArgumentationFrameworkToJSONWriter
-from py_arg.abstract_argumentation.import_export.argumentation_framework_to_trivial_graph_format_writer import \
+from py_arg.abstract_argumentation.import_export.\
+    argumentation_framework_to_trivial_graph_format_writer import \
     ArgumentationFrameworkToTrivialGraphFormatWriter
 
-dash.register_page(__name__, name='GenerateAbstract', title='Generate Abstract AF')
+dash.register_page(__name__, name='GenerateAbstract',
+                   title='Generate Abstract AF')
 
 left_column = dbc.Col([
     html.H2('Input'),
     html.Br(),
     dbc.Row([dbc.Col(html.B('Number of arguments')),
-             dbc.Col(dbc.Input(type='number', min=0, max=50, step=1, value=8,
-                               id='01-generate-abstract-nr-arguments-input'))]),
+             dbc.Col(dbc.Input(
+                 type='number', min=0, max=50, step=1, value=8,
+                 id='01-generate-abstract-nr-arguments-input'))]),
     dbc.Row([dbc.Col(html.B('Number of defeats')),
-             dbc.Col(dbc.Input(type='number', min=0, max=50, step=1, value=8,
-                               id='01-generate-abstract-nr-defeats-input'))]),
+             dbc.Col(dbc.Input(
+                 type='number', min=0, max=50, step=1, value=8,
+                 id='01-generate-abstract-nr-defeats-input'))]),
     dbc.Row([dbc.Col(html.B('Allow self-defeats')),
              dbc.Col(dbc.Select(
-                 options=[{'label': answer, 'value': answer} for answer in ['Yes', 'No']],
-                 value='Yes', id='01-generate-abstract-allow-self-defeats-input'))
+                 options=[{'label': answer, 'value': answer}
+                          for answer in ['Yes', 'No']],
+                 value='Yes',
+                 id='01-generate-abstract-allow-self-defeats-input'))
              ]),
     html.Br(),
     dbc.Row([dbc.Button('Generate', id='01-generate-abstract-button',
@@ -54,7 +65,8 @@ layout = html.Div([
           State('01-generate-abstract-nr-defeats-input', 'value'),
           State('01-generate-abstract-allow-self-defeats-input', 'value'))
 def generate_abstract_argumentation_framework(
-        nr_clicks: int, nr_arguments: str, nr_defeats: str, allow_self_defeats: str):
+        nr_clicks: int, nr_arguments: str, nr_defeats: str,
+        allow_self_defeats: str):
     if not nr_clicks:
         return 'Press the button to generate an argumentation framework.'
 
@@ -85,27 +97,40 @@ def generate_abstract_argumentation_framework(
         [html.H2('Output'),
          dbc.Row([
              dbc.Col([html.B('Arguments'), dbc.Textarea(
-                 value='\n'.join(str(arg) for arg in argumentation_framework.arguments),
+                 value='\n'.join(str(arg)
+                                 for arg in argumentation_framework.arguments),
                  style={'height': '300px'},
-                 id={'type': '01-generate-abstract-arguments-text', 'index': nr_clicks})]),
+                 id={'type': '01-generate-abstract-arguments-text',
+                     'index': nr_clicks})]),
              dbc.Col([html.B('Defeats'), dbc.Textarea(
-                 value='\n'.join((f'({str(defeat.from_argument)},{str(defeat.to_argument)})'
-                                  for defeat in argumentation_framework.defeats)),
+                 value='\n'.join(
+                     (f'({str(defeat.from_argument)},'
+                      f'{str(defeat.to_argument)})'
+                      for defeat in argumentation_framework.defeats)),
                  style={'height': '300px'},
-                 id={'type': '01-generate-abstract-defeats-text', 'index': nr_clicks})])
+                 id={'type': '01-generate-abstract-defeats-text',
+                     'index': nr_clicks})])
          ]),
          html.Br(),
          dbc.Row([
              dbc.InputGroup([
                  dbc.InputGroupText('Filename'),
-                 dbc.Input(value='generated_af', id={'type': '01-generate-abstract-filename', 'index': nr_clicks}),
+                 dbc.Input(value='generated_af',
+                           id={'type': '01-generate-abstract-filename',
+                               'index': nr_clicks}),
                  dbc.InputGroupText('.'),
                  dbc.Select(options=[{'label': extension, 'value': extension}
-                                     for extension in ['JSON', 'TGF', 'APX', 'ICCMA23']],
-                            value='JSON', id={'type': '01-generate-abstract-extension', 'index': nr_clicks}),
-                 dbc.Button('Download', id={'type': '01-generate-abstract-download-button', 'index': nr_clicks}),
+                                     for extension in ['JSON', 'TGF', 'APX',
+                                                       'ICCMA23']],
+                            value='JSON',
+                            id={'type': '01-generate-abstract-extension',
+                                'index': nr_clicks}),
+                 dbc.Button('Download',
+                            id={'type': '01-generate-abstract-download-button',
+                                'index': nr_clicks}),
              ]),
-             dcc.Download(id={'type': '01-generate-abstract-downloader', 'index': nr_clicks})
+             dcc.Download(id={'type': '01-generate-abstract-downloader',
+                              'index': nr_clicks})
          ])
          ]
 
@@ -126,35 +151,47 @@ def read_defeats(defeat_text: str) -> List[Defeat]:
 
 
 @callback(
-    Output({'type': '01-generate-abstract-downloader', 'index': MATCH}, 'data'),
-    Input({'type': '01-generate-abstract-download-button', 'index': MATCH}, 'n_clicks'),
-    State({'type': '01-generate-abstract-arguments-text', 'index': MATCH}, 'value'),
-    State({'type': '01-generate-abstract-defeats-text', 'index': MATCH}, 'value'),
+    Output({'type': '01-generate-abstract-downloader', 'index': MATCH},
+           'data'),
+    Input({'type': '01-generate-abstract-download-button', 'index': MATCH},
+          'n_clicks'),
+    State({'type': '01-generate-abstract-arguments-text', 'index': MATCH},
+          'value'),
+    State({'type': '01-generate-abstract-defeats-text', 'index': MATCH},
+          'value'),
     State({'type': '01-generate-abstract-filename', 'index': MATCH}, 'value'),
     State({'type': '01-generate-abstract-extension', 'index': MATCH}, 'value'),
     prevent_initial_call=True,
 )
 def download_generated_abstract_argumentation_framework(
-        _nr_clicks: int, arguments_text: str, defeats_text: str, filename: str, extension: str):
+        _nr_clicks: int, arguments_text: str, defeats_text: str, filename: str,
+        extension: str):
     argumentation_framework = AbstractArgumentationFramework(
         name='generated',
-        arguments=[Argument(arg_str.strip()) for arg_str in arguments_text.split('\n')],
+        arguments=[Argument(arg_str.strip())
+                   for arg_str in arguments_text.split('\n')],
         defeats=read_defeats(defeats_text)
     )
 
     if extension == 'JSON':
-        argumentation_framework_json = ArgumentationFrameworkToJSONWriter().to_dict(argumentation_framework)
+        argumentation_framework_json = \
+            ArgumentationFrameworkToJSONWriter().to_dict(
+                argumentation_framework)
         argumentation_framework_str = json.dumps(argumentation_framework_json)
     elif extension == 'TGF':
         argumentation_framework_str = \
-            ArgumentationFrameworkToTrivialGraphFormatWriter.write_to_str(argumentation_framework)
+            ArgumentationFrameworkToTrivialGraphFormatWriter.write_to_str(
+                argumentation_framework)
     elif extension == 'APX':
         argumentation_framework_str = \
-            ArgumentationFrameworkToASPARTIXFormatWriter.write_to_str(argumentation_framework)
+            ArgumentationFrameworkToASPARTIXFormatWriter.write_to_str(
+                argumentation_framework)
     elif extension == 'ICCMA23':
         argumentation_framework_str = \
-            ArgumentationFrameworkToICCMA23FormatWriter.write_to_str(argumentation_framework)
+            ArgumentationFrameworkToICCMA23FormatWriter.write_to_str(
+                argumentation_framework)
     else:
         raise NotImplementedError
 
-    return {'content': argumentation_framework_str, 'filename': filename + '.' + extension}
+    return {'content': argumentation_framework_str,
+            'filename': filename + '.' + extension}

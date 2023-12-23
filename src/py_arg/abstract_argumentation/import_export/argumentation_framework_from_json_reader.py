@@ -2,7 +2,8 @@ import json
 
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
-from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
 
 
 class ArgumentationFrameworkFromJsonReader:
@@ -15,7 +16,8 @@ class ArgumentationFrameworkFromJsonReader:
             name = json_object['name']
         else:
             name = ''
-        arguments = [Argument(argument_name) for argument_name in json_object['arguments']]
+        arguments = [Argument(argument_name)
+                     for argument_name in json_object['arguments']]
         defeats = [Defeat(Argument(from_argument), Argument(to_argument)) for
                    from_argument, to_argument in json_object['defeats']]
         return AbstractArgumentationFramework(name, arguments, defeats)

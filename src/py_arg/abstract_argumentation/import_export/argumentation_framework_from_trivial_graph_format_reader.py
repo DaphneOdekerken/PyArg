@@ -1,13 +1,16 @@
 from typing import Optional
 
-from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 
 
 class ArgumentationFrameworkFromTrivialGraphFormatReader:
     @staticmethod
-    def from_tgf(tgf_str: str, argumentation_framework_name: Optional[str] = None) -> AbstractArgumentationFramework:
+    def from_tgf(tgf_str: str,
+                 argumentation_framework_name: Optional[str] = None) -> \
+            AbstractArgumentationFramework:
         if argumentation_framework_name:
             name = argumentation_framework_name
         else:

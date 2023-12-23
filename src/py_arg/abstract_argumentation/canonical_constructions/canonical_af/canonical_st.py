@@ -1,9 +1,12 @@
 
 from typing import Set
 
-import py_arg.abstract_argumentation.canonical_constructions.canonical_af.canonical_cf as canonical_cf
-import py_arg.abstract_argumentation.semantics.get_stable_extensions as get_stable_extensions
-from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+import py_arg.abstract_argumentation.canonical_constructions.canonical_af\
+    .canonical_cf as canonical_cf
+import py_arg.abstract_argumentation.semantics.get_stable_extensions as \
+    get_stable_extensions
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 
@@ -22,4 +25,5 @@ def apply(extension_set: Set) -> AbstractArgumentationFramework:
         for arg in set(canon_cf.arguments).difference(el):
             defeats.add(Defeat(arg, new_arg))
 
-    return AbstractArgumentationFramework('', arguments=list(arguments), defeats=list(defeats))
+    return AbstractArgumentationFramework('', arguments=list(arguments),
+                                          defeats=list(defeats))

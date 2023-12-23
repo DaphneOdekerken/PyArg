@@ -31,7 +31,8 @@ def pairs(extension_set: Set) -> Set[FrozenSet]:
 @staticmethod
 def powerset(iterable) -> Set[FrozenSet]:
     s = list(iterable)
-    list_of_tuples = set(itertools.chain.from_iterable(itertools.combinations(s, r) for r in range(len(s) + 1)))
+    list_of_tuples = set(itertools.chain.from_iterable(
+        itertools.combinations(s, r) for r in range(len(s) + 1)))
 
     out = set()
     for el in list_of_tuples:
@@ -110,4 +111,3 @@ def reduce(extension_set: Set) -> Set[FrozenSet]:
     for ext in extension_set:
         out.add(ext.difference(intersection))
     return out
-

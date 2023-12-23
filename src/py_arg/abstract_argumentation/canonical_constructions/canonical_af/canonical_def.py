@@ -1,7 +1,9 @@
 from typing import Set, FrozenSet
 
-import py_arg.abstract_argumentation.canonical_constructions.canonical_af.canonical_cf as canonical_cf
-from py_arg.abstract_argumentation.classes.abstract_argumentation_framework import AbstractArgumentationFramework
+import py_arg.abstract_argumentation.canonical_constructions.canonical_af \
+    .canonical_cf as canonical_cf
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 
@@ -16,7 +18,8 @@ def defence_formula(extension_set: Set, arg: Argument) -> Set[FrozenSet]:
 
 
 @staticmethod
-def disjunctive_defence_formula(extension_set: Set, arg: Argument) -> Set[FrozenSet]:
+def disjunctive_defence_formula(extension_set: Set, arg: Argument) -> \
+        Set[FrozenSet]:
     cnf = defence_formula(extension_set, arg)
     dnf = set({frozenset()})
     for conjunct in cnf:
@@ -59,4 +62,5 @@ def apply(extension_set: Set) -> AbstractArgumentationFramework:
             for c in disj:
                 atts_def.append(Defeat(c, new_arg))
 
-    return AbstractArgumentationFramework('', arguments=args_def, defeats=atts_def)
+    return AbstractArgumentationFramework('', arguments=args_def,
+                                          defeats=atts_def)
