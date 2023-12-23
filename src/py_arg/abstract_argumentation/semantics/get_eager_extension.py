@@ -1,9 +1,10 @@
-from enum import Enum
 from typing import Set, Dict, FrozenSet, List, Union, Any
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
+from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
+    ExtendedExtensionLabel
 
 
 # Algorithm 1 from Nofal, Samer, Katie Atkinson, and Paul E. Dunne.
@@ -16,16 +17,6 @@ from py_arg.abstract_argumentation.classes.argument import Argument
 # in Artificial Intelligence, pages 105–132
 
 
-class EagerExtensionLabel(Enum):
-    IN = 1  # Arguments *might* be in the eager extension
-    OUT = 2  # Argument is defeated by an IN argument
-    BLANK = 3  # Default label for all arguments, indicating that the argument
-    # is still unprocessed.
-    MUST_OUT = 4  # Argument defeats IN argument
-    UNDEC = 5  # Argument may not be included in the eager extension because
-    # not defended by any IN argument.
-
-
 def get_eager_extension(
         argumentation_framework: AbstractArgumentationFramework) -> \
         List[Set[Union[Any]]]:
@@ -36,7 +27,7 @@ def get_eager_extension(
         need the eager extension.
     :return: eager extension of the argumentation framework.
     """
-    initial_labelling = {argument: EagerExtensionLabel.BLANK
+    initial_labelling = {argument: ExtendedExtensionLabel.BLANK
                          for argument in argumentation_framework.arguments}
     admissible_labellings = _recursively_get_admissible_labellings(
         argumentation_framework, initial_labelling, [])
@@ -44,7 +35,7 @@ def get_eager_extension(
     for labelling in admissible_labellings:
         frozen_admissible_sets.add(frozenset(sorted(
             {argument for argument in argumentation_framework.arguments
-             if labelling[argument] == EagerExtensionLabel.IN})))
+             if labelling[argument] == ExtendedExtensionLabel.IN})))
     admissible_sets = [set(frozen_admissible_set)
                        for frozen_admissible_set in frozen_admissible_sets]
     calculated_eager_undec = []
@@ -52,12 +43,12 @@ def get_eager_extension(
     for ss_labelling in admissible_labellings:
         calculated_eager_undec.append([frozenset(sorted(
             {argument for argument in argumentation_framework.arguments
-             if ss_labelling[argument] == EagerExtensionLabel.UNDEC})),
+             if ss_labelling[argument] == ExtendedExtensionLabel.UNDEC})),
                                        ss_labelling])
     for ss_labelling in admissible_labellings:
         candidate_eager_undec = frozenset(sorted({
             argument for argument in argumentation_framework.arguments
-            if ss_labelling[argument] == EagerExtensionLabel.UNDEC}))
+            if ss_labelling[argument] == ExtendedExtensionLabel.UNDEC}))
         if not any(candidate_eager_undec > eager_undec[0]
                    for eager_undec in calculated_eager_undec):
             ss_labellings.append(ss_labelling)
@@ -71,7 +62,7 @@ def get_eager_extension(
     for labelling in ss_labellings:
         semistable_extensions.append({
             argument for argument in argumentation_framework.arguments
-            if labelling[argument] == EagerExtensionLabel.IN})
+            if labelling[argument] == ExtendedExtensionLabel.IN})
     intersect_semistable = set.intersection(*semistable_extensions)
     admissible_subsets = [admissible_set
                           for admissible_set in admissible_sets if
@@ -86,12 +77,12 @@ def get_eager_extension(
 
 def _recursively_get_admissible_labellings(
         argumentation_framework: AbstractArgumentationFramework,
-        labelling: Dict[Argument, EagerExtensionLabel],
-        admissible_labellings: List[Dict[Argument, EagerExtensionLabel]]) -> \
-        List[Dict[Argument, EagerExtensionLabel]]:
-    if all(labelling[argument] != EagerExtensionLabel.BLANK
+        labelling: Dict[Argument, ExtendedExtensionLabel],
+        admissible_labellings: List[Dict[Argument, ExtendedExtensionLabel]]) -> \
+        List[Dict[Argument, ExtendedExtensionLabel]]:
+    if all(labelling[argument] != ExtendedExtensionLabel.BLANK
            for argument in argumentation_framework.arguments):
-        if all(labelling[argument] != EagerExtensionLabel.MUST_OUT
+        if all(labelling[argument] != ExtendedExtensionLabel.MUST_OUT
                for argument in argumentation_framework.arguments):
             admissible_labellings.append(labelling)
     return admissible_labellings
@@ -99,15 +90,15 @@ def _recursively_get_admissible_labellings(
 
 def _recursively_get_eager_extension(
         argumentation_framework: AbstractArgumentationFramework,
-        labelling: Dict[Argument, EagerExtensionLabel],
+        labelling: Dict[Argument, ExtendedExtensionLabel],
         labellings) -> Set[FrozenSet[Argument]]:
-    if all(labelling[argument] != EagerExtensionLabel.BLANK
+    if all(labelling[argument] != ExtendedExtensionLabel.BLANK
            for argument in argumentation_framework.arguments):
-        if all(labelling[argument] != EagerExtensionLabel.MUST_OUT
+        if all(labelling[argument] != ExtendedExtensionLabel.MUST_OUT
                for argument in argumentation_framework.arguments):
             candidate_eager_undec = frozenset(sorted({
                 argument for argument in argumentation_framework.arguments
-                if labelling[argument] == EagerExtensionLabel.UNDEC}))
+                if labelling[argument] == ExtendedExtensionLabel.UNDEC}))
             calculated_eager_undec = []
             for ss_labelling in labellings:
                 calculated_eager_undec.append(
@@ -115,7 +106,7 @@ def _recursively_get_eager_extension(
                         argument
                         for argument in argumentation_framework.arguments
                         if ss_labelling[argument] ==
-                        EagerExtensionLabel.UNDEC})),
+                           ExtendedExtensionLabel.UNDEC})),
                      ss_labelling])
             if not any(candidate_eager_undec > eager_undec[0]
                        for eager_undec in calculated_eager_undec):
@@ -128,7 +119,7 @@ def _recursively_get_eager_extension(
     else:
         blank_argument = \
             [argument for argument in argumentation_framework.arguments
-             if labelling[argument] == EagerExtensionLabel.BLANK][0]
+             if labelling[argument] == ExtendedExtensionLabel.BLANK][0]
         alternative_labelling = _in_trans(labelling, blank_argument,
                                           argumentation_framework)
         eager_extensions = _recursively_get_eager_extension(
@@ -140,33 +131,33 @@ def _recursively_get_eager_extension(
     for labelling in labellings:
         eager_extensions.add(frozenset(sorted({
             argument for argument in argumentation_framework.arguments
-            if labelling[argument] == EagerExtensionLabel.IN})))
+            if labelling[argument] == ExtendedExtensionLabel.IN})))
 
     return eager_extensions
 
 
-def _in_trans(labelling: Dict[Argument, EagerExtensionLabel],
+def _in_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
               argument: Argument,
               argumentation_framework: AbstractArgumentationFramework) -> \
-        Dict[Argument, EagerExtensionLabel]:
+        Dict[Argument, ExtendedExtensionLabel]:
     new_labelling = labelling.copy()
-    new_labelling[argument] = EagerExtensionLabel.IN
+    new_labelling[argument] = ExtendedExtensionLabel.IN
     for defeater in argumentation_framework.get_outgoing_defeat_arguments(
             argument):
         if defeater == argument:
             break
         else:
-            new_labelling[defeater] = EagerExtensionLabel.OUT
+            new_labelling[defeater] = ExtendedExtensionLabel.OUT
     for defeated in argumentation_framework.get_incoming_defeat_arguments(
             argument):
-        if new_labelling[defeated] != EagerExtensionLabel.OUT:
-            new_labelling[defeated] = EagerExtensionLabel.MUST_OUT
+        if new_labelling[defeated] != ExtendedExtensionLabel.OUT:
+            new_labelling[defeated] = ExtendedExtensionLabel.MUST_OUT
     return new_labelling
 
 
-def _undec_trans(labelling: Dict[Argument, EagerExtensionLabel],
+def _undec_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
                  argument: Argument) -> \
-        Dict[Argument, EagerExtensionLabel]:
+        Dict[Argument, ExtendedExtensionLabel]:
     new_labelling = labelling.copy()
-    new_labelling[argument] = EagerExtensionLabel.UNDEC
+    new_labelling[argument] = ExtendedExtensionLabel.UNDEC
     return new_labelling

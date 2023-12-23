@@ -1,9 +1,10 @@
-from enum import Enum
 from typing import Set, Dict, FrozenSet
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
+from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
+    ExtendedExtensionLabel
 
 
 # Algorithm 1 from Nofal, Samer, Katie Atkinson, and Paul E. Dunne.
@@ -13,16 +14,6 @@ from py_arg.abstract_argumentation.classes.argument import Argument
 # Algorithms for Abstract Argumentation
 # Frameworks." In Iyad Rahwan and Guillermo R. Simari, editors, Argumentation
 # in Artificial Intelligence, pages 105–132
-
-
-class SemiStableExtensionLabel(Enum):
-    IN = 1  # Arguments *might* be in a semi-stable extension
-    OUT = 2  # Argument is defeated by an IN argument
-    BLANK = 3  # Default label for all arguments, indicating that the argument
-    # is still unprocessed.
-    MUST_OUT = 4  # Argument defeats IN argument
-    UNDEC = 5  # Argument may not be included in a semi-stable extension
-    # because not defended by any IN argument.
 
 
 def get_semistable_extensions(
@@ -35,7 +26,7 @@ def get_semistable_extensions(
         need the semi-stable extensions.
     :return: semi-stable extension of the argumentation framework.
     """
-    initial_labelling = {argument: SemiStableExtensionLabel.BLANK
+    initial_labelling = {argument: ExtendedExtensionLabel.BLANK
                          for argument in argumentation_framework.arguments}
     return _recursively_get_semistable_extensions(argumentation_framework,
                                                   initial_labelling, [])
@@ -43,15 +34,15 @@ def get_semistable_extensions(
 
 def _recursively_get_semistable_extensions(
         argumentation_framework: AbstractArgumentationFramework,
-        labelling: Dict[Argument, SemiStableExtensionLabel],
+        labelling: Dict[Argument, ExtendedExtensionLabel],
         labellings) -> Set[FrozenSet[Argument]]:
-    if all(labelling[argument] != SemiStableExtensionLabel.BLANK
+    if all(labelling[argument] != ExtendedExtensionLabel.BLANK
            for argument in argumentation_framework.arguments):
-        if all(labelling[argument] != SemiStableExtensionLabel.MUST_OUT
+        if all(labelling[argument] != ExtendedExtensionLabel.MUST_OUT
                for argument in argumentation_framework.arguments):
             candidate_semistable_undec = frozenset(sorted({
                 argument for argument in argumentation_framework.arguments
-                if labelling[argument] == SemiStableExtensionLabel.UNDEC}))
+                if labelling[argument] == ExtendedExtensionLabel.UNDEC}))
             calculated_semistable_undec = []
             for ss_labelling in labellings:
                 calculated_semistable_undec.append(
@@ -59,7 +50,7 @@ def _recursively_get_semistable_extensions(
                         argument
                         for argument in argumentation_framework.arguments
                         if ss_labelling[argument] ==
-                        SemiStableExtensionLabel.UNDEC})),
+                           ExtendedExtensionLabel.UNDEC})),
                      ss_labelling])
             if not any(candidate_semistable_undec > semistable_undec[0]
                        for semistable_undec in calculated_semistable_undec):
@@ -72,7 +63,7 @@ def _recursively_get_semistable_extensions(
     else:
         blank_argument = \
             [argument for argument in argumentation_framework.arguments
-             if labelling[argument] == SemiStableExtensionLabel.BLANK][0]
+             if labelling[argument] == ExtendedExtensionLabel.BLANK][0]
         alternative_labelling = _in_trans(labelling, blank_argument,
                                           argumentation_framework)
         semistable_extensions = _recursively_get_semistable_extensions(
@@ -84,35 +75,35 @@ def _recursively_get_semistable_extensions(
     for labelling in labellings:
         semistable_extensions.add(frozenset(sorted({
             argument for argument in argumentation_framework.arguments
-            if labelling[argument] == SemiStableExtensionLabel.IN})))
+            if labelling[argument] == ExtendedExtensionLabel.IN})))
 
     return semistable_extensions
 
 
-def _in_trans(labelling: Dict[Argument, SemiStableExtensionLabel],
+def _in_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
               argument: Argument,
               argumentation_framework: AbstractArgumentationFramework) -> \
-        Dict[Argument, SemiStableExtensionLabel]:
+        Dict[Argument, ExtendedExtensionLabel]:
     new_labelling = labelling.copy()
-    new_labelling[argument] = SemiStableExtensionLabel.IN
+    new_labelling[argument] = ExtendedExtensionLabel.IN
     for defeater in argumentation_framework.get_outgoing_defeat_arguments(
             argument):
         if defeater == argument:
             break
         else:
-            new_labelling[defeater] = SemiStableExtensionLabel.OUT
+            new_labelling[defeater] = ExtendedExtensionLabel.OUT
     for defeated in argumentation_framework.get_incoming_defeat_arguments(
             argument):
-        if new_labelling[defeated] != SemiStableExtensionLabel.OUT:
-            new_labelling[defeated] = SemiStableExtensionLabel.MUST_OUT
+        if new_labelling[defeated] != ExtendedExtensionLabel.OUT:
+            new_labelling[defeated] = ExtendedExtensionLabel.MUST_OUT
     return new_labelling
 
 
-def _undec_trans(labelling: Dict[Argument, SemiStableExtensionLabel],
+def _undec_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
                  argument: Argument) -> \
-        Dict[Argument, SemiStableExtensionLabel]:
+        Dict[Argument, ExtendedExtensionLabel]:
     new_labelling = labelling.copy()
-    new_labelling[argument] = SemiStableExtensionLabel.UNDEC
+    new_labelling[argument] = ExtendedExtensionLabel.UNDEC
     return new_labelling
 
 

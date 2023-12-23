@@ -1,24 +1,15 @@
-from enum import Enum
 from typing import Set, Dict, FrozenSet, List, Any
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
+from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
+    ExtendedExtensionLabel
 
 
 # Algorithm 1 from Nofal, Samer, Katie Atkinson, and Paul E. Dunne. "Algorithms
 # for decision problems in argument systems
 # under preferred semantics." Artificial Intelligence 207 (2014): 23-51.
-
-
-class IdealExtensionLabel(Enum):
-    IN = 1  # Arguments *might* be in a preferred extension
-    OUT = 2  # Argument is defeated by an IN argument
-    BLANK = 3  # Default label for all arguments, indicating that the argument
-    # is still unprocessed.
-    MUST_OUT = 4  # Argument defeats IN argument
-    UNDEC = 5  # Argument may not be included in a preferred extension because
-    # not defended by any IN argument.
 
 
 def get_ideal_extension(
@@ -31,7 +22,7 @@ def get_ideal_extension(
         need the ideal extension.
     :return: ideal extension of the argumentation framework.
     """
-    initial_labelling = {argument: IdealExtensionLabel.BLANK
+    initial_labelling = {argument: ExtendedExtensionLabel.BLANK
                          for argument in argumentation_framework.arguments}
     frozen_admissible_sets = _recursively_get_admissible_sets(
         argumentation_framework, initial_labelling, set())
@@ -55,20 +46,20 @@ def get_ideal_extension(
 
 def _recursively_get_admissible_sets(
         argumentation_framework: AbstractArgumentationFramework,
-        labelling: Dict[Argument, IdealExtensionLabel],
+        labelling: Dict[Argument, ExtendedExtensionLabel],
         admissible_sets: Set[FrozenSet[Argument]]) -> Set[FrozenSet[Argument]]:
-    if all(labelling[argument] != IdealExtensionLabel.BLANK
+    if all(labelling[argument] != ExtendedExtensionLabel.BLANK
            for argument in argumentation_framework.arguments):
-        if all(labelling[argument] != IdealExtensionLabel.MUST_OUT
+        if all(labelling[argument] != ExtendedExtensionLabel.MUST_OUT
                for argument in argumentation_framework.arguments):
             candidate_admissible_set = frozenset(sorted({
                 argument for argument in argumentation_framework.arguments
-                if labelling[argument] == IdealExtensionLabel.IN}))
+                if labelling[argument] == ExtendedExtensionLabel.IN}))
             admissible_sets.add(candidate_admissible_set)
     else:
         blank_argument = \
             [argument for argument in argumentation_framework.arguments
-             if labelling[argument] == IdealExtensionLabel.BLANK][0]
+             if labelling[argument] == ExtendedExtensionLabel.BLANK][0]
         alternative_labelling = _in_trans(labelling, blank_argument,
                                           argumentation_framework)
         admissible_sets = _recursively_get_admissible_sets(
@@ -82,30 +73,30 @@ def _recursively_get_admissible_sets(
     return admissible_sets
 
 
-def _in_trans(labelling: Dict[Argument, IdealExtensionLabel],
+def _in_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
               argument: Argument,
               argumentation_framework: AbstractArgumentationFramework) -> \
-        Dict[Argument, IdealExtensionLabel]:
+        Dict[Argument, ExtendedExtensionLabel]:
     new_labelling = labelling.copy()
-    new_labelling[argument] = IdealExtensionLabel.IN
+    new_labelling[argument] = ExtendedExtensionLabel.IN
     for defeater in argumentation_framework.get_outgoing_defeat_arguments(
             argument):
         if defeater == argument:
             break
         else:
-            new_labelling[defeater] = IdealExtensionLabel.OUT
+            new_labelling[defeater] = ExtendedExtensionLabel.OUT
     for defeated in argumentation_framework.get_incoming_defeat_arguments(
             argument):
-        if new_labelling[defeated] != IdealExtensionLabel.OUT:
-            new_labelling[defeated] = IdealExtensionLabel.MUST_OUT
+        if new_labelling[defeated] != ExtendedExtensionLabel.OUT:
+            new_labelling[defeated] = ExtendedExtensionLabel.MUST_OUT
     return new_labelling
 
 
-def _undec_trans(labelling: Dict[Argument, IdealExtensionLabel],
+def _undec_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
                  argument: Argument) -> \
-        Dict[Argument, IdealExtensionLabel]:
+        Dict[Argument, ExtendedExtensionLabel]:
     new_labelling = labelling.copy()
-    new_labelling[argument] = IdealExtensionLabel.UNDEC
+    new_labelling[argument] = ExtendedExtensionLabel.UNDEC
     return new_labelling
 
 
