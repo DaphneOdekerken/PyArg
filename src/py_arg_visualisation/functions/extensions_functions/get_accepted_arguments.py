@@ -7,6 +7,8 @@ def get_accepted_arguments(extensions, strategy_specification: str):
     :param strategy_specification: The evaluation strategy (e.g., skeptical or
     credulous).
     """
+    if not extensions:
+        return []
     if strategy_specification == 'Skeptical':
         return set.intersection(*extensions)
     if strategy_specification == 'Credulous':
