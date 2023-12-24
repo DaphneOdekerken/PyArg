@@ -7,16 +7,12 @@ from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
     ExtendedExtensionLabel
 
 
-# Algorithm 1 from Nofal, Samer, Katie Atkinson, and Paul E. Dunne.
-# "Algorithms for decision problems in argument systems
-# under preferred semantics." Artificial Intelligence 207 (2014): 23-51.
-# Adjustment based on Modgil, Sanjay and Martin Caminada. "Proof Theories and
-# Algorithms for Abstract Argumentation
-# Frameworks." In Iyad Rahwan and Guillermo R. Simari, editors, Argumentation
-# in Artificial Intelligence, pages 105–132
+# Algorithm for preferred semantics (Section 5.1), adapted as described in
+# Section 7 in "Algorithms for Abstract Argumentation Frameworks."
+# In Argumentation in Artificial Intelligence (2009), 105–132
 
 
-def get_semistable_extensions(
+def get_semi_stable_extensions(
         argumentation_framework: AbstractArgumentationFramework) -> \
         Set[FrozenSet[Argument]]:
     """
@@ -26,88 +22,123 @@ def get_semistable_extensions(
         need the semi-stable extensions.
     :return: semi-stable extension of the argumentation framework.
     """
-    initial_labelling = {argument: ExtendedExtensionLabel.BLANK
+    candidate_labellings = []
+    initial_labelling = {argument: ExtendedExtensionLabel.IN
                          for argument in argumentation_framework.arguments}
-    return _recursively_get_semistable_extensions(argumentation_framework,
-                                                  initial_labelling, [])
 
+    def _find_semi_stable_labellings(
+            current_labelling: Dict[Argument, ExtendedExtensionLabel]):
+        nonlocal candidate_labellings
+        nonlocal argumentation_framework
 
-def _recursively_get_semistable_extensions(
-        argumentation_framework: AbstractArgumentationFramework,
-        labelling: Dict[Argument, ExtendedExtensionLabel],
-        labellings) -> Set[FrozenSet[Argument]]:
-    if all(labelling[argument] != ExtendedExtensionLabel.BLANK
-           for argument in argumentation_framework.arguments):
-        if all(labelling[argument] != ExtendedExtensionLabel.MUST_OUT
-               for argument in argumentation_framework.arguments):
-            candidate_semistable_undec = frozenset(sorted({
-                argument for argument in argumentation_framework.arguments
-                if labelling[argument] == ExtendedExtensionLabel.UNDEC}))
-            calculated_semistable_undec = []
-            for ss_labelling in labellings:
-                calculated_semistable_undec.append(
-                    [frozenset(sorted({
-                        argument
-                        for argument in argumentation_framework.arguments
-                        if ss_labelling[argument] ==
-                           ExtendedExtensionLabel.UNDEC})),
-                     ss_labelling])
-            if not any(candidate_semistable_undec > semistable_undec[0]
-                       for semistable_undec in calculated_semistable_undec):
-                labellings.append(labelling)
-                if any(candidate_semistable_undec < semistable_undec[0]
-                       for semistable_undec in calculated_semistable_undec):
-                    for semistable_undec in calculated_semistable_undec:
-                        if candidate_semistable_undec < semistable_undec[0]:
-                            labellings.remove(semistable_undec[1])
-    else:
-        blank_argument = \
-            [argument for argument in argumentation_framework.arguments
-             if labelling[argument] == ExtendedExtensionLabel.BLANK][0]
-        alternative_labelling = _in_trans(labelling, blank_argument,
-                                          argumentation_framework)
-        semistable_extensions = _recursively_get_semistable_extensions(
-            argumentation_framework, alternative_labelling, labellings)
-        alternative_labelling = _undec_trans(labelling, blank_argument)
-        semistable_extensions = _recursively_get_semistable_extensions(
-            argumentation_framework, alternative_labelling, labellings)
-    semistable_extensions = set()
-    for labelling in labellings:
-        semistable_extensions.add(frozenset(sorted({
-            argument for argument in argumentation_framework.arguments
-            if labelling[argument] == ExtendedExtensionLabel.IN})))
+        # Return if the UNDEC labels of the current labelling is a strict
+        # subset of the UNDEC labels of some candidate labelling.
+        current_undec_arguments = frozenset(sorted(
+            {argument for argument in argumentation_framework.arguments
+             if current_labelling[argument] == ExtendedExtensionLabel.UNDEC}))
+        for other_labelling in candidate_labellings:
+            other_undec_arguments = frozenset(sorted(
+                {argument for argument in argumentation_framework.arguments
+                 if
+                 other_labelling[argument] == ExtendedExtensionLabel.UNDEC}))
+            if current_undec_arguments < other_undec_arguments:
+                return candidate_labellings
 
-    return semistable_extensions
+        # Check if current_labelling has an argument that is illegally IN.
+        illegally_in_arguments = set()
+        for argument in argumentation_framework.arguments:
+            if current_labelling[argument] == ExtendedExtensionLabel.IN:
+                if any(current_labelling[
+                           defeater] != ExtendedExtensionLabel.OUT
+                       for defeater in argumentation_framework.
+                       get_incoming_defeat_arguments(argument)):
+                    illegally_in_arguments.add(argument)
 
+        if not illegally_in_arguments:
+            new_candidate_labellings = []
+            for candidate_labelling in candidate_labellings:
+                # Only keep this candidate if the current labelling's UNDEC
+                # arguments are not a strict super subset of the candidate's IN
+                # arguments.
+                other_in_arguments = frozenset(sorted(
+                    {argument for argument in argumentation_framework.arguments
+                     if candidate_labelling[argument] ==
+                     ExtendedExtensionLabel.IN}))
+                if not current_undec_arguments < other_in_arguments:
+                    new_candidate_labellings.append(candidate_labelling)
 
-def _in_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
-              argument: Argument,
-              argumentation_framework: AbstractArgumentationFramework) -> \
-        Dict[Argument, ExtendedExtensionLabel]:
-    new_labelling = labelling.copy()
-    new_labelling[argument] = ExtendedExtensionLabel.IN
-    for defeater in argumentation_framework.get_outgoing_defeat_arguments(
-            argument):
-        if defeater == argument:
-            break
+            # Also add the current candidate itself and return.
+            new_candidate_labellings.append(current_labelling)
+            candidate_labellings = new_candidate_labellings
+            return candidate_labellings
         else:
-            new_labelling[defeater] = ExtendedExtensionLabel.OUT
-    for defeated in argumentation_framework.get_incoming_defeat_arguments(
-            argument):
-        if new_labelling[defeated] != ExtendedExtensionLabel.OUT:
-            new_labelling[defeated] = ExtendedExtensionLabel.MUST_OUT
-    return new_labelling
+            # Try to find a super illegally IN argument in the current
+            # labelling.
+            super_illegally_in_argument = None
+            for argument in argumentation_framework.arguments:
+                if is_super_illegally_in(current_labelling, argument,
+                                         argumentation_framework):
+                    super_illegally_in_argument = argument
+                    break
+
+            if super_illegally_in_argument:
+                new_labelling = transition_step(
+                    current_labelling, super_illegally_in_argument,
+                    argumentation_framework)
+                _find_semi_stable_labellings(new_labelling)
+            else:
+                for illegally_in_argument in illegally_in_arguments:
+                    new_labelling = transition_step(
+                        current_labelling, illegally_in_argument,
+                        argumentation_framework)
+                    _find_semi_stable_labellings(new_labelling)
+
+    _find_semi_stable_labellings(initial_labelling)
+    return {
+        frozenset(sorted(
+            {argument for argument in argumentation_framework.arguments
+             if labelling[argument] == ExtendedExtensionLabel.IN}))
+        for labelling in candidate_labellings
+    }
 
 
-def _undec_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
-                 argument: Argument) -> \
+def is_super_illegally_in(
+        labelling: Dict[Argument, ExtendedExtensionLabel],
+        argument: Argument,
+        argumentation_framework: AbstractArgumentationFramework
+) -> bool:
+    if not labelling[argument] == ExtendedExtensionLabel.IN:
+        return False
+
+    defeaters = argumentation_framework.get_incoming_defeat_arguments(argument)
+    for defeater in defeaters:
+        if labelling[defeater] == ExtendedExtensionLabel.UNDEC:
+            return True
+        if labelling[defeater] == ExtendedExtensionLabel.IN:
+            defeater_defeaters = \
+                argumentation_framework.get_incoming_defeat_arguments(defeater)
+            if all(labelling[defeater_defeater] == ExtendedExtensionLabel.OUT
+                   for defeater_defeater in defeater_defeaters):
+                return True
+    return False
+
+
+def transition_step(
+        labelling: Dict[Argument, ExtendedExtensionLabel],
+        argument: Argument,
+        argumentation_framework: AbstractArgumentationFramework) -> \
         Dict[Argument, ExtendedExtensionLabel]:
+    # The label of the argument is changed from IN to OUT.
     new_labelling = labelling.copy()
-    new_labelling[argument] = ExtendedExtensionLabel.UNDEC
+    new_labelling[argument] = ExtendedExtensionLabel.OUT
+
+    # Specific arguments that are illegally labelled OUT become UNDEC.
+    arguments_to_check = [argument] + \
+        argumentation_framework.get_outgoing_defeat_arguments(argument)
+    for argument_to_check in arguments_to_check:
+        if new_labelling[argument_to_check] == ExtendedExtensionLabel.OUT and \
+            all(new_labelling[defeater] != ExtendedExtensionLabel.IN
+                for defeater in argumentation_framework.
+                get_incoming_defeat_arguments(argument_to_check)):
+            new_labelling[argument_to_check] = ExtendedExtensionLabel.UNDEC
     return new_labelling
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

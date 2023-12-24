@@ -13,7 +13,7 @@ from py_arg.abstract_argumentation.semantics.get_ideal_extension \
 from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
     get_preferred_extensions
 from py_arg.abstract_argumentation.semantics.get_semistable_extensions \
-    import get_semistable_extensions
+    import get_semi_stable_extensions
 from py_arg.abstract_argumentation.semantics.get_stable_extensions \
     import get_stable_extensions
 
@@ -41,6 +41,6 @@ def get_argumentation_framework_extensions(
     if semantics_specification == 'Stable':
         return get_stable_extensions(argumentation_framework)
     if semantics_specification == 'SemiStable':
-        return get_semistable_extensions(argumentation_framework)
+        return get_semi_stable_extensions(argumentation_framework)
     if semantics_specification == 'Eager':
         return get_eager_extension(argumentation_framework)

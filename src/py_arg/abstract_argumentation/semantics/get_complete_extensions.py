@@ -12,6 +12,9 @@ from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
 # Adapted from Algorithm 1 from Nofal, Samer, Katie Atkinson, and Paul E.
 # Dunne. "Algorithms for decision problems in argument systems under
 # preferred semantics." Artificial Intelligence 207 (2014): 23-51.
+# Adjustment based on Definition 3 from Modgil, Sanjay and Martin Caminada.
+# "Proof Theories and Algorithms for Abstract Argumentation Frameworks." In
+# Argumentation in Artificial Intelligence (2009): 105–132
 
 
 def _update_complete_extensions_by_labelling(
