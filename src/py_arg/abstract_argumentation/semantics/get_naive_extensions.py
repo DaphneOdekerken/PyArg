@@ -2,16 +2,20 @@ from typing import Set
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
-import py_arg.abstract_argumentation.semantics.get_conflict_free_extensions \
-    as get_conflict_free_extensions
+from py_arg.abstract_argumentation.semantics.get_conflict_free_extensions \
+    import get_conflict_free_extensions
 
 
-def apply(argumentation_framework: AbstractArgumentationFramework) -> \
+def get_naive_extensions(
+        argumentation_framework: AbstractArgumentationFramework) -> \
         Set[frozenset[Argument]]:
-    cf_ext = get_conflict_free_extensions.apply(argumentation_framework)
-    rm = set()
-    for ext1 in cf_ext:
-        for ext2 in cf_ext:
-            if ext1.issubset(ext2) and not ext2.issubset(ext1):
-                rm.add(ext1)
-    return cf_ext.difference(rm)
+    conflict_free_extensions = \
+        get_conflict_free_extensions(argumentation_framework)
+
+    naive_extensions = {
+        extension for extension in conflict_free_extensions
+        if not any(other_extension > extension
+                   for other_extension in conflict_free_extensions)
+    }
+
+    return naive_extensions

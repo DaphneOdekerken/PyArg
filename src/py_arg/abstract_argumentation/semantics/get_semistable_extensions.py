@@ -31,8 +31,8 @@ def get_semi_stable_extensions(
         nonlocal candidate_labellings
         nonlocal argumentation_framework
 
-        # Return if the UNDEC labels of the current labelling is a strict
-        # subset of the UNDEC labels of some candidate labelling.
+        # Return if the UNDEC labels of some candidate labelling is a strict
+        # subset of the UNDEC labels of the current labelling.
         current_undec_arguments = frozenset(sorted(
             {argument for argument in argumentation_framework.arguments
              if current_labelling[argument] == ExtendedExtensionLabel.UNDEC}))
@@ -41,36 +41,34 @@ def get_semi_stable_extensions(
                 {argument for argument in argumentation_framework.arguments
                  if
                  other_labelling[argument] == ExtendedExtensionLabel.UNDEC}))
-            if current_undec_arguments < other_undec_arguments:
-                return candidate_labellings
+            if other_undec_arguments < current_undec_arguments:
+                return
 
         # Check if current_labelling has an argument that is illegally IN.
-        illegally_in_arguments = set()
-        for argument in argumentation_framework.arguments:
-            if current_labelling[argument] == ExtendedExtensionLabel.IN:
-                if any(current_labelling[
-                           defeater] != ExtendedExtensionLabel.OUT
-                       for defeater in argumentation_framework.
-                       get_incoming_defeat_arguments(argument)):
-                    illegally_in_arguments.add(argument)
+        illegally_in_arguments = {
+            argument for argument in argumentation_framework.arguments
+            if is_illegally_in(current_labelling, argument,
+                               argumentation_framework)
+        }
 
         if not illegally_in_arguments:
             new_candidate_labellings = []
             for candidate_labelling in candidate_labellings:
                 # Only keep this candidate if the current labelling's UNDEC
-                # arguments are not a strict super subset of the candidate's IN
-                # arguments.
+                # arguments are not a strict super subset of the candidate's
+                # UNDEC arguments.
                 other_in_arguments = frozenset(sorted(
                     {argument for argument in argumentation_framework.arguments
                      if candidate_labelling[argument] ==
-                     ExtendedExtensionLabel.IN}))
-                if not current_undec_arguments < other_in_arguments:
+                     ExtendedExtensionLabel.UNDEC}))
+                if not current_undec_arguments < other_in_arguments and \
+                        candidate_labelling not in new_candidate_labellings:
                     new_candidate_labellings.append(candidate_labelling)
 
             # Also add the current candidate itself and return.
             new_candidate_labellings.append(current_labelling)
             candidate_labellings = new_candidate_labellings
-            return candidate_labellings
+            return
         else:
             # Try to find a super illegally IN argument in the current
             # labelling.
@@ -102,6 +100,38 @@ def get_semi_stable_extensions(
     }
 
 
+def is_illegally_in(
+        labelling: Dict[Argument, ExtendedExtensionLabel],
+        argument: Argument,
+        argumentation_framework: AbstractArgumentationFramework
+) -> bool:
+    if not labelling[argument] == ExtendedExtensionLabel.IN:
+        return False
+
+    defeaters = argumentation_framework.get_incoming_defeat_arguments(argument)
+    for defeater in defeaters:
+        if labelling[defeater] != ExtendedExtensionLabel.OUT:
+            return True
+
+    return False
+
+
+def is_legally_in(
+        labelling: Dict[Argument, ExtendedExtensionLabel],
+        argument: Argument,
+        argumentation_framework: AbstractArgumentationFramework
+) -> bool:
+    if not labelling[argument] == ExtendedExtensionLabel.IN:
+        return False
+
+    defeaters = argumentation_framework.get_incoming_defeat_arguments(argument)
+    for defeater in defeaters:
+        if labelling[defeater] != ExtendedExtensionLabel.OUT:
+            return False
+
+    return True
+
+
 def is_super_illegally_in(
         labelling: Dict[Argument, ExtendedExtensionLabel],
         argument: Argument,
@@ -114,12 +144,8 @@ def is_super_illegally_in(
     for defeater in defeaters:
         if labelling[defeater] == ExtendedExtensionLabel.UNDEC:
             return True
-        if labelling[defeater] == ExtendedExtensionLabel.IN:
-            defeater_defeaters = \
-                argumentation_framework.get_incoming_defeat_arguments(defeater)
-            if all(labelling[defeater_defeater] == ExtendedExtensionLabel.OUT
-                   for defeater_defeater in defeater_defeaters):
-                return True
+        if is_legally_in(labelling, defeater, argumentation_framework):
+            return True
     return False
 
 

@@ -4,11 +4,14 @@ from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
-from py_arg.abstract_argumentation.semantics import get_naive_extensions
+from py_arg.abstract_argumentation.semantics.get_naive_extensions import \
+    get_naive_extensions
 from py_arg.abstract_argumentation.semantics.get_admissible_sets import \
     get_admissible_sets
 from py_arg.abstract_argumentation.semantics.get_complete_extensions import \
     get_complete_extensions
+from py_arg.abstract_argumentation.semantics.get_conflict_free_extensions \
+    import get_conflict_free_extensions
 from py_arg.abstract_argumentation.semantics.get_eager_extension import \
     get_eager_extension
 from py_arg.abstract_argumentation.semantics.get_grounded_extension import \
@@ -36,6 +39,17 @@ class TestAFSemantics(unittest.TestCase):
         defeats = [Defeat(x, y) for x, y in [(a, b), (b, c)]]
         af = AbstractArgumentationFramework('af', [a, b, c], defeats)
 
+        # Conflict-free sets
+        gt_conflict_free = {
+            frozenset(),
+            frozenset({a}),
+            frozenset({b}),
+            frozenset({c}),
+            frozenset({a, c})
+        }
+        conflict_free = get_conflict_free_extensions(af)
+        self.assertSetEqual(gt_conflict_free, conflict_free)
+
         # Admissible sets
         gt_admissible = {
             frozenset(),
@@ -50,7 +64,7 @@ class TestAFSemantics(unittest.TestCase):
             frozenset({a, c}),
             frozenset({b})
         }
-        naive = get_naive_extensions.apply(af)
+        naive = get_naive_extensions(af)
         self.assertSetEqual(gt_naive, naive)
 
         # Complete extensions
@@ -98,6 +112,15 @@ class TestAFSemantics(unittest.TestCase):
         defeats = [Defeat(x, y) for x, y in [(a, b), (b, a)]]
         af = AbstractArgumentationFramework('af', [a, b], defeats)
 
+        # Conflict-free sets
+        gt_conflict_free = {
+            frozenset(),
+            frozenset({a}),
+            frozenset({b})
+        }
+        conflict_free = get_conflict_free_extensions(af)
+        self.assertSetEqual(gt_conflict_free, conflict_free)
+
         # Admissible sets
         gt_admissible = {
             frozenset(),
@@ -112,7 +135,7 @@ class TestAFSemantics(unittest.TestCase):
             frozenset({a}),
             frozenset({b})
         }
-        naive = get_naive_extensions.apply(af)
+        naive = get_naive_extensions(af)
         self.assertSetEqual(gt_naive, naive)
 
         # Complete extensions
@@ -165,6 +188,20 @@ class TestAFSemantics(unittest.TestCase):
         defeats = [Defeat(x, y) for x, y in [(a, b), (b, c), (c, d), (d, c)]]
         af = AbstractArgumentationFramework('af', [a, b, c, d], defeats)
 
+        # Conflict-free sets
+        gt_conflict_free = {
+            frozenset(),
+            frozenset({a}),
+            frozenset({b}),
+            frozenset({c}),
+            frozenset({d}),
+            frozenset({a, c}),
+            frozenset({a, d}),
+            frozenset({b, d})
+        }
+        conflict_free = get_conflict_free_extensions(af)
+        self.assertSetEqual(gt_conflict_free, conflict_free)
+
         # Admissible sets
         gt_admissible = {
             frozenset(),
@@ -182,7 +219,7 @@ class TestAFSemantics(unittest.TestCase):
             frozenset({a, d}),
             frozenset({b, d})
         }
-        naive = get_naive_extensions.apply(af)
+        naive = get_naive_extensions(af)
         self.assertSetEqual(gt_naive, naive)
 
         # Complete extensions
@@ -236,6 +273,19 @@ class TestAFSemantics(unittest.TestCase):
                                              (c, d)]]
         af = AbstractArgumentationFramework('af', [a, b, c, d], defeats)
 
+        # Conflict-free sets
+        gt_conflict_free = {
+            frozenset(),
+            frozenset({a}),
+            frozenset({b}),
+            frozenset({c}),
+            frozenset({d}),
+            frozenset({a, d}),
+            frozenset({b, d})
+        }
+        conflict_free = get_conflict_free_extensions(af)
+        self.assertSetEqual(gt_conflict_free, conflict_free)
+
         # Admissible sets
         gt_admissible = {
             frozenset(),
@@ -253,7 +303,7 @@ class TestAFSemantics(unittest.TestCase):
             frozenset({b, d}),
             frozenset({c})
         }
-        naive = get_naive_extensions.apply(af)
+        naive = get_naive_extensions(af)
         self.assertSetEqual(gt_naive, naive)
 
         # Complete extensions
@@ -305,6 +355,16 @@ class TestAFSemantics(unittest.TestCase):
         defeats = [Defeat(x, y) for x, y in [(a, b), (b, c), (c, a)]]
         af = AbstractArgumentationFramework('af', [a, b, c], defeats)
 
+        # Conflict-free sets
+        gt_conflict_free = {
+            frozenset(),
+            frozenset({a}),
+            frozenset({b}),
+            frozenset({c})
+        }
+        conflict_free = get_conflict_free_extensions(af)
+        self.assertSetEqual(gt_conflict_free, conflict_free)
+
         # Admissible sets
         gt_admissible = {
             frozenset()
@@ -318,7 +378,7 @@ class TestAFSemantics(unittest.TestCase):
             frozenset({b}),
             frozenset({c})
         }
-        naive = get_naive_extensions.apply(af)
+        naive = get_naive_extensions(af)
         self.assertSetEqual(gt_naive, naive)
 
         # Complete extensions
@@ -370,6 +430,23 @@ class TestAFSemantics(unittest.TestCase):
                                              (d, e), (e, c)]]
         af = AbstractArgumentationFramework('af', [a, b, c, d, e], defeats)
 
+        # Conflict-free sets
+        gt_conflict_free = {
+            frozenset(),
+            frozenset({a}),
+            frozenset({b}),
+            frozenset({c}),
+            frozenset({d}),
+            frozenset({e}),
+            frozenset({a, c}),
+            frozenset({a, d}),
+            frozenset({a, e}),
+            frozenset({b, d}),
+            frozenset({b, e})
+        }
+        conflict_free = get_conflict_free_extensions(af)
+        self.assertSetEqual(gt_conflict_free, conflict_free)
+
         # Admissible sets
         gt_admissible = {
             frozenset(),
@@ -388,7 +465,7 @@ class TestAFSemantics(unittest.TestCase):
             frozenset({b, d}),
             frozenset({b, e})
         }
-        naive = get_naive_extensions.apply(af)
+        naive = get_naive_extensions(af)
         self.assertSetEqual(gt_naive, naive)
 
         # Complete extensions
@@ -441,6 +518,14 @@ class TestAFSemantics(unittest.TestCase):
         defeats = [Defeat(x, y) for x, y in [(a, b), (b, a), (b, b)]]
         af = AbstractArgumentationFramework('af', [a, b], defeats)
 
+        # Conflict-free sets
+        gt_conflict_free = {
+            frozenset(),
+            frozenset({a})
+        }
+        conflict_free = get_conflict_free_extensions(af)
+        self.assertSetEqual(gt_conflict_free, conflict_free)
+
         # Admissible sets
         gt_admissible = {
             frozenset(),
@@ -453,7 +538,7 @@ class TestAFSemantics(unittest.TestCase):
         gt_naive = {
             frozenset({a})
         }
-        naive = get_naive_extensions.apply(af)
+        naive = get_naive_extensions(af)
         self.assertSetEqual(gt_naive, naive)
 
         # Complete extensions
@@ -502,6 +587,14 @@ class TestAFSemantics(unittest.TestCase):
         defeats = [Defeat(x, y) for x, y in [(a, a), (a, b)]]
         af = AbstractArgumentationFramework('af', [a, b], defeats)
 
+        # Conflict-free sets
+        gt_conflict_free = {
+            frozenset(),
+            frozenset({b})
+        }
+        conflict_free = get_conflict_free_extensions(af)
+        self.assertSetEqual(gt_conflict_free, conflict_free)
+
         # Admissible sets
         gt_admissible = {
             frozenset()
@@ -509,13 +602,12 @@ class TestAFSemantics(unittest.TestCase):
         admissible = get_admissible_sets(af)
         self.assertSetEqual(gt_admissible, admissible)
 
-        # Naive extensions
+        # Naive extensions (this seems to be a mistake in the handbook)
         gt_naive = {
-            frozenset()
+            frozenset({b})
         }
-        naive = get_naive_extensions.apply(af)
-        # self.assertSetEqual(gt_naive, naive)
-        # TODO check above.
+        naive = get_naive_extensions(af)
+        self.assertSetEqual(gt_naive, naive)
 
         # Complete extensions
         gt_complete = {
@@ -563,6 +655,15 @@ class TestAFSemantics(unittest.TestCase):
         defeats = [Defeat(x, y) for x, y in [(a, b), (b, c), (c, c)]]
         af = AbstractArgumentationFramework('af', [a, b, c], defeats)
 
+        # Conflict-free sets
+        gt_conflict_free = {
+            frozenset(),
+            frozenset({a}),
+            frozenset({b})
+        }
+        conflict_free = get_conflict_free_extensions(af)
+        self.assertSetEqual(gt_conflict_free, conflict_free)
+
         # Admissible sets
         gt_admissible = {
             frozenset(),
@@ -571,11 +672,12 @@ class TestAFSemantics(unittest.TestCase):
         admissible = get_admissible_sets(af)
         self.assertSetEqual(gt_admissible, admissible)
 
-        # Naive extensions
+        # Naive extensions (this seems to be a mistake in the handbook)
         gt_naive = {
-            frozenset({a})
+            frozenset({a}),
+            frozenset({b})
         }
-        naive = get_naive_extensions.apply(af)
+        naive = get_naive_extensions(af)
         self.assertSetEqual(gt_naive, naive)
 
         # Complete extensions
@@ -597,8 +699,8 @@ class TestAFSemantics(unittest.TestCase):
         preferred = get_preferred_extensions(af)
         self.assertSetEqual(gt_preferred, preferred)
 
-        # Stable extensions
-        gt_stable = gt_preferred
+        # Stable extensions (this seems to be a mistake in the handbook)
+        gt_stable = set()
         stable = get_stable_extensions(af)
         self.assertSetEqual(gt_stable, stable)
 

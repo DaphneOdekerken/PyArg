@@ -1,20 +1,17 @@
-from typing import Set, Dict, FrozenSet, List, Any
+from typing import Set
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
+from py_arg.abstract_argumentation.semantics.get_admissible_sets import \
+    get_admissible_sets
 from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
-    ExtendedExtensionLabel
-
-
-# Algorithm 1 from Nofal, Samer, Katie Atkinson, and Paul E. Dunne. "Algorithms
-# for decision problems in argument systems
-# under preferred semantics." Artificial Intelligence 207 (2014): 23-51.
+    get_preferred_extensions
 
 
 def get_ideal_extension(
         argumentation_framework: AbstractArgumentationFramework) -> \
-        List[Set[Any]]:
+        Set[Argument]:
     """
     Get the ideal extension of an argumentation framework.
 
@@ -22,85 +19,18 @@ def get_ideal_extension(
         need the ideal extension.
     :return: ideal extension of the argumentation framework.
     """
-    initial_labelling = {argument: ExtendedExtensionLabel.BLANK
-                         for argument in argumentation_framework.arguments}
-    frozen_admissible_sets = _recursively_get_admissible_sets(
-        argumentation_framework, initial_labelling, set())
-    admissible_sets = [set(frozen_admissible_set)
-                       for frozen_admissible_set in frozen_admissible_sets]
-    preferred_extensions = []
-    for candidate_preferred_extension in admissible_sets:
-        if not any(candidate_preferred_extension < admissible_set
-                   for admissible_set in admissible_sets):
-            preferred_extensions.append(candidate_preferred_extension)
-    intersect_preferred = set.intersection(*preferred_extensions)
-    admissible_subsets = [admissible_set for admissible_set in admissible_sets
-                          if intersect_preferred.issuperset(admissible_set)]
-    max_admissible_subsets = []
-    for candidate_ideal_extension in admissible_subsets:
-        if not any(candidate_ideal_extension < admissible_set
-                   for admissible_set in admissible_subsets):
-            max_admissible_subsets.append(candidate_ideal_extension)
-    return max_admissible_subsets
+    admissible_sets = get_admissible_sets(argumentation_framework)
+    preferred_extensions = get_preferred_extensions(argumentation_framework)
+    preferred_extension_sets = (set(ext) for ext in preferred_extensions)
 
+    intersect_preferred = set.intersection(*preferred_extension_sets)
 
-def _recursively_get_admissible_sets(
-        argumentation_framework: AbstractArgumentationFramework,
-        labelling: Dict[Argument, ExtendedExtensionLabel],
-        admissible_sets: Set[FrozenSet[Argument]]) -> Set[FrozenSet[Argument]]:
-    if all(labelling[argument] != ExtendedExtensionLabel.BLANK
-           for argument in argumentation_framework.arguments):
-        if all(labelling[argument] != ExtendedExtensionLabel.MUST_OUT
-               for argument in argumentation_framework.arguments):
-            candidate_admissible_set = frozenset(sorted({
-                argument for argument in argumentation_framework.arguments
-                if labelling[argument] == ExtendedExtensionLabel.IN}))
-            admissible_sets.add(candidate_admissible_set)
-    else:
-        blank_argument = \
-            [argument for argument in argumentation_framework.arguments
-             if labelling[argument] == ExtendedExtensionLabel.BLANK][0]
-        alternative_labelling = _in_trans(labelling, blank_argument,
-                                          argumentation_framework)
-        admissible_sets = _recursively_get_admissible_sets(
-            argumentation_framework, alternative_labelling,
-            admissible_sets)
-        alternative_labelling = _undec_trans(labelling, blank_argument)
-        admissible_sets = _recursively_get_admissible_sets(
-            argumentation_framework, alternative_labelling,
-            admissible_sets)
+    max_admissible_subset_of_preferred = None
+    for candidate_ideal_extension in admissible_sets:
+        if candidate_ideal_extension <= intersect_preferred:
+            if not max_admissible_subset_of_preferred:
+                max_admissible_subset_of_preferred = candidate_ideal_extension
+            if candidate_ideal_extension > max_admissible_subset_of_preferred:
+                max_admissible_subset_of_preferred = candidate_ideal_extension
 
-    return admissible_sets
-
-
-def _in_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
-              argument: Argument,
-              argumentation_framework: AbstractArgumentationFramework) -> \
-        Dict[Argument, ExtendedExtensionLabel]:
-    new_labelling = labelling.copy()
-    new_labelling[argument] = ExtendedExtensionLabel.IN
-    for defeater in argumentation_framework.get_outgoing_defeat_arguments(
-            argument):
-        if defeater == argument:
-            break
-        else:
-            new_labelling[defeater] = ExtendedExtensionLabel.OUT
-    for defeated in argumentation_framework.get_incoming_defeat_arguments(
-            argument):
-        if new_labelling[defeated] != ExtendedExtensionLabel.OUT:
-            new_labelling[defeated] = ExtendedExtensionLabel.MUST_OUT
-    return new_labelling
-
-
-def _undec_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
-                 argument: Argument) -> \
-        Dict[Argument, ExtendedExtensionLabel]:
-    new_labelling = labelling.copy()
-    new_labelling[argument] = ExtendedExtensionLabel.UNDEC
-    return new_labelling
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
+    return set(max_admissible_subset_of_preferred)

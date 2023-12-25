@@ -4,31 +4,38 @@ from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
 from py_arg.abstract_argumentation.classes.argument import Argument
 
 
-def apply(argumentation_framework: AbstractArgumentationFramework) -> \
+def get_conflict_free_extensions(
+        argumentation_framework: AbstractArgumentationFramework) -> \
         Set[frozenset[Argument]]:
-    return recursively_get_cf(set(), set(argumentation_framework.arguments),
-                              argumentation_framework)
+    return _recursively_get_conflict_free(
+        set(), set(argumentation_framework.arguments),
+        argumentation_framework)
 
 
-def recursively_get_cf(in_: Set[Argument], todo: Set[Argument],
-                       af: AbstractArgumentationFramework) -> \
+def _recursively_get_conflict_free(
+        previous_cf: Set[Argument],
+        todo: Set[Argument],
+        argumentation_framework: AbstractArgumentationFramework) -> \
         Set[frozenset[Argument]]:
-    if len(todo) == 0:
+    if not todo:
         return set()
 
-    out = {frozenset(in_)}
-    for arg in todo:
-        if arg in arg.get_outgoing_defeat_arguments:
+    new_cf = {frozenset(previous_cf)}
+    for argument in todo:
+        # If this argument is self-defeating, we will not add it to any
+        # conflict-free set.
+        if argument in argument.get_outgoing_defeat_arguments:
             continue
-        rec_todo = set(todo.copy())
-        rec_todo.remove(arg)
-        rm = set()
-        for a in rec_todo:
-            if a < arg or a in arg.get_outgoing_defeat_arguments or \
-                    a in arg.get_ingoing_defeat_arguments:
-                rm.add(a)
-        rec_todo.difference_update(rm)
-        out.add(frozenset(in_.union({arg})))
-        out.update(recursively_get_cf(in_.union({arg}), rec_todo, af))
 
-    return out
+        new_todo = \
+            {other_argument for other_argument in todo
+             if other_argument != argument and
+             not other_argument < argument and
+             other_argument not in argument.get_ingoing_defeat_arguments and
+             other_argument not in argument.get_outgoing_defeat_arguments}
+
+        new_cf.add(frozenset(previous_cf.union({argument})))
+        new_cf.update(_recursively_get_conflict_free(
+            previous_cf.union({argument}), new_todo, argumentation_framework))
+
+    return new_cf
