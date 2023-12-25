@@ -47,8 +47,9 @@ from py_arg_visualisation.functions.explanations_functions. \
     get_af_explanations import get_argumentation_framework_explanations
 from py_arg_visualisation.functions.extensions_functions. \
     get_accepted_arguments import get_accepted_arguments
-from py_arg_visualisation.functions.extensions_functions. \
-    get_af_extensions import get_argumentation_framework_extensions
+from py_arg.abstract_argumentation.semantics.\
+    get_argumentation_framework_extensions import \
+    get_argumentation_framework_extensions
 from py_arg_visualisation.functions.graph_data_functions. \
     get_af_graph_data import get_argumentation_framework_graph_data
 from py_arg_visualisation.functions.import_functions. \
@@ -127,6 +128,8 @@ def get_abstract_evaluation_div():
             {'label': 'Stable', 'value': 'Stable'},
             {'label': 'Semi-stable', 'value': 'SemiStable'},
             {'label': 'Eager', 'value': 'Eager'},
+            {'label': 'Conflict-free', 'value': 'ConflictFree'},
+            {'label': 'Naive', 'value': 'Naive'}
         ]
 
     return html.Div([

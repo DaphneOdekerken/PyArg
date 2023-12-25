@@ -4,12 +4,16 @@ from py_arg.abstract_argumentation.semantics.get_admissible_sets \
     import get_admissible_sets
 from py_arg.abstract_argumentation.semantics.get_complete_extensions import \
     get_complete_extensions
+from py_arg.abstract_argumentation.semantics.get_conflict_free_extensions \
+    import get_conflict_free_extensions
 from py_arg.abstract_argumentation.semantics.get_eager_extension \
     import get_eager_extension
 from py_arg.abstract_argumentation.semantics.get_grounded_extension \
     import get_grounded_extension
 from py_arg.abstract_argumentation.semantics.get_ideal_extension \
     import get_ideal_extension
+from py_arg.abstract_argumentation.semantics.get_naive_extensions import \
+    get_naive_extensions
 from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
     get_preferred_extensions
 from py_arg.abstract_argumentation.semantics.get_semistable_extensions \
@@ -44,3 +48,7 @@ def get_argumentation_framework_extensions(
         return get_semi_stable_extensions(argumentation_framework)
     if semantics_specification == 'Eager':
         return get_eager_extension(argumentation_framework)
+    if semantics_specification == 'ConflictFree':
+        return get_conflict_free_extensions(argumentation_framework)
+    if semantics_specification == 'Naive':
+        return get_naive_extensions(argumentation_framework)

@@ -24,15 +24,19 @@ def _recursively_get_conflict_free(
     for argument in todo:
         # If this argument is self-defeating, we will not add it to any
         # conflict-free set.
-        if argument in argument.get_outgoing_defeat_arguments:
+        if argument in argumentation_framework.\
+                get_outgoing_defeat_arguments(argument):
             continue
 
         new_todo = \
             {other_argument for other_argument in todo
              if other_argument != argument and
              not other_argument < argument and
-             other_argument not in argument.get_ingoing_defeat_arguments and
-             other_argument not in argument.get_outgoing_defeat_arguments}
+             other_argument not in
+             argumentation_framework.get_incoming_defeat_arguments(
+                 argument) and
+             other_argument not in
+             argumentation_framework.get_outgoing_defeat_arguments(argument)}
 
         new_cf.add(frozenset(previous_cf.union({argument})))
         new_cf.update(_recursively_get_conflict_free(
