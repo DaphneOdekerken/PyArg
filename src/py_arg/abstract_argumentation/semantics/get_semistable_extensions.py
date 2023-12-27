@@ -8,7 +8,8 @@ from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
 
 
 # Algorithm for preferred semantics (Section 5.1), adapted as described in
-# Section 7 in "Algorithms for Abstract Argumentation Frameworks."
+# Section 6 in Sanjay Modgil and Martin Caminada.
+# "Proof Theories and Algorithms for Abstract Argumentation Frameworks."
 # In Argumentation in Artificial Intelligence (2009), 105–132
 
 
