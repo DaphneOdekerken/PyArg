@@ -1,4 +1,4 @@
-from typing import Set, Dict, FrozenSet
+from typing import Set, Dict, FrozenSet, TypeVar
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
@@ -12,10 +12,12 @@ from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
 # "Proof Theories and Algorithms for Abstract Argumentation Frameworks."
 # In Argumentation in Artificial Intelligence (2009), 105–132
 
+T = TypeVar('T', bound=Argument)
+
 
 def get_semi_stable_extensions(
         argumentation_framework: AbstractArgumentationFramework) -> \
-        Set[FrozenSet[Argument]]:
+        Set[FrozenSet[T]]:
     """
     Get the semi-stable extensions of an argumentation framework.
 
@@ -28,7 +30,7 @@ def get_semi_stable_extensions(
                          for argument in argumentation_framework.arguments}
 
     def _find_semi_stable_labellings(
-            current_labelling: Dict[Argument, ExtendedExtensionLabel]):
+            current_labelling: Dict[T, ExtendedExtensionLabel]):
         nonlocal candidate_labellings
         nonlocal argumentation_framework
 
@@ -102,8 +104,8 @@ def get_semi_stable_extensions(
 
 
 def is_illegally_in(
-        labelling: Dict[Argument, ExtendedExtensionLabel],
-        argument: Argument,
+        labelling: Dict[T, ExtendedExtensionLabel],
+        argument: T,
         argumentation_framework: AbstractArgumentationFramework
 ) -> bool:
     if not labelling[argument] == ExtendedExtensionLabel.IN:
@@ -118,8 +120,8 @@ def is_illegally_in(
 
 
 def is_legally_in(
-        labelling: Dict[Argument, ExtendedExtensionLabel],
-        argument: Argument,
+        labelling: Dict[T, ExtendedExtensionLabel],
+        argument: T,
         argumentation_framework: AbstractArgumentationFramework
 ) -> bool:
     if not labelling[argument] == ExtendedExtensionLabel.IN:
@@ -134,8 +136,8 @@ def is_legally_in(
 
 
 def is_super_illegally_in(
-        labelling: Dict[Argument, ExtendedExtensionLabel],
-        argument: Argument,
+        labelling: Dict[T, ExtendedExtensionLabel],
+        argument: T,
         argumentation_framework: AbstractArgumentationFramework
 ) -> bool:
     if not labelling[argument] == ExtendedExtensionLabel.IN:
@@ -151,10 +153,10 @@ def is_super_illegally_in(
 
 
 def transition_step(
-        labelling: Dict[Argument, ExtendedExtensionLabel],
-        argument: Argument,
+        labelling: Dict[T, ExtendedExtensionLabel],
+        argument: T,
         argumentation_framework: AbstractArgumentationFramework) -> \
-        Dict[Argument, ExtendedExtensionLabel]:
+        Dict[T, ExtendedExtensionLabel]:
     # The label of the argument is changed from IN to OUT.
     new_labelling = labelling.copy()
     new_labelling[argument] = ExtendedExtensionLabel.OUT

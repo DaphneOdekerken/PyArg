@@ -9,8 +9,8 @@ from py_arg.abstract_argumentation.canonical_constructions \
 from py_arg.abstract_argumentation.generators.\
     abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
-from py_arg.abstract_argumentation.semantics.get_conflict_free_extensions import \
-    get_conflict_free_extensions
+from py_arg.abstract_argumentation.semantics.get_conflict_free_extensions \
+    import get_conflict_free_extensions
 
 
 class TestCanonicalConstructions(unittest.TestCase):

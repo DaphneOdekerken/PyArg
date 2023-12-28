@@ -43,11 +43,13 @@ from py_arg_visualisation.functions.explanations_functions.\
 from py_arg_visualisation.functions.explanations_functions.\
     get_af_explanations import \
     get_argumentation_framework_explanations
-from py_arg_visualisation.functions.extensions_functions.\
-    get_accepted_arguments import get_accepted_arguments
+from py_arg.abstract_argumentation.semantics.get_accepted_arguments import \
+    get_accepted_arguments
 from py_arg.abstract_argumentation.semantics.\
     get_argumentation_framework_extensions import \
     get_argumentation_framework_extensions
+from py_arg_visualisation.functions.extensions_functions.\
+    get_acceptance_strategy import get_acceptance_strategy
 from py_arg_visualisation.functions.graph_data_functions.\
     get_af_graph_data import get_argumentation_framework_graph_data
 from py_arg_visualisation.functions.import_functions.\
@@ -349,7 +351,9 @@ def evaluate_abstract_argumentation_framework(arguments: str, attacks: str,
                            'index': extension_long_str}))
 
     # Based on the extensions, get the acceptance status of arguments.
-    accepted_arguments = get_accepted_arguments(extensions, strategy)
+    acceptance_strategy = get_acceptance_strategy(strategy)
+    accepted_arguments = get_accepted_arguments(
+        frozen_extensions, acceptance_strategy)
 
     # Make a button for each accepted argument.
     accepted_argument_buttons = [
@@ -427,8 +431,9 @@ def derive_explanations_abstract_argumentation_framework(
                                                                semantics)
     extensions = [set(frozen_extension)
                   for frozen_extension in frozen_extensions]
+    acceptance_strategy = get_acceptance_strategy(explanation_strategy)
     accepted_arguments = get_accepted_arguments(
-        extensions, explanation_strategy)
+        frozen_extensions, acceptance_strategy)
     explanations = get_argumentation_framework_explanations(
         arg_framework, extensions, accepted_arguments,
         explanation_function, explanation_type)

@@ -21,9 +21,12 @@ from py_arg_visualisation.functions.explanations_functions. \
     EXPLANATION_FUNCTION_OPTIONS
 from py_arg_visualisation.functions.explanations_functions. \
     get_at_explanations import get_str_explanations
-from py_arg_visualisation.functions.extensions_functions. \
-    get_accepted_formulas import get_accepted_formulas
-from py_arg.abstract_argumentation.semantics.get_argumentation_framework_extensions import get_argumentation_framework_extensions
+from py_arg.aspic.semantics.get_accepted_formulas import get_accepted_formulas
+from py_arg.abstract_argumentation.semantics.\
+    get_argumentation_framework_extensions import \
+    get_argumentation_framework_extensions
+from py_arg_visualisation.functions.extensions_functions.\
+    get_acceptance_strategy import get_acceptance_strategy
 from py_arg_visualisation.functions.graph_data_functions. \
     get_at_graph_data import get_argumentation_theory_graph_data
 from py_arg_visualisation.functions.import_functions. \
@@ -348,8 +351,9 @@ def evaluate_structured_argumentation_framework(
 
     extensions = [set(frozen_extension)
                   for frozen_extension in frozen_extensions]
-    accepted_formulas = get_accepted_formulas(
-        extensions, acceptance_strategy_specification)
+    acceptance_strategy = get_acceptance_strategy(
+        acceptance_strategy_specification)
+    accepted_formulas = get_accepted_formulas(extensions, acceptance_strategy)
 
     extension_buttons = []
     formula_arguments = {
@@ -444,7 +448,7 @@ def mark_extension_in_graph(
 def derive_explanation_structured(
         active_item: str, axioms, ordinary, strict, defeasible,
         premise_preferences, rule_preferences, choice, link, semantics,
-        function, explanation_type, strategy, form):
+        function, explanation_type, strategy: str, form):
     if active_item != 'Explanation':
         raise PreventUpdate
 
@@ -468,7 +472,8 @@ def derive_explanation_structured(
     else:
         extension = [set(frozen_extension)
                      for frozen_extension in frozen_extensions]
-        accepted = get_accepted_formulas(extension, strategy)
+        acceptance_strategy = get_acceptance_strategy(strategy)
+        accepted = get_accepted_formulas(extension, acceptance_strategy)
     explanations = get_str_explanations(arg_theory, semantics, ordering,
                                         extension, accepted, function,
                                         explanation_type, strategy, form)

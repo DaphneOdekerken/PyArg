@@ -6,6 +6,7 @@ from typing import List, Dict
 
 import dash
 import dash_bootstrap_components as dbc
+import requests
 import visdcc
 from dash import html, callback, Input, Output, State, ALL, dcc
 from dash.exceptions import PreventUpdate
@@ -45,11 +46,13 @@ from py_arg_visualisation.functions.explanations_functions. \
     EXPLANATION_FUNCTION_OPTIONS
 from py_arg_visualisation.functions.explanations_functions. \
     get_af_explanations import get_argumentation_framework_explanations
-from py_arg_visualisation.functions.extensions_functions. \
-    get_accepted_arguments import get_accepted_arguments
+from py_arg.abstract_argumentation.semantics.get_accepted_arguments import \
+    get_accepted_arguments
 from py_arg.abstract_argumentation.semantics.\
     get_argumentation_framework_extensions import \
     get_argumentation_framework_extensions
+from py_arg_visualisation.functions.extensions_functions.\
+    get_acceptance_strategy import get_acceptance_strategy
 from py_arg_visualisation.functions.graph_data_functions. \
     get_af_graph_data import get_argumentation_framework_graph_data
 from py_arg_visualisation.functions.import_functions. \
@@ -117,7 +120,7 @@ def get_abstract_evaluation_div():
     try:
         semantics = tweety_services_handler.get_supported_semantics(config)
         semantics_mapping = [{'label': sem, 'value': sem} for sem in semantics]
-    except Exception:
+    except requests.exceptions.ConnectionError:
         print('Tweety server down')
         semantics_mapping = [
             {'label': 'Admissible', 'value': 'Admissible'},
@@ -431,7 +434,9 @@ def evaluate_abstract_argumentation_framework(arguments: str, attacks: str,
                            id={'type': 'extension-button-abstract',
                                'index': extension_long_str}))
         # Based on the extensions, get the acceptance status of arguments.
-        accepted_arguments = get_accepted_arguments(extensions, strategy)
+        acceptance_strategy = get_acceptance_strategy(strategy)
+        accepted_arguments = get_accepted_arguments(
+            frozen_extensions, acceptance_strategy)
         # Mke a button for each accepted argument.
         accepted_argument_buttons = [
             dbc.Button(argument.name, color='secondary',
@@ -519,8 +524,9 @@ def derive_explanations_abstract_argumentation_framework(
                                                                semantics)
     extensions = [set(frozen_extension) for frozen_extension in
                   frozen_extensions]
-    accepted_arguments = get_accepted_arguments(extensions,
-                                                explanation_strategy)
+    acceptance_strategy = get_acceptance_strategy(explanation_strategy)
+    accepted_arguments = get_accepted_arguments(frozen_extensions,
+                                                acceptance_strategy)
     explanations = get_argumentation_framework_explanations(
         arg_framework,
         extensions,

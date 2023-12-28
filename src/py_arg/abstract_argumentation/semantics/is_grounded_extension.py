@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, TypeVar
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
@@ -6,9 +6,11 @@ from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.semantics.get_grounded_extension \
     import get_grounded_extension
 
+T = TypeVar('T', bound=Argument)
+
 
 def is_grounded_extension(
-        argument_set: List[Argument],
+        argument_set: List[T],
         argumentation_framework: AbstractArgumentationFramework) -> bool:
     """
     Check if the argument set if it is the grounded extension in the

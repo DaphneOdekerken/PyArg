@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Set, TypeVar, FrozenSet
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
@@ -8,10 +8,12 @@ from py_arg.abstract_argumentation.semantics.get_admissible_sets import \
 from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
     get_preferred_extensions
 
+T = TypeVar('T', bound=Argument)
+
 
 def get_ideal_extension(
         argumentation_framework: AbstractArgumentationFramework) -> \
-        Set[Argument]:
+        Set[T]:
     """
     Get the ideal extension of an argumentation framework.
 
@@ -34,3 +36,9 @@ def get_ideal_extension(
                 max_admissible_subset_of_preferred = candidate_ideal_extension
 
     return set(max_admissible_subset_of_preferred)
+
+
+def get_ideal_extensions(
+        argumentation_framework: AbstractArgumentationFramework) -> \
+        Set[FrozenSet[T]]:
+    return {frozenset(get_ideal_extension(argumentation_framework))}

@@ -1,12 +1,14 @@
-from typing import Iterable
+from typing import Iterable, TypeVar
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 
+T = TypeVar('T', bound=Argument)
+
 
 def is_acceptable_with_respect_to(
-        argument: Argument, argument_set: Iterable[Argument],
+        argument: T, argument_set: Iterable[T],
         argumentation_framework: AbstractArgumentationFramework) -> bool:
     """
     Verify that the argument is acceptable with respect to the argument set in

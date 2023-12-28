@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, TypeVar
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
@@ -8,9 +8,11 @@ from py_arg.abstract_argumentation.semantics.is_acceptable_with_respect_to \
 from py_arg.abstract_argumentation.semantics.is_conflict_free import \
     is_conflict_free
 
+T = TypeVar('T', bound=Argument)
+
 
 def is_admissible(
-        argument_set: Iterable[Argument],
+        argument_set: Iterable[T],
         argumentation_framework: AbstractArgumentationFramework) -> bool:
     """
     Check if the argument set if it is admissible in the corresponding

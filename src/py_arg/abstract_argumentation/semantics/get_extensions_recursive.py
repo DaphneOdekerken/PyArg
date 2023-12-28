@@ -1,4 +1,4 @@
-from typing import Set, Dict, FrozenSet, Callable
+from typing import Set, Dict, FrozenSet, Callable, TypeVar
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
@@ -11,15 +11,17 @@ from py_arg.abstract_argumentation.semantics.extended_extension_label import \
 # Paul E. Dunne. "Algorithms for decision problems in argument systems under
 # preferred semantics." Artificial Intelligence 207 (2014): 23-51.
 
+T = TypeVar('T', bound=Argument)
+
 
 def recursively_get_extensions(
         argumentation_framework: AbstractArgumentationFramework,
-        labelling: Dict[Argument, ExtendedExtensionLabel],
-        extensions: Set[FrozenSet[Argument]],
+        labelling: Dict[T, ExtendedExtensionLabel],
+        extensions: Set[FrozenSet[T]],
         update_extensions_by_labelling: Callable[[
-            AbstractArgumentationFramework, Set[FrozenSet[Argument]],
-            Dict[Argument, ExtendedExtensionLabel]], None]) -> \
-        Set[FrozenSet[Argument]]:
+            AbstractArgumentationFramework, Set[FrozenSet[T]],
+            Dict[T, ExtendedExtensionLabel]], None]) -> \
+        Set[FrozenSet[T]]:
     if all(labelling[argument] != ExtendedExtensionLabel.BLANK
            for argument in argumentation_framework.arguments):
         if all(labelling[argument] != ExtendedExtensionLabel.MUST_OUT
@@ -50,10 +52,10 @@ def recursively_get_extensions(
     return extensions
 
 
-def _in_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
-              argument: Argument,
+def _in_trans(labelling: Dict[T, ExtendedExtensionLabel],
+              argument: T,
               argumentation_framework: AbstractArgumentationFramework) -> \
-        Dict[Argument, ExtendedExtensionLabel]:
+        Dict[T, ExtendedExtensionLabel]:
     # Assume that the argument is IN.
     new_labelling = labelling.copy()
     new_labelling[argument] = ExtendedExtensionLabel.IN
@@ -74,8 +76,8 @@ def _in_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
     return new_labelling
 
 
-def _undec_trans(labelling: Dict[Argument, ExtendedExtensionLabel],
-                 argument: Argument) -> \
+def _undec_trans(labelling: Dict[T, ExtendedExtensionLabel],
+                 argument: T) -> \
         Dict[Argument, ExtendedExtensionLabel]:
     # Assume that the argument is UNDEC.
     new_labelling = labelling.copy()

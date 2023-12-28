@@ -1,4 +1,4 @@
-from typing import Set, Dict, FrozenSet
+from typing import Set, Dict, FrozenSet, TypeVar
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
@@ -13,11 +13,13 @@ from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
 # Dunne. "Algorithms for decision problems in argument systems under
 # preferred semantics." Artificial Intelligence 207 (2014): 23-51.
 
+T = TypeVar('T', bound=Argument)
+
 
 def _update_admissible_sets_by_labelling(
         argumentation_framework: AbstractArgumentationFramework,
-        extensions: Set[FrozenSet[Argument]],
-        labelling: Dict[Argument, ExtendedExtensionLabel]):
+        extensions: Set[FrozenSet[T]],
+        labelling: Dict[T, ExtendedExtensionLabel]):
     # Collect the IN arguments.
     admissible_set = frozenset(sorted({
         argument for argument in argumentation_framework.arguments
@@ -27,7 +29,7 @@ def _update_admissible_sets_by_labelling(
 
 def get_admissible_sets(
         argumentation_framework: AbstractArgumentationFramework) -> \
-        Set[FrozenSet[Argument]]:
+        Set[FrozenSet[T]]:
     """
     Get the admissible sets of an argumentation framework.
 

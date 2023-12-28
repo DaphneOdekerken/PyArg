@@ -1,14 +1,16 @@
 import itertools
-from typing import Iterable
+from typing import Iterable, TypeVar
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 
+T = TypeVar('T', bound=Argument)
+
 
 def is_conflict_free(
-        argument_set: Iterable[Argument],
+        argument_set: Iterable[T],
         argumentation_framework: AbstractArgumentationFramework) -> bool:
     """
     Check if the argument set if it is conflict free in the corresponding

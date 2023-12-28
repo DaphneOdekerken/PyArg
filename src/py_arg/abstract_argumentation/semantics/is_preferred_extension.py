@@ -1,14 +1,16 @@
 import itertools
-from typing import List
+from typing import List, TypeVar
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.semantics.is_admissible import is_admissible
 
+T = TypeVar('T', bound=Argument)
+
 
 def is_preferred_extension(
-        argument_set: List[Argument],
+        argument_set: List[T],
         argumentation_framework: AbstractArgumentationFramework) \
         -> bool:
     """

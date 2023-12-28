@@ -1,22 +1,24 @@
-from typing import Set
+from typing import Set, TypeVar
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 
+T = TypeVar('T', bound=Argument)
+
 
 def get_conflict_free_extensions(
         argumentation_framework: AbstractArgumentationFramework) -> \
-        Set[frozenset[Argument]]:
+        Set[frozenset[T]]:
     return _recursively_get_conflict_free(
         set(), set(argumentation_framework.arguments),
         argumentation_framework)
 
 
 def _recursively_get_conflict_free(
-        previous_cf: Set[Argument],
-        todo: Set[Argument],
+        previous_cf: Set[T],
+        todo: Set[T],
         argumentation_framework: AbstractArgumentationFramework) -> \
-        Set[frozenset[Argument]]:
+        Set[frozenset[T]]:
     if not todo:
         return set()
 

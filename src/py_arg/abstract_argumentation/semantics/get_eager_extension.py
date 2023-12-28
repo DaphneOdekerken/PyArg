@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Set, TypeVar, FrozenSet
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
@@ -8,10 +8,12 @@ from py_arg.abstract_argumentation.semantics.get_admissible_sets import \
 from py_arg.abstract_argumentation.semantics.get_semistable_extensions import \
     get_semi_stable_extensions
 
+T = TypeVar('T', bound=Argument)
+
 
 def get_eager_extension(
         argumentation_framework: AbstractArgumentationFramework) -> \
-        Set[Argument]:
+        Set[T]:
     """
     Get the eager extension of an argumentation framework.
 
@@ -35,3 +37,9 @@ def get_eager_extension(
                 max_admissible_subset_of_semi_stable = candidate_eager
 
     return set(max_admissible_subset_of_semi_stable)
+
+
+def get_eager_extensions(
+        argumentation_framework: AbstractArgumentationFramework) -> \
+        Set[FrozenSet[T]]:
+    return {frozenset(get_eager_extension(argumentation_framework))}
