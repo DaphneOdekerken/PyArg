@@ -17,13 +17,6 @@ def _is_reachable_by_even_path(distance_set: set[int]) -> bool:
     return any(not distance % 2 for distance in distance_set)
 
 
-def _is_reachable_by_odd_path(distance_set: set[int]) -> bool:
-    """
-    Check if there is some even path in the distance_set.
-    """
-    return any(distance % 2 for distance in distance_set)
-
-
 def get_reachable_by_even_path(
         reachable_arguments: Set[T],
         distance_dictionary: Dict[T, Set[int]]
@@ -31,16 +24,6 @@ def get_reachable_by_even_path(
     return {
         other_argument for other_argument in reachable_arguments
         if _is_reachable_by_even_path(distance_dictionary[other_argument])
-    }
-
-
-def get_reachable_by_odd_path(
-        reachable_arguments: Set[T],
-        distance_dictionary: Dict[T, Set[int]]
-) -> Set[T]:
-    return {
-        other_argument for other_argument in reachable_arguments
-        if _is_reachable_by_odd_path(distance_dictionary[other_argument])
     }
 
 

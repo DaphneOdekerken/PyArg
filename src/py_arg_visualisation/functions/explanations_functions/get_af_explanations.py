@@ -5,14 +5,16 @@ from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
 from py_arg.abstract_argumentation.explanation.get_defending_arguments \
     import get_defending_arguments_in_extensions, \
     get_directly_defending_arguments
-from py_arg.abstract_argumentation.explanation.not_defending \
-    import get_not_defending, get_no_dir_defending, get_no_self_defense
+from py_arg.abstract_argumentation.explanation.get_attackers_without_defense \
+    import get_attackers_without_defense_in_extensions, get_no_dir_defending, \
+    get_no_self_defense
 from py_arg.abstract_argumentation.explanation.suff_nec \
     import get_sufficient_or_necessary
 
 
 def get_argumentation_framework_explanations(
-        arg_framework: AbstractArgumentationFramework, extensions: List[Set],
+        arg_framework: AbstractArgumentationFramework,
+        extensions: List[Set],
         accepted_arguments: Set, explanation_function: str,
         explanation_type: str):
     """
@@ -52,8 +54,9 @@ def get_argumentation_framework_explanations(
                                   if arg not in accepted_arguments]
         for arg in not_accepted_arguments:
             if explanation_function == 'NoDefAgainst':
-                explanation[str(arg)] = get_not_defending(
-                    arg_framework, arg, extensions)
+                explanation[str(arg)] = \
+                    get_attackers_without_defense_in_extensions(
+                        arg_framework, arg, extensions)
             elif explanation_function == 'NoDirDefense':
                 explanation[str(arg)] = get_no_dir_defending(
                     arg_framework, arg, extensions)

@@ -1,8 +1,9 @@
 from py_arg.abstract_argumentation.explanation.get_defending_arguments \
     import get_defending_arguments_in_extensions, \
     get_directly_defending_arguments
-from py_arg.abstract_argumentation.explanation.not_defending \
-    import get_not_defending, get_no_dir_defending, get_no_self_defense
+from py_arg.abstract_argumentation.explanation.get_attackers_without_defense \
+    import get_attackers_without_defense_in_extensions, get_no_dir_defending, \
+    get_no_self_defense
 from py_arg.abstract_argumentation.explanation.suff_nec \
     import get_sufficient_or_necessary
 
@@ -124,8 +125,9 @@ def get_str_explanations(argumentation_theory, semantics,
             arg_expl = []
             for arg in form_arg:
                 if function == 'NoDefAgainst':
-                    arg_expl.extend(get_not_defending(
-                        argumentation_framework, arg, extensions))
+                    arg_expl.extend(
+                        get_attackers_without_defense_in_extensions(
+                            argumentation_framework, arg, extensions))
                 elif function == 'NoDirDefense':
                     arg_expl.extend(get_no_dir_defending(
                         argumentation_framework, arg, extensions))
