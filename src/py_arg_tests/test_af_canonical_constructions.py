@@ -9,12 +9,13 @@ import py_arg.abstract_argumentation.canonical_constructions.\
 import py_arg.abstract_argumentation.canonical_constructions.\
     check_set_conf_sens as check_set_conf_sens
 
-import py_arg.abstract_argumentation.canonical_constructions.\
-    canonical_af.canonical_cf as canonical_cf
-import py_arg.abstract_argumentation.canonical_constructions.\
-    canonical_af.canonical_st as canonical_st
-import py_arg.abstract_argumentation.canonical_constructions.\
-    canonical_af.canonical_def as canonical_def
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    canonical_cf import get_canonical_cf_framework
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    canonical_def import conjunctive_defense_formula, \
+    disjunctive_defence_formula, get_canonical_def_framework
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    canonical_st import get_canonical_st_framework
 from py_arg.abstract_argumentation.canonical_constructions.check_properties \
     import is_incomparable, is_conflict_sensitive, is_tight
 
@@ -49,7 +50,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         print('bigP')
         print(aux_operators.big_p(es))
         print('dcl')
-        print(aux_operators.dcl(es))
+        print(aux_operators.downward_closure(es))
         print('incomparable')
         print(is_incomparable(es))
         print('set_conf_sens')
@@ -94,7 +95,7 @@ class TestCanonicalConstructions(unittest.TestCase):
 
         es = {one, two, three, four}
 
-        af_cf = canonical_cf.apply(es)
+        af_cf = get_canonical_cf_framework(es)
         print(af_cf.arguments)
         for defeat in af_cf.defeats:
             print(defeat.from_argument.name + ' attacks ' +
@@ -128,7 +129,7 @@ class TestCanonicalConstructions(unittest.TestCase):
 
         es = {one, two, three, four}
 
-        af = canonical_st.apply(es)
+        af = get_canonical_st_framework(es)
         print(af.arguments)
         for defeats in af.defeats:
             print(defeats.from_argument.name + ' attacks ' +
@@ -147,8 +148,8 @@ class TestCanonicalConstructions(unittest.TestCase):
 
         es = {one, two, three, four}
 
-        cnf = canonical_def.defence_formula(es, a)
-        dnf = canonical_def.disjunctive_defence_formula(es, a)
+        cnf = conjunctive_defense_formula(es, a)
+        dnf = disjunctive_defence_formula(es, a)
         print(cnf)
         print(dnf)
 
@@ -165,7 +166,7 @@ class TestCanonicalConstructions(unittest.TestCase):
 
         es = {one, two, three, four}
 
-        af = canonical_def.apply(es)
+        af = get_canonical_def_framework(es)
 
         print(af.arguments)
         for defeat in af.defeats:

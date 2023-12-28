@@ -1,7 +1,7 @@
 import unittest
 
-import py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
-    construct_af_cf as construct_af_cf
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    construct_af_cf import construct_argumentation_framework_conflict_free
 from py_arg.abstract_argumentation.canonical_constructions.check_properties \
     import is_downward_closed, is_tight
 from py_arg.abstract_argumentation.generators.\
@@ -15,7 +15,7 @@ class TestCanonicalConstructions(unittest.TestCase):
     def test_cf_ext(self):
         af = AbstractArgumentationFrameworkGenerator(9, 8).generate()
         es = get_conflict_free_extensions(af)
-        af_cf = construct_af_cf.apply(es)
+        af_cf = construct_argumentation_framework_conflict_free(es)
         es_new = get_conflict_free_extensions(af_cf)
 
         self.assertTrue(is_downward_closed(es))

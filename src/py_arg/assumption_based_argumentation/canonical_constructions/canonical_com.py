@@ -1,4 +1,3 @@
-
 from typing import Set
 
 from py_arg.assumption_based_argumentation.classes.aba_framework import \
@@ -10,10 +9,10 @@ import py_arg.assumption_based_argumentation.canonical_constructions.\
     canonical_adm as canonical_adm
 
 
-@staticmethod
 def apply(extension_set: Set) -> AssumptionBasedArgumentationFramework:
-    extension_set_star = aux.dcl(aux.reduce(extension_set)).intersection(
-        aux.ucl(aux.reduce(extension_set)))
+    extension_set_star = \
+        aux.downward_closure(aux.reduce(extension_set)).intersection(
+            aux.ucl(aux.reduce(extension_set)))
     assumptions = set(aux.big_a(extension_set))
     abaf_adm_star = canonical_adm.apply(extension_set_star)
 

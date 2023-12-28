@@ -1,4 +1,3 @@
-
 from typing import Set
 
 from py_arg.assumption_based_argumentation.classes.aba_framework import \
@@ -7,7 +6,6 @@ from py_arg.assumption_based_argumentation.canonical_constructions import \
     canonical_ucl, canonical_cf
 
 
-@staticmethod
 def apply(extension_set: Set) -> AssumptionBasedArgumentationFramework:
     abaf_cf = canonical_cf.apply(extension_set)
     abaf_ucl = canonical_ucl.apply(extension_set)

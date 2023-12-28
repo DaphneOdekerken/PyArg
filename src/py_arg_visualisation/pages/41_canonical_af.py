@@ -5,16 +5,23 @@ import dash_bootstrap_components as dbc
 import visdcc
 from dash import html, callback, Input, Output, State
 
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    construct_af_cf import \
+    construct_argumentation_framework_conflict_free
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    construct_af_grd import construct_argumentation_framework_grounded
 from py_arg.abstract_argumentation.canonical_constructions.check_properties \
     import is_conflict_sensitive, is_incomparable, is_tight, is_dcl_tight, \
     is_non_empty, is_downward_closed, is_unary, contains_empty_set
 from py_arg.abstract_argumentation.classes.argument import Argument
-from py_arg.abstract_argumentation.canonical_constructions.canonical_af \
-    import construct_af_stage, construct_af_adm, \
-    construct_af_grd
-from py_arg.abstract_argumentation.canonical_constructions.canonical_af \
-    import construct_af_stb, construct_af_cf, \
-    construct_af_naive
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af\
+    .construct_af_stage import construct_argumentation_framework_stage
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    construct_af_adm import construct_argumentation_framework_admissible
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af\
+    .construct_af_naive import construct_argumentation_framework_naive
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af\
+    .construct_af_stb import construct_argumentation_framework_stable
 from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data \
     import get_argumentation_framework_graph_data
 
@@ -276,22 +283,23 @@ def get_canonical_argumentation_framework(extension_sets_str: str,
     triggered_id = dash.ctx.triggered_id
 
     if triggered_id == '41-generate-admissible-button':
-        af = construct_af_adm.apply(input_extension_set)
+        af = construct_argumentation_framework_admissible(input_extension_set)
     elif triggered_id == '41-generate-conflict-free-button':
-        af = construct_af_cf.apply(input_extension_set)
+        af = construct_argumentation_framework_conflict_free(
+            input_extension_set)
     elif triggered_id == '41-generate-grounded-button':
-        af = construct_af_grd.apply(input_extension_set)
+        af = construct_argumentation_framework_grounded(input_extension_set)
     elif triggered_id == '41-generate-naive-button':
-        af = construct_af_naive.apply(input_extension_set)
+        af = construct_argumentation_framework_naive(input_extension_set)
     elif triggered_id == '41-generate-stage-button':
-        af = construct_af_stage.apply(input_extension_set)
+        af = construct_argumentation_framework_stage(input_extension_set)
     elif triggered_id == '41-generate-stable-button':
-        af = construct_af_stb.apply(input_extension_set)
+        af = construct_argumentation_framework_stable(input_extension_set)
     else:
         raise NotImplementedError
 
-    graph_data = get_argumentation_framework_graph_data(af, None,
-                                                        color_blind_mode)
+    graph_data = get_argumentation_framework_graph_data(
+        af, None, color_blind_mode)
 
     return [
         html.B('Canonical argumentation framework'),

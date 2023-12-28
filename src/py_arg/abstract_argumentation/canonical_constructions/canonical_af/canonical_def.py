@@ -1,27 +1,28 @@
 from typing import Set, FrozenSet
 
-import py_arg.abstract_argumentation.canonical_constructions.canonical_af \
-    .canonical_cf as canonical_cf
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    canonical_cf import get_canonical_cf_framework
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 
 
-def defence_formula(extension_set: Set, arg: Argument) -> Set[FrozenSet]:
-    out = set()
-    for ext in extension_set:
-        if arg in ext:
-            out.add(ext.copy().difference({arg}))
-    return out  # .difference(ExtensionSet({frozenset()}))
+def conjunctive_defense_formula(extension_set: Set, argument: Argument) -> \
+        Set[FrozenSet]:
+    return {
+        extension.copy().difference({argument})
+        for extension in extension_set
+        if argument in extension
+    }
 
 
 def disjunctive_defence_formula(extension_set: Set, arg: Argument) -> \
         Set[FrozenSet]:
-    cnf = defence_formula(extension_set, arg)
+    cnf = conjunctive_defense_formula(extension_set, arg)
     dnf = {frozenset()}
     for conjunct in cnf:
-        if len(conjunct) == 0:
+        if not conjunct:
             return set()
         old_dnf = dnf
         new_dnf = set()
@@ -32,17 +33,14 @@ def disjunctive_defence_formula(extension_set: Set, arg: Argument) -> \
                 new_dnf.add(frozenset(new_elem))
         dnf = new_dnf
 
-    non_minimal = set()
-    for d1 in dnf:
-        for d2 in dnf:
-            if d2.issubset(d1) and not d1.issubset(d2):
-                non_minimal.add(d1)
+    non_minimal = {d1 for d1 in dnf if any(d2 < d1 for d2 in dnf)}
 
     return dnf.difference(non_minimal)
 
 
-def apply(extension_set: Set) -> AbstractArgumentationFramework:
-    canon_cf = canonical_cf.apply(extension_set)
+def get_canonical_def_framework(extension_set: Set) -> \
+        AbstractArgumentationFramework:
+    canon_cf = get_canonical_cf_framework(extension_set)
     atts_cf = canon_cf.defeats
     args_cf = canon_cf.arguments
 
@@ -59,5 +57,5 @@ def apply(extension_set: Set) -> AbstractArgumentationFramework:
             for c in disj:
                 atts_def.append(Defeat(c, new_arg))
 
-    return AbstractArgumentationFramework('', arguments=args_def,
-                                          defeats=atts_def)
+    return AbstractArgumentationFramework(
+        '', arguments=args_def, defeats=atts_def)

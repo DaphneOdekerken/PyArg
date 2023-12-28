@@ -1,4 +1,3 @@
-
 from typing import Set
 
 from py_arg.assumption_based_argumentation.classes.aba_framework import \
@@ -8,7 +7,6 @@ import py_arg.abstract_argumentation.canonical_constructions.aux_operators as \
     aux
 
 
-@staticmethod
 def apply(extension_set: Set) -> AssumptionBasedArgumentationFramework:
     assumptions = set(aux.big_a(extension_set))
     language = assumptions.copy()

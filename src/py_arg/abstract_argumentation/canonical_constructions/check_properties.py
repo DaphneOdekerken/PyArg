@@ -5,47 +5,61 @@ from py_arg.abstract_argumentation.canonical_constructions import \
 
 
 def is_tight(extension_set: Set) -> bool:
-    a = aux.big_a(extension_set)
-    pairs_ = aux.pairs(extension_set)
+    """
+    Check if this extension set is tight, by Definition 7 of
+    Dunne et al., 2015.
+    """
+    all_elements = aux.big_a(extension_set)
+    element_pairs_in_extensions = aux.pairs(extension_set)
 
-    for ext in extension_set:
-        for lit in a:
-            if lit not in ext:
-                temp = set(ext.copy())
-                temp.add(lit)
-                temp = frozenset(temp)
-                if temp not in extension_set:
-                    boolean = False
-                    for lin_in in ext:
-                        test = frozenset({lit, lin_in})
-                        if test not in pairs_:
-                            boolean = True
-                    if not boolean:
+    for extension in extension_set:
+        for extra_element in all_elements:
+            if extra_element not in extension:
+                # We can keep iterating as long as for each extension,
+                # adding any new element that is not yet in the extension
+                # implies that there is some extension argument that is not
+                # a pair together with the new element.
+                with_extra_element = \
+                    frozenset(set(extension.copy()).union({extra_element}))
+                if with_extra_element not in extension_set:
+                    if all(frozenset({extra_element, other_extension_element})
+                           in element_pairs_in_extensions
+                           for other_extension_element in extension):
                         return False
     return True
 
 
 def is_conflict_sensitive(extension_set: Set) -> bool:
-    pairs_ = aux.pairs(extension_set)
+    """
+    Check if this extension set is conflict_sensitive, by Definition 8 of
+    Dunne et al., 2015. Informally, the property checks whether the absence
+    of the union of any pair of extensions in an extension set is justified
+    by some conflict in that extension set.
+    """
+    extension_pairs = aux.pairs(extension_set)
 
-    for ext1, ext2 in aux.tuples(extension_set):
-        if ext1.union(ext2) not in extension_set:
-            boolean = False
-            for lit1 in ext1:
-                for lit2 in ext2:
-                    temp = frozenset({lit1, lit2})
-                    if temp not in pairs_:
-                        boolean = True
-            if not boolean:
+    for extension_1, extension_2 in aux.tuples(extension_set):
+        if extension_1.union(extension_2) not in extension_set:
+            if all(frozenset({element_1, element_2}) in extension_pairs
+                   for element_1 in extension_1
+                   for element_2 in extension_2):
                 return False
     return True
 
 
 def is_downward_closed(extension_set: Set) -> bool:
-    return aux.dcl(extension_set).__eq__(extension_set)
+    """
+    Check if this extension set is downward-closed, by Definition 6 of
+    Dunne et al., 2015.
+    """
+    return aux.downward_closure(extension_set) == extension_set
 
 
 def is_incomparable(extension_set: Set) -> bool:
+    """
+    Check if this extension set is incomparable, by Definition 6 of
+    Dunne et al., 2015.
+    """
     for ext1, ext2 in aux.tuples(extension_set):
         if ext1.intersection(ext2) == ext1:
             return False
@@ -55,7 +69,7 @@ def is_incomparable(extension_set: Set) -> bool:
 
 
 def is_dcl_tight(extension_set: Set) -> bool:
-    return is_tight(aux.dcl(extension_set))
+    return is_tight(aux.downward_closure(extension_set))
 
 
 def contains_empty_set(extension_set: Set) -> bool:

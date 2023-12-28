@@ -7,38 +7,40 @@ def tuples(iterable):
     return itertools.combinations(iterable, 2)
 
 
-def big_a(extension_set: Set) -> frozenset:
-    out = set()
-    for extension in extension_set:
-        out = out.union(extension)
-    return frozenset(out)
+def big_a(extension_set: Set) -> FrozenSet:
+    """
+    This is the set of all unique elements occurring in the extension_set.
+    """
+    return frozenset({element for extension in extension_set
+                      for element in extension})
 
 
 def pairs(extension_set: Set) -> Set[FrozenSet]:
-    a = big_a(extension_set)
-    out = set()
-    for e1, e2 in tuples(a):
-        for ext in extension_set:
-            if e1 in ext and e2 in ext:
-                out.add(frozenset({e1, e2}))
-    return out
+    """
+    Get all pairs of elements occurring together in some extension,
+    by Definition 5 of Dunne et al., 2015.
+    """
+    all_possible_elements = big_a(extension_set)
+    return {frozenset({e1, e2})
+            for e1, e2 in tuples(all_possible_elements)
+            for extension in extension_set
+            if e1 in extension and e2 in extension}
 
 
 def powerset(iterable) -> Set[FrozenSet]:
+    """
+    Get all subsets of the given set.
+    """
     s = list(iterable)
     list_of_tuples = set(itertools.chain.from_iterable(
         itertools.combinations(s, r) for r in range(len(s) + 1)))
 
-    out = set()
-    for el in list_of_tuples:
-        out.add(frozenset(list(el)))
-    return out
+    return {frozenset(list(element)) for element in list_of_tuples}
 
 
 def big_p(extension_set: Set) -> Set[FrozenSet]:
     out = powerset(big_a(extension_set))
-    out.difference(dcl(extension_set))
-
+    out.difference(downward_closure(extension_set))
     return out
 
 
@@ -74,12 +76,14 @@ def unique_big_c(extension: frozenset, extension_set: Set) -> FrozenSet:
         return frozenset()
 
 
-def dcl(extension_set: Set) -> Set[FrozenSet]:
-    out = set()
-    for ext in extension_set:
-        for s in powerset(ext):
-            out.add(s)
-    return out
+def downward_closure(extension_set: Set) -> Set[FrozenSet]:
+    """
+    Compute the downward-closure (dcl) as defined in Dunne et al. 2015,
+    Definition 6.
+    """
+    return {extension_subset
+            for extension in extension_set
+            for extension_subset in powerset(extension)}
 
 
 def ucl(extension_set: Set) -> Set[FrozenSet]:
@@ -92,11 +96,9 @@ def ucl(extension_set: Set) -> Set[FrozenSet]:
 
 
 def reduce(extension_set: Set) -> Set[FrozenSet]:
-    intersection = big_a(extension_set)
-    for ext in extension_set:
-        intersection = intersection.intersection(ext)
+    all_arguments = big_a(extension_set)
+    for extension in extension_set:
+        all_arguments = all_arguments.intersection(extension)
 
-    out = set()
-    for ext in extension_set:
-        out.add(ext.difference(intersection))
-    return out
+    return {extension.difference(all_arguments)
+            for extension in extension_set}

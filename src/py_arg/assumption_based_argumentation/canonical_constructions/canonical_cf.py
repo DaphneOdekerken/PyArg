@@ -1,4 +1,3 @@
-
 from typing import Set
 
 from py_arg.assumption_based_argumentation.classes.aba_framework import \
@@ -8,7 +7,6 @@ import py_arg.abstract_argumentation.canonical_constructions.aux_operators as \
     aux
 
 
-@staticmethod
 def apply(extension_set: Set) -> AssumptionBasedArgumentationFramework:
     assumptions = set(aux.big_a(extension_set))
     language = assumptions.copy()
@@ -21,7 +19,7 @@ def apply(extension_set: Set) -> AssumptionBasedArgumentationFramework:
     rules = set()
     for ext in extension_set:
         for a in assumptions.difference(ext):
-            if ext.union({a}) not in aux.dcl(extension_set):
+            if ext.union({a}) not in aux.downward_closure(extension_set):
                 rules.add(Rule('', ext, contraries[a]))
 
     return AssumptionBasedArgumentationFramework(assumptions, rules, language,
