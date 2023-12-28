@@ -37,6 +37,17 @@ class AbstractArgumentationFramework:
             self.arguments == other.arguments and \
             self.defeats == other.defeats
 
+    def get_incoming_defeats(self, argument: Argument) -> List[Defeat]:
+        """
+        Get a list of Defeats that defeat this argument.
+
+        :param argument: The argument for which we want to know which
+        Defeats defeat it.
+        :return: List of Defeats that defeat this argument.
+        """
+        return [defeat for defeat in self._defeats
+                if defeat.to_argument == argument]
+
     def get_incoming_defeat_arguments(self, argument: Argument) -> List[
             Argument]:
         """
@@ -57,7 +68,18 @@ class AbstractArgumentationFramework:
         True
         """
         return [defeat.from_argument
-                for defeat in self._defeats if defeat.to_argument == argument]
+                for defeat in self.get_incoming_defeats(argument)]
+
+    def get_outgoing_defeats(self, argument: Argument) -> List[Defeat]:
+        """
+        Get a list of Defeats from argument.
+
+        :param argument: The argument for which we want to know which
+        Defeats originate from it.
+        :return: List of Defeats coming from this argument.
+        """
+        return [defeat for defeat in self._defeats
+                if defeat.from_argument == argument]
 
     def get_outgoing_defeat_arguments(self, argument: Argument) -> List[
             Argument]:
@@ -78,8 +100,8 @@ class AbstractArgumentationFramework:
         >>> b in af.get_outgoing_defeat_arguments(a)
         True
         """
-        return [defeat.to_argument for defeat in self._defeats
-                if defeat.from_argument == argument]
+        return [defeat.to_argument
+                for defeat in self.get_outgoing_defeats(argument)]
 
     def is_defeated(self, argument: Argument) -> bool:
         """

@@ -1,7 +1,9 @@
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
-from py_arg.abstract_argumentation.explanation.reach_and_dist import get_reach
+from py_arg.abstract_argumentation.explanation.\
+    get_reachable_arguments_and_distances import \
+    get_reachable_arguments_and_distances
 from py_arg.abstract_argumentation.semantics.get_admissible_sets import \
     get_admissible_sets
 
@@ -76,8 +78,9 @@ def get_sufficient_arguments_for_acceptance(
         arguments for the acceptance of the given argument.
     """
     sufficient_sets = []
-    reach, dist = get_reach(arg_framework, argument)
-    if dist[str(argument)] == {0}:
+    reach, dist = get_reachable_arguments_and_distances(
+        arg_framework, argument)
+    if dist[argument] == {0}:
         reach.remove(argument)
     admissible_sets = get_admissible_sets(arg_framework)
     adm_arg = [set(adm) for adm in admissible_sets if argument in adm]
@@ -101,11 +104,12 @@ def get_necessary_arguments_for_acceptance(
     :return: a list of arguments, necessary for the acceptance of the given
         argument.
     """
-    reach, dist = get_reach(arg_framework, argument)
+    reach, dist = get_reachable_arguments_and_distances(
+        arg_framework, argument)
     admissible_sets = get_admissible_sets(arg_framework)
     adm_arg = [set(adm) for adm in admissible_sets if argument in adm]
     intersect_adm_arg = set.intersection(*adm_arg)
-    if dist[str(argument)] == {0}:
+    if dist[argument] == {0}:
         intersect_adm_arg.remove(argument)
     nec_args = list(intersect_adm_arg)
 

@@ -1,7 +1,9 @@
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
-from py_arg.abstract_argumentation.explanation.reach_and_dist import get_reach
+from py_arg.abstract_argumentation.explanation.\
+    get_reachable_arguments_and_distances import \
+    get_reachable_arguments_and_distances
 
 
 def get_defending(argumentation_framework: AbstractArgumentationFramework,
@@ -21,12 +23,13 @@ def get_defending(argumentation_framework: AbstractArgumentationFramework,
         extensions, containing the arguments from the
         extension that (in)directly defend the argument.
     """
-    reach, distance = get_reach(argumentation_framework, argument)
+    reach, distance = get_reachable_arguments_and_distances(
+        argumentation_framework, argument)
 
     defending = set()
     defending_sets = []
     for pot_def_arg in reach:
-        dist_pot_arg = distance[str(pot_def_arg)]
+        dist_pot_arg = distance[pot_def_arg]
         for dist in dist_pot_arg:
             if not dist % 2:
                 defending.add(pot_def_arg)
@@ -58,12 +61,13 @@ def get_dir_defending(argumentation_framework: AbstractArgumentationFramework,
         extensions, containing the arguments from the
         extension that directly defend the argument.
     """
-    reach, distance = get_reach(argumentation_framework, argument)
+    reach, distance = get_reachable_arguments_and_distances(
+        argumentation_framework, argument)
 
     defending = set()
     defending_sets = []
     for pot_def_arg in reach:
-        dist_pot_arg = distance[str(pot_def_arg)]
+        dist_pot_arg = distance[pot_def_arg]
         for dist in dist_pot_arg:
             if dist == 2:
                 defending.add(pot_def_arg)

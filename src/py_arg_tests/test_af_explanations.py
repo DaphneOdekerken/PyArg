@@ -9,6 +9,9 @@ from py_arg.abstract_argumentation.explanation.get_extensions_with_argument \
 from py_arg.abstract_argumentation.explanation.\
     get_extensions_without_argument import \
     filter_argumentation_framework_extensions_without_argument
+from py_arg.abstract_argumentation.explanation.\
+    get_reachable_arguments_and_distances import \
+    get_reachable_arguments_and_distances
 from py_arg.abstract_argumentation.semantics.acceptance_strategy import \
     AcceptanceStrategy
 from py_arg.abstract_argumentation.semantics.get_accepted_arguments import \
@@ -110,6 +113,10 @@ class TestNecessarySufficientExplanations(unittest.TestCase):
         accepted_semi_stable = get_accepted_arguments(
             semi_stable_extensions, AcceptanceStrategy.CREDULOUS)
         self.assertSetEqual(accepted_semi_stable, all_arguments)
+
+        reachable_arguments, distance_dictionary = \
+            get_reachable_arguments_and_distances(af, a)
+        self.assertSetEqual(distance_dictionary[c], {2, 4})
 
     def test_accepted_formulas(self):
         p = Literal('p')

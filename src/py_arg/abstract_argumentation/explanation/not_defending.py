@@ -1,7 +1,9 @@
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
-from py_arg.abstract_argumentation.explanation.reach_and_dist import get_reach
+from py_arg.abstract_argumentation.explanation.\
+    get_reachable_arguments_and_distances import \
+    get_reachable_arguments_and_distances
 
 
 def get_not_defending(argumentation_framework: AbstractArgumentationFramework,
@@ -21,12 +23,13 @@ def get_not_defending(argumentation_framework: AbstractArgumentationFramework,
         extensions, containing the arguments that
         attack the argument and to which the extension provides to defense.
     """
-    reach, distance = get_reach(argumentation_framework, argument)
+    reach, distance = get_reachable_arguments_and_distances(
+        argumentation_framework, argument)
 
     attackers = set()
     not_defending_sets = []
     for pot_def_arg in reach:
-        dist_pot_arg = distance[str(pot_def_arg)]
+        dist_pot_arg = distance[pot_def_arg]
         for dist in dist_pot_arg:
             if dist % 2:
                 attackers.add(pot_def_arg)
@@ -36,11 +39,12 @@ def get_not_defending(argumentation_framework: AbstractArgumentationFramework,
         not_def_ext = set()
         if argument not in extension:
             for defeater in attackers:
-                reach_def, distance_def = get_reach(argumentation_framework,
-                                                    defeater)
+                reach_def, distance_def = \
+                    get_reachable_arguments_and_distances(
+                        argumentation_framework, defeater)
                 defenders = set()
                 for pot_defender in reach_def:
-                    dist_pot_def = distance_def[str(pot_defender)]
+                    dist_pot_def = distance_def[pot_defender]
                     for dist in dist_pot_def:
                         if dist % 2:
                             defenders.add(pot_defender)
@@ -117,11 +121,11 @@ def get_no_self_defense(
     for not_def_ext in not_defending:
         not_ddef_ext = set()
         for attacker in not_def_ext:
-            reach_att, distance_att = get_reach(argumentation_framework,
-                                                attacker)
+            reach_att, distance_att = get_reachable_arguments_and_distances(
+                argumentation_framework, attacker)
             defenders = set()
             for pot_defender in reach_att:
-                dist_pot_def = distance_att[str(pot_defender)]
+                dist_pot_def = distance_att[pot_defender]
                 for dist in dist_pot_def:
                     if dist % 2:
                         defenders.add(pot_defender)
