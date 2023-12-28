@@ -4,6 +4,8 @@ from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
+from py_arg.abstract_argumentation.explanation.get_defending_arguments import \
+    get_reachable_by_even_path, get_reachable_by_odd_path
 from py_arg.abstract_argumentation.explanation.get_extensions_with_argument \
     import filter_argumentation_framework_extensions_with_argument
 from py_arg.abstract_argumentation.explanation.\
@@ -117,6 +119,22 @@ class TestNecessarySufficientExplanations(unittest.TestCase):
         reachable_arguments, distance_dictionary = \
             get_reachable_arguments_and_distances(af, a)
         self.assertSetEqual(distance_dictionary[c], {2, 4})
+
+        gt_reachable_from_a = {b, c, d, e, f}
+        self.assertSetEqual(reachable_arguments, gt_reachable_from_a)
+
+        gt_even_reachable_from_a = {c, e}
+        even_reachable_from_a = get_reachable_by_even_path(
+            reachable_arguments, distance_dictionary)
+        self.assertSetEqual(gt_even_reachable_from_a, even_reachable_from_a)
+        gt_odd_reachable_from_a = {b, d, f}
+        odd_reachable_from_a = get_reachable_by_odd_path(
+            reachable_arguments, distance_dictionary)
+        self.assertSetEqual(gt_odd_reachable_from_a, odd_reachable_from_a)
+
+        reachable_arguments, distance_dictionary = \
+            get_reachable_arguments_and_distances(af, b)
+        self.assertSetEqual(distance_dictionary[e], {1, 3})
 
     def test_accepted_formulas(self):
         p = Literal('p')

@@ -2,8 +2,9 @@ from typing import List, Set
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
-from py_arg.abstract_argumentation.explanation.defending \
-    import get_defending, get_dir_defending
+from py_arg.abstract_argumentation.explanation.get_defending_arguments \
+    import get_defending_arguments_in_extensions, \
+    get_directly_defending_arguments
 from py_arg.abstract_argumentation.explanation.not_defending \
     import get_not_defending, get_no_dir_defending, get_no_self_defense
 from py_arg.abstract_argumentation.explanation.suff_nec \
@@ -35,14 +36,15 @@ def get_argumentation_framework_explanations(
     if explanation_type == 'Acceptance':
         for arg in accepted_arguments:
             if explanation_function == 'Defending':
-                explanation[str(arg)] = get_defending(arg_framework, arg,
-                                                      extensions)
+                explanation[str(arg)] = get_defending_arguments_in_extensions(
+                    arg_framework, arg, extensions)
             elif explanation_function == 'DirDefending':
-                explanation[str(arg)] = get_dir_defending(arg_framework, arg,
-                                                          extensions)
+                explanation[str(arg)] = get_directly_defending_arguments(
+                    arg_framework, arg, extensions)
             else:
                 explanation[str(arg)] = get_sufficient_or_necessary(
-                    arg_framework, arg, explanation_function, explanation_type)
+                    arg_framework, arg, explanation_function,
+                    explanation_type)
         return explanation
 
     elif explanation_type == 'NonAcceptance':

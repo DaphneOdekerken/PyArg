@@ -24,7 +24,7 @@ def get_reachable_arguments_and_distances(
     given argument.
     """
     # Initialise the reachable_arguments with only the argument we start from.
-    reachable_arguments = {from_argument}
+    reachable_arguments = set()
 
     # Initialize the distance dictionary.
     distance = {}

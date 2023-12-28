@@ -1,5 +1,6 @@
-from py_arg.abstract_argumentation.explanation.defending \
-    import get_defending, get_dir_defending
+from py_arg.abstract_argumentation.explanation.get_defending_arguments \
+    import get_defending_arguments_in_extensions, \
+    get_directly_defending_arguments
 from py_arg.abstract_argumentation.explanation.not_defending \
     import get_not_defending, get_no_dir_defending, get_no_self_defense
 from py_arg.abstract_argumentation.explanation.suff_nec \
@@ -44,11 +45,11 @@ def get_str_explanations(argumentation_theory, semantics,
             suff_expl = []
             for arg in form_arg:
                 if function == 'Defending':
-                    arg_expl.extend(get_defending(argumentation_framework,
-                                                  arg, extensions))
+                    arg_expl.extend(get_defending_arguments_in_extensions(
+                        argumentation_framework, arg, extensions))
                 elif function == 'DirDefending':
-                    arg_expl.extend(get_dir_defending(argumentation_framework,
-                                                      arg, extensions))
+                    arg_expl.extend(get_directly_defending_arguments(
+                        argumentation_framework, arg, extensions))
                 else:
                     suff_expl.extend(get_sufficient_or_necessary(
                         argumentation_framework, arg, 'Suff', expl_type))
