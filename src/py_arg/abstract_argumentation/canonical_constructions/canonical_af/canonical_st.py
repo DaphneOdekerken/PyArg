@@ -1,4 +1,3 @@
-
 from typing import Set
 
 import py_arg.abstract_argumentation.canonical_constructions.canonical_af\
@@ -11,7 +10,6 @@ from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 
 
-@staticmethod
 def apply(extension_set: Set) -> AbstractArgumentationFramework:
     canon_cf = canonical_cf.apply(extension_set)
     canon_cf_stb_ext = get_stable_extensions.get_stable_extensions(canon_cf)

@@ -8,7 +8,6 @@ from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 
 
-@staticmethod
 def defence_formula(extension_set: Set, arg: Argument) -> Set[FrozenSet]:
     out = set()
     for ext in extension_set:
@@ -17,11 +16,10 @@ def defence_formula(extension_set: Set, arg: Argument) -> Set[FrozenSet]:
     return out  # .difference(ExtensionSet({frozenset()}))
 
 
-@staticmethod
 def disjunctive_defence_formula(extension_set: Set, arg: Argument) -> \
         Set[FrozenSet]:
     cnf = defence_formula(extension_set, arg)
-    dnf = set({frozenset()})
+    dnf = {frozenset()}
     for conjunct in cnf:
         if len(conjunct) == 0:
             return set()
@@ -43,7 +41,6 @@ def disjunctive_defence_formula(extension_set: Set, arg: Argument) -> \
     return dnf.difference(non_minimal)
 
 
-@staticmethod
 def apply(extension_set: Set) -> AbstractArgumentationFramework:
     canon_cf = canonical_cf.apply(extension_set)
     atts_cf = canon_cf.defeats

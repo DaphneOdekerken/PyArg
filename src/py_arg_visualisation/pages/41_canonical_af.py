@@ -5,12 +5,10 @@ import dash_bootstrap_components as dbc
 import visdcc
 from dash import html, callback, Input, Output, State
 
+from py_arg.abstract_argumentation.canonical_constructions.check_properties \
+    import is_conflict_sensitive, is_incomparable, is_tight, is_dcl_tight, \
+    is_non_empty, is_downward_closed, is_unary, contains_empty_set
 from py_arg.abstract_argumentation.classes.argument import Argument
-from py_arg.abstract_argumentation.canonical_constructions import \
-    check_incomparable, check_contains_empty, \
-    check_unary, check_conf_sens, check_non_empty, check_tight
-from py_arg.abstract_argumentation.canonical_constructions import \
-    check_dcl_tight, check_downward_closed
 from py_arg.abstract_argumentation.canonical_constructions.canonical_af \
     import construct_af_stage, construct_af_adm, \
     construct_af_grd
@@ -175,56 +173,56 @@ def fill_properties_table(extension_sets_str: str):
     negative_icon = '❌'
 
     # Test which properties hold
-    tight = check_tight.apply(input_extension_set)
+    tight = is_tight(input_extension_set)
     if tight:
         tight_style = {'background-color': green}
         tight_value = positive_icon
     else:
         tight_style = {'background-color': red}
         tight_value = negative_icon
-    conf_sens = check_conf_sens.apply(input_extension_set)
+    conf_sens = is_conflict_sensitive(input_extension_set)
     if conf_sens:
         conf_sens_style = {'background-color': green}
         conf_sens_value = positive_icon
     else:
         conf_sens_style = {'background-color': red}
         conf_sens_value = negative_icon
-    downward_closed = check_downward_closed.apply(input_extension_set)
+    downward_closed = is_downward_closed(input_extension_set)
     if downward_closed:
         downward_closed_style = {'background-color': green}
         downward_closed_value = positive_icon
     else:
         downward_closed_style = {'background-color': red}
         downward_closed_value = negative_icon
-    incomparable = check_incomparable.apply(input_extension_set)
+    incomparable = is_incomparable(input_extension_set)
     if incomparable:
         incomparable_style = {'background-color': green}
         incomparable_value = positive_icon
     else:
         incomparable_style = {'background-color': red}
         incomparable_value = negative_icon
-    dcl_tight = check_dcl_tight.apply(input_extension_set)
+    dcl_tight = is_dcl_tight(input_extension_set)
     if dcl_tight:
         dcl_tight_style = {'background-color': green}
         dcl_tight_value = positive_icon
     else:
         dcl_tight_style = {'background-color': red}
         dcl_tight_value = negative_icon
-    contains_empty = check_contains_empty.apply(input_extension_set)
+    contains_empty = contains_empty_set(input_extension_set)
     if contains_empty:
         contains_empty_style = {'background-color': green}
         contains_empty_value = positive_icon
     else:
         contains_empty_style = {'background-color': red}
         contains_empty_value = negative_icon
-    unary = check_unary.apply(input_extension_set)
+    unary = is_unary(input_extension_set)
     if unary:
         unary_style = {'background-color': green}
         unary_value = positive_icon
     else:
         unary_style = {'background-color': red}
         unary_value = negative_icon
-    non_empty = check_non_empty.apply(input_extension_set)
+    non_empty = is_non_empty(input_extension_set)
     if non_empty:
         non_empty_style = {'background-color': green}
         non_empty_value = positive_icon

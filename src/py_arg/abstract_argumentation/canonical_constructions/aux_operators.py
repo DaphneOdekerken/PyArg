@@ -1,15 +1,12 @@
-
 from typing import FrozenSet
 import itertools
 from typing import Set
 
 
-@staticmethod
 def tuples(iterable):
     return itertools.combinations(iterable, 2)
 
 
-@staticmethod
 def big_a(extension_set: Set) -> frozenset:
     out = set()
     for extension in extension_set:
@@ -17,7 +14,6 @@ def big_a(extension_set: Set) -> frozenset:
     return frozenset(out)
 
 
-@staticmethod
 def pairs(extension_set: Set) -> Set[FrozenSet]:
     a = big_a(extension_set)
     out = set()
@@ -28,7 +24,6 @@ def pairs(extension_set: Set) -> Set[FrozenSet]:
     return out
 
 
-@staticmethod
 def powerset(iterable) -> Set[FrozenSet]:
     s = list(iterable)
     list_of_tuples = set(itertools.chain.from_iterable(
@@ -40,7 +35,6 @@ def powerset(iterable) -> Set[FrozenSet]:
     return out
 
 
-@staticmethod
 def big_p(extension_set: Set) -> Set[FrozenSet]:
     out = powerset(big_a(extension_set))
     out.difference(dcl(extension_set))
@@ -48,7 +42,6 @@ def big_p(extension_set: Set) -> Set[FrozenSet]:
     return out
 
 
-@staticmethod
 def big_c(extension: frozenset, extension_set: Set) -> Set[FrozenSet]:
     if extension in extension_set:
         return set(frozenset({extension}))
@@ -73,7 +66,6 @@ def big_c(extension: frozenset, extension_set: Set) -> Set[FrozenSet]:
     return out
 
 
-@staticmethod
 def unique_big_c(extension: frozenset, extension_set: Set) -> FrozenSet:
     c = big_c(extension, extension_set)
     if len(c) == 1:
@@ -82,7 +74,6 @@ def unique_big_c(extension: frozenset, extension_set: Set) -> FrozenSet:
         return frozenset()
 
 
-@staticmethod
 def dcl(extension_set: Set) -> Set[FrozenSet]:
     out = set()
     for ext in extension_set:
@@ -91,7 +82,6 @@ def dcl(extension_set: Set) -> Set[FrozenSet]:
     return out
 
 
-@staticmethod
 def ucl(extension_set: Set) -> Set[FrozenSet]:
     out = extension_set.copy()
     out.add(frozenset())
@@ -101,7 +91,6 @@ def ucl(extension_set: Set) -> Set[FrozenSet]:
     return out.union(new)
 
 
-@staticmethod
 def reduce(extension_set: Set) -> Set[FrozenSet]:
     intersection = big_a(extension_set)
     for ext in extension_set:

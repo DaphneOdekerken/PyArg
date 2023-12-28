@@ -7,8 +7,6 @@ import py_arg.abstract_argumentation.canonical_constructions.check_com_closed \
 import py_arg.abstract_argumentation.canonical_constructions.\
     check_set_com_closed as check_set_com_closed
 import py_arg.abstract_argumentation.canonical_constructions.\
-    check_conf_sens as check_conf_sens
-import py_arg.abstract_argumentation.canonical_constructions.\
     check_set_conf_sens as check_set_conf_sens
 
 import py_arg.abstract_argumentation.canonical_constructions.\
@@ -17,25 +15,26 @@ import py_arg.abstract_argumentation.canonical_constructions.\
     canonical_af.canonical_st as canonical_st
 import py_arg.abstract_argumentation.canonical_constructions.\
     canonical_af.canonical_def as canonical_def
+from py_arg.abstract_argumentation.canonical_constructions.check_properties \
+    import is_incomparable, is_conflict_sensitive, is_tight
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 from py_arg.abstract_argumentation.canonical_constructions import \
-    aux_operators, check_incomparable, check_tight
+    aux_operators
 
 
 class TestCanonicalConstructions(unittest.TestCase):
-
     def test_properties(self):
         one = frozenset({'a'})
         two = frozenset({'a', 'b'})
         three = frozenset({'a', 'c'})
         four = frozenset({'b', 'c'})
 
-        es = set({one, two, three})
-        es2 = set({four, two, three})
+        es = {one, two, three}
+        es2 = {four, two, three}
 
         print('init')
         print(es)
@@ -52,20 +51,20 @@ class TestCanonicalConstructions(unittest.TestCase):
         print('dcl')
         print(aux_operators.dcl(es))
         print('incomparable')
-        print(check_incomparable.apply(es))
+        print(is_incomparable(es))
         print('set_conf_sens')
         print(check_set_conf_sens.apply(es))
         print('conf_sens')
-        print(check_conf_sens.apply(es))
+        print(is_conflict_sensitive(es))
         print('com_closed')
         print(check_com_closed.apply(es))
         print('set_com_closed')
         print(check_set_com_closed.apply(es))
         print('tight')
-        print(check_tight.apply(es))
+        print(is_tight(es))
 
         print('tight2')
-        print(check_tight.apply(es2))
+        print(is_tight(es2))
 
     def test_construct_af(self):
         a = Argument('a')
@@ -93,7 +92,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         three = frozenset({b, c})
         four = frozenset({a, c, d})
 
-        es = set({one, two, three, four})
+        es = {one, two, three, four}
 
         af_cf = canonical_cf.apply(es)
         print(af_cf.arguments)
@@ -127,7 +126,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         three = frozenset({b, c})
         four = frozenset({a, c, d})
 
-        es = set({one, two, three, four})
+        es = {one, two, three, four}
 
         af = canonical_st.apply(es)
         print(af.arguments)
@@ -146,7 +145,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         three = frozenset({b, c})
         four = frozenset({a, c, d})
 
-        es = set({one, two, three, four})
+        es = {one, two, three, four}
 
         cnf = canonical_def.defence_formula(es, a)
         dnf = canonical_def.disjunctive_defence_formula(es, a)
@@ -164,7 +163,7 @@ class TestCanonicalConstructions(unittest.TestCase):
         three = frozenset({b, c})
         four = frozenset({a, c, d})
 
-        es = set({one, two, three, four})
+        es = {one, two, three, four}
 
         af = canonical_def.apply(es)
 

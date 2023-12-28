@@ -1,20 +1,14 @@
-
 from typing import Set
 
-from py_arg.abstract_argumentation.canonical_constructions import \
-    check_downward_closed
+from py_arg.abstract_argumentation.canonical_constructions.check_properties \
+    import is_non_empty, is_downward_closed
 from py_arg.assumption_based_argumentation.canonical_constructions import \
     canonical_cf
-
-import py_arg.abstract_argumentation.canonical_constructions.check_non_empty \
-    as check_non_empty
 from py_arg.assumption_based_argumentation.classes.aba_framework \
     import AssumptionBasedArgumentationFramework
 
 
-@staticmethod
 def apply(extension_set: Set) -> AssumptionBasedArgumentationFramework:
-    if check_non_empty.apply(extension_set) and check_downward_closed.apply(
-            extension_set):
+    if is_non_empty(extension_set) and is_downward_closed(extension_set):
         return canonical_cf.apply(extension_set)
     return AssumptionBasedArgumentationFramework(set(), set(), set(), {})

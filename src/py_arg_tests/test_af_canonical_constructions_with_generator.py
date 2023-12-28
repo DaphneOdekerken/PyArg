@@ -2,8 +2,9 @@ import unittest
 
 import py_arg.abstract_argumentation.canonical_constructions.canonical_af. \
     canonical_cf as canonical_cf
-from py_arg.abstract_argumentation.canonical_constructions \
-    import check_incomparable, check_conf_sens, check_tight
+from py_arg.abstract_argumentation.canonical_constructions.check_properties \
+    import is_conflict_sensitive, is_incomparable, is_tight, \
+    contains_empty_set, is_non_empty
 from py_arg.abstract_argumentation.canonical_constructions.canonical_af \
     import construct_af_adm, construct_af_grd
 from py_arg.abstract_argumentation.canonical_constructions.canonical_af \
@@ -34,8 +35,9 @@ class TestCanonicalConstructions(unittest.TestCase):
         af_adm = construct_af_adm.apply(es_original)
         es_new = get_admissible_sets.get_admissible_sets(af_adm)
 
-        self.assertTrue(
-            check_conf_sens.apply(es_original) and frozenset() in es_original)
+        self.assertTrue(is_conflict_sensitive(es_original) and
+                        contains_empty_set(es_original) and
+                        is_non_empty(es_original))
         self.assertEqual(es_original, es_new)
 
     def test_grd_construction_small(self):
@@ -54,7 +56,5 @@ class TestCanonicalConstructions(unittest.TestCase):
         af_stb = construct_af_stb.apply(es_original)
         es_new = get_stable_extensions.get_stable_extensions(af_stb)
 
-        self.assertTrue(
-            check_incomparable.apply(es_original) and check_tight.apply(
-                es_original))
+        self.assertTrue(is_incomparable(es_original) and is_tight(es_original))
         self.assertEqual(es_original, es_new)

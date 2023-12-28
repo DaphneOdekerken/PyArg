@@ -3,10 +3,6 @@ import unittest
 import py_arg.abstract_argumentation.canonical_constructions. \
     aux_operators as aux
 import py_arg.abstract_argumentation.canonical_constructions. \
-    check_contains_empty as check_contains_empty
-import py_arg.abstract_argumentation.canonical_constructions. \
-    check_downward_closed as check_downward_closed
-import py_arg.abstract_argumentation.canonical_constructions. \
     check_intersection_in as check_intersection_in
 import py_arg.abstract_argumentation.canonical_constructions. \
     check_set_com_closed as check_set_com_closed
@@ -18,6 +14,8 @@ import py_arg.assumption_based_argumentation.canonical_constructions. \
     construct_abaf_cf as construct_abaf_cf
 import py_arg.assumption_based_argumentation.canonical_constructions. \
     construct_abaf_com as construct_abaf_com
+from py_arg.abstract_argumentation.canonical_constructions.check_properties \
+    import contains_empty_set, is_downward_closed
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 from py_arg.assumption_based_argumentation.canonical_constructions \
     import construct_abaf_adm
@@ -35,7 +33,6 @@ from py_arg.assumption_based_argumentation.semantics import \
 
 
 class TestCanonicalConstructions(unittest.TestCase):
-
     def test_instantiation(self):
         a = 'a'
         a_c = 'a_c'
@@ -99,50 +96,50 @@ class TestCanonicalConstructions(unittest.TestCase):
         es1_reduced = es1
         self.assertFalse(check_union_closed.apply(es1))
         self.assertEqual(aux.ucl(es1), es1_ucl)
-        self.assertFalse(check_contains_empty.apply(es1))
+        self.assertFalse(contains_empty_set(es1))
         self.assertFalse(check_intersection_in.apply(es1))
         self.assertEqual(aux.reduce(es1), es1_reduced)
-        self.assertTrue(check_downward_closed.apply(es1))
+        self.assertTrue(is_downward_closed(es1))
 
         es2 = {set_empty}
         es2_ucl = es2
         es2_reduced = es2
         self.assertTrue(check_union_closed.apply(es2))
         self.assertEqual(aux.ucl(es2), es2_ucl)
-        self.assertTrue(check_contains_empty.apply(es2))
+        self.assertTrue(contains_empty_set(es2))
         self.assertTrue(check_intersection_in.apply(es2))
         self.assertEqual(aux.reduce(es2), es2_reduced)
-        self.assertTrue(check_downward_closed.apply(es2))
+        self.assertTrue(is_downward_closed(es2))
 
         es3 = {set_ab}
         es3_ucl = {set_empty, set_ab}
         es3_reduced = {frozenset()}
         self.assertFalse(check_union_closed.apply(es3))
         self.assertEqual(aux.ucl(es3), es3_ucl)
-        self.assertFalse(check_contains_empty.apply(es3))
+        self.assertFalse(contains_empty_set(es3))
         self.assertTrue(check_intersection_in.apply(es3))
         self.assertEqual(aux.reduce(es3), es3_reduced)
-        self.assertFalse(check_downward_closed.apply(es3))
+        self.assertFalse(is_downward_closed(es3))
 
         es4 = {set_empty, set_a, set_b, set_ab}
         es4_ucl = es4
         es4_reduced = es4
         self.assertTrue(check_union_closed.apply(es4))
         self.assertEqual(aux.ucl(es4), es4_ucl)
-        self.assertTrue(check_contains_empty.apply(es4))
+        self.assertTrue(contains_empty_set(es4))
         self.assertTrue(check_intersection_in.apply(es4))
         self.assertEqual(aux.reduce(es4), es4_reduced)
-        self.assertTrue(check_downward_closed.apply(es4))
+        self.assertTrue(is_downward_closed(es4))
 
         es5 = {set_c, set_abc, set_bc, set_ac}
         es5_ucl = {set_empty, set_c, set_abc, set_bc, set_ac}
         es5_reduced = {set_empty, set_ab, set_b, set_a}
         self.assertFalse(check_union_closed.apply(es5))
         self.assertEqual(aux.ucl(es5), es5_ucl)
-        self.assertFalse(check_contains_empty.apply(es5))
+        self.assertFalse(contains_empty_set(es5))
         self.assertTrue(check_intersection_in.apply(es5))
         self.assertEqual(aux.reduce(es5), es5_reduced)
-        self.assertFalse(check_downward_closed.apply(es5))
+        self.assertFalse(is_downward_closed(es5))
 
     def test_canonical_stb(self):
         a = 'a'

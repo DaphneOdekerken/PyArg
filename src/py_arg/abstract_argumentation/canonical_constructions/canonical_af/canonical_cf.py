@@ -7,7 +7,6 @@ from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 
 
-@staticmethod
 def apply(extension_set: Set) -> AbstractArgumentationFramework:
     args = aux.big_a(extension_set)
     args = list(args)
@@ -18,5 +17,4 @@ def apply(extension_set: Set) -> AbstractArgumentationFramework:
             defeats.append(Defeat(arg1, arg2))
             defeats.append(Defeat(arg2, arg1))
 
-    # print(all_tuples)
     return AbstractArgumentationFramework('', arguments=args, defeats=defeats)

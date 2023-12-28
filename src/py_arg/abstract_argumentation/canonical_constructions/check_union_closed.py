@@ -4,7 +4,6 @@ import py_arg.abstract_argumentation.canonical_constructions.aux_operators as \
     aux
 
 
-@staticmethod
 def apply(extension_set: Set) -> bool:
     if frozenset() not in extension_set:
         return False

@@ -6,10 +6,12 @@ import visdcc
 from dash import html, callback, Input, Output, State
 
 from py_arg.abstract_argumentation.canonical_constructions import \
-    check_incomparable, check_intersection_in, \
-    check_set_com_closed, check_contains_empty, check_non_empty
+    check_intersection_in, check_set_com_closed
 from py_arg.abstract_argumentation.canonical_constructions import \
-    check_set_conf_sens, check_downward_closed
+    check_set_conf_sens
+from py_arg.abstract_argumentation.canonical_constructions.check_properties \
+    import is_incomparable, is_non_empty, is_downward_closed, \
+    contains_empty_set
 from py_arg.assumption_based_argumentation.canonical_constructions import \
     construct_abaf_com, construct_abaf_prf, \
     construct_abaf_st, construct_abaf_cf, construct_abaf_naive, \
@@ -169,21 +171,21 @@ def fill_properties_table(extension_sets_str: str):
     negative_icon = '❌'
 
     # Test which properties hold
-    incomparable = check_incomparable.apply(input_extension_set)
+    incomparable = is_incomparable(input_extension_set)
     if incomparable:
         incomparable_style = {'background-color': green}
         incomparable_value = positive_icon
     else:
         incomparable_style = {'background-color': red}
         incomparable_value = negative_icon
-    non_empty = check_non_empty.apply(input_extension_set)
+    non_empty = is_non_empty(input_extension_set)
     if non_empty:
         non_empty_style = {'background-color': green}
         non_empty_value = positive_icon
     else:
         non_empty_style = {'background-color': red}
         non_empty_value = negative_icon
-    downward_closed = check_downward_closed.apply(input_extension_set)
+    downward_closed = is_downward_closed(input_extension_set)
     if downward_closed:
         downward_closed_style = {'background-color': green}
         downward_closed_value = positive_icon
@@ -197,7 +199,7 @@ def fill_properties_table(extension_sets_str: str):
     else:
         set_conf_sens_style = {'background-color': red}
         set_conf_sens_value = negative_icon
-    contains_empty = check_contains_empty.apply(input_extension_set)
+    contains_empty = contains_empty_set(input_extension_set)
     if contains_empty:
         contains_empty_style = {'background-color': green}
         contains_empty_value = positive_icon

@@ -4,7 +4,6 @@ import py_arg.abstract_argumentation.canonical_constructions.aux_operators as \
     aux
 
 
-@staticmethod
 def apply(extension_set: Set) -> bool:
     power = aux.powerset(extension_set)
     pairs_ = aux.pairs(extension_set)
