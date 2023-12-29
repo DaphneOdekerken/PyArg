@@ -82,3 +82,28 @@ def is_non_empty(extension_set: Set) -> bool:
 
 def is_unary(extension_set: Set) -> bool:
     return len(extension_set) == 1
+
+
+def is_com_closed(extension_set: Set) -> bool:
+    """
+    Check if this extension set is com-closed, by Definition 10 of
+    Dunne et al., 2015. "Com" here stands for completion.
+    """
+    subsets_of_extension_set = aux.powerset(extension_set)
+    extension_set_pairs = aux.pairs(extension_set)
+
+    for subset in subsets_of_extension_set:
+        elements_in_subset = aux.big_a(set(subset))
+        if not elements_in_subset:
+            continue
+
+        all_pairs_are_present_in_extension = \
+            all(frozenset({element_1, element_2}) in extension_set_pairs
+                for element_1, element_2 in aux.tuples(elements_in_subset))
+        completion_set = aux.completion_sets(elements_in_subset, extension_set)
+        no_unique_completion_set = len(completion_set) != 1
+
+        if all_pairs_are_present_in_extension and no_unique_completion_set:
+            return False
+
+    return True

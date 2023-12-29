@@ -4,6 +4,9 @@ from typing import Set
 
 
 def tuples(iterable):
+    """
+    Get all two-length combinations of some set/list/...
+    """
     return itertools.combinations(iterable, 2)
 
 
@@ -44,32 +47,27 @@ def big_p(extension_set: Set) -> Set[FrozenSet]:
     return out
 
 
-def big_c(extension: frozenset, extension_set: Set) -> Set[FrozenSet]:
-    if extension in extension_set:
-        return set(frozenset({extension}))
-
-    out = set()
-    a = big_a(extension_set)
-    bound = len(a)
-    temp = set(frozenset({extension}))
-    for i in range(bound):
-        for ext in temp:
-            if ext in extension_set:
-                out.add(ext)
-        temp = temp.difference(out)
-        new_ext = set()
-        for ext in temp:
-            new_ext = set()
-            for lit in a:
-                new = set(ext.copy())
-                new.add(lit)
-                new_ext.add(frozenset(new))
-        temp = temp.union(new_ext)
-    return out
+def completion_sets(
+        extension: frozenset, extension_set: Set) -> Set[FrozenSet]:
+    """
+    Compute the completion sets of a given extension set, by Definition 9 of
+    Dunne et al., 2015. This is the set of subset-minimal sets in the
+    extension set such that the extension is a subset.
+    """
+    all_extensions_containing_set = {
+        extension_in_set for extension_in_set in extension_set
+        if extension.issubset(extension_in_set)
+    }
+    all_smallest_extensions_containing_set = {
+        extension_in_set for extension_in_set in all_extensions_containing_set
+        if not any(other_extension < extension_in_set
+                   for other_extension in all_extensions_containing_set)
+    }
+    return all_smallest_extensions_containing_set
 
 
 def unique_big_c(extension: frozenset, extension_set: Set) -> FrozenSet:
-    c = big_c(extension, extension_set)
+    c = completion_sets(extension, extension_set)
     if len(c) == 1:
         return c.pop()
     else:

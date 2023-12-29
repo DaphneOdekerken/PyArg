@@ -8,8 +8,11 @@ from py_arg.abstract_argumentation.classes.argument import Argument
 from py_arg.abstract_argumentation.classes.defeat import Defeat
 
 
-def conjunctive_defense_formula(extension_set: Set, argument: Argument) -> \
+def get_defense_formula(extension_set: Set, argument: Argument) -> \
         Set[FrozenSet]:
+    """
+    This function implements Definition 13 (first part) of Dunne et al., 2015.
+    """
     return {
         extension.copy().difference({argument})
         for extension in extension_set
@@ -17,45 +20,63 @@ def conjunctive_defense_formula(extension_set: Set, argument: Argument) -> \
     }
 
 
-def disjunctive_defence_formula(extension_set: Set, arg: Argument) -> \
+def get_cnf_defense_formula(extension_set: Set, arg: Argument) -> \
         Set[FrozenSet]:
-    cnf = conjunctive_defense_formula(extension_set, arg)
-    dnf = {frozenset()}
-    for conjunct in cnf:
-        if not conjunct:
+    """
+    This function implements Definition 13 (second part) of Dunne et al., 2015.
+    """
+    defense_formula = get_defense_formula(extension_set, arg)
+    result = {frozenset()}
+    for conjunction_in_disjuction in defense_formula:
+        # Check for tautology: if one conjunctive part is always true,
+        # then this holds for the whole formula.
+        if not conjunction_in_disjuction:
             return set()
-        old_dnf = dnf
-        new_dnf = set()
-        for disjunct in old_dnf:
-            for d in conjunct:
-                new_elem = set(disjunct)
-                new_elem.add(d)
-                new_dnf.add(frozenset(new_elem))
-        dnf = new_dnf
 
-    non_minimal = {d1 for d1 in dnf if any(d2 < d1 for d2 in dnf)}
+        full_cnf_until_now = result
+        updated_cnf_formula = set()
+        for conjunction_in_earlier_formula in full_cnf_until_now:
+            for extra_disjunctive_part in conjunction_in_disjuction:
+                # Add this disjunctive part to each earlier element in the
+                # formula until now.
+                new_elem = set(conjunction_in_earlier_formula)
+                new_elem.add(extra_disjunctive_part)
+                updated_cnf_formula.add(frozenset(new_elem))
+        result = updated_cnf_formula
 
-    return dnf.difference(non_minimal)
+    # Only keep the minimal conjunctions.
+    minimal = {
+        conjunction for conjunction in result
+        if not any(other_conjunction < conjunction
+                   for other_conjunction in result)
+    }
+
+    return minimal
 
 
 def get_canonical_def_framework(extension_set: Set) -> \
         AbstractArgumentationFramework:
-    canon_cf = get_canonical_cf_framework(extension_set)
-    atts_cf = canon_cf.defeats
-    args_cf = canon_cf.arguments
+    """
+    This function implements the canonical defense-argumentation-framework,
+    as defined in Dunne et al., 2015 Definition 14.
+    """
+    canonical_cf = get_canonical_cf_framework(extension_set)
 
-    atts_def = atts_cf.copy()
-    args_def = args_cf.copy()
+    attacks = canonical_cf.defeats.copy()
+    arguments = canonical_cf.arguments.copy()
 
-    for arg in args_cf:
-        arg_dnf = disjunctive_defence_formula(extension_set, arg)
-        for disj in arg_dnf:
-            new_arg = Argument(str(arg) + '_' + str(set(disj)))
-            args_def.append(new_arg)
-            atts_def.append(Defeat(new_arg, new_arg))
-            atts_def.append(Defeat(new_arg, arg))
-            for c in disj:
-                atts_def.append(Defeat(c, new_arg))
+    for argument in canonical_cf.arguments:
+        cnf_defense_formula = get_cnf_defense_formula(extension_set, argument)
+        for clause in cnf_defense_formula:
+            # Add extra argument.
+            extra_argument = Argument(str(argument) + '_' + str(set(clause)))
+            arguments.append(extra_argument)
+            # This argument is self-attacking, attacked by all (original)
+            # arguments in the clause and attacks the argument in canonical_cf.
+            attacks.append(Defeat(extra_argument, extra_argument))
+            attacks.append(Defeat(extra_argument, argument))
+            for clause_element in clause:
+                attacks.append(Defeat(clause_element, extra_argument))
 
     return AbstractArgumentationFramework(
-        '', arguments=args_def, defeats=atts_def)
+        '', arguments=arguments, defeats=attacks)

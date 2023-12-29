@@ -13,7 +13,7 @@ def apply(extension_set: Set) -> bool:
         a_es2 = aux.big_a(es2)
         if a_es1 in d:
             if a_es2 in d:
-                c = aux.big_c(a_es1.union(a_es2), extension_set)
+                c = aux.completion_sets(a_es1.union(a_es2), extension_set)
                 if len(c) != 1:
                     boolean = False
                     for lit in a_es2:
