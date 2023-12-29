@@ -5,7 +5,6 @@ from py_arg.aspic.classes.defeasible_rule import DefeasibleRule
 from py_arg.aspic.classes.literal import Literal
 from py_arg.aspic.classes.rule import Rule
 from py_arg.aspic.classes.strict_rule import StrictRule
-from py_arg.utils.is_c_consistent import is_c_consistent
 
 
 class InstantiatedArgument(Argument):
@@ -151,4 +150,22 @@ class InstantiatedArgument(Argument):
 
     @property
     def is_c_consistent(self) -> bool:
-        return is_c_consistent(self.premises, self.strict_rules)
+        closure = self._get_closure(self.premises, self.strict_rules)
+        return any(literal_a in literal_b.contraries_and_contradictories
+                   for literal_a in closure for literal_b in closure)
+
+    @staticmethod
+    def _get_closure(literals: Set[Literal], strict_rules: Set[StrictRule]):
+        closure = literals.copy()
+        change = True
+        while change:
+            change = False
+            interesting_strict_rules = \
+                {strict_rule for strict_rule in strict_rules
+                 if strict_rule.consequent not in closure}
+            for strict_rule in interesting_strict_rules:
+                if all([antecedent in closure
+                        for antecedent in strict_rule.antecedents]):
+                    closure.add(strict_rule.consequent)
+                    change = True
+        return closure
