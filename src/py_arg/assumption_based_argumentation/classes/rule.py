@@ -28,8 +28,3 @@ class Rule:
 
     def __lt__(self, other):
         return self.rule_hash < other.rule_hash
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

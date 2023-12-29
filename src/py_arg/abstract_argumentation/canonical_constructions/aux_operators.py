@@ -2,6 +2,8 @@ from typing import FrozenSet
 import itertools
 from typing import Set
 
+from py_arg.utils.powerset import powerset
+
 
 def tuples(iterable):
     """
@@ -28,17 +30,6 @@ def pairs(extension_set: Set) -> Set[FrozenSet]:
             for e1, e2 in tuples(all_possible_elements)
             for extension in extension_set
             if e1 in extension and e2 in extension}
-
-
-def powerset(iterable) -> Set[FrozenSet]:
-    """
-    Get all subsets of the given set.
-    """
-    s = list(iterable)
-    list_of_tuples = set(itertools.chain.from_iterable(
-        itertools.combinations(s, r) for r in range(len(s) + 1)))
-
-    return {frozenset(list(element)) for element in list_of_tuples}
 
 
 def big_p(extension_set: Set) -> Set[FrozenSet]:

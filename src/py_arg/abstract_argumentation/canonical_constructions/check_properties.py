@@ -1,5 +1,6 @@
 from typing import Set
 
+import py_arg.utils.powerset
 from py_arg.abstract_argumentation.canonical_constructions import \
     aux_operators as aux
 
@@ -89,7 +90,7 @@ def is_com_closed(extension_set: Set) -> bool:
     Check if this extension set is com-closed, by Definition 10 of
     Dunne et al., 2015. "Com" here stands for completion.
     """
-    subsets_of_extension_set = aux.powerset(extension_set)
+    subsets_of_extension_set = py_arg.utils.powerset.powerset(extension_set)
     extension_set_pairs = aux.pairs(extension_set)
 
     for subset in subsets_of_extension_set:

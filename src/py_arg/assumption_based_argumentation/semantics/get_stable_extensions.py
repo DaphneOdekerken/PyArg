@@ -11,12 +11,13 @@ def get_stable_extensions(
         Set[FrozenSet[str]]:
     af = aba_framework.generate_af()
     af_extensions = get_stable_extensions_af.get_stable_extensions(af)
+
     aba_framework_extensions = set()
-    for af_ext in af_extensions:
-        aba_ext = set()
-        for arg in af_ext:
-            if arg.conclusion in aba_framework.assumptions:
-                aba_ext.add(arg.conclusion)
-        aba_framework_extensions.add(frozenset(aba_ext))
+    for af_extension in af_extensions:
+        aba_extension = frozenset({
+            argument.conclusion for argument in af_extension
+            if argument.conclusion in aba_framework.assumptions
+        })
+        aba_framework_extensions.add(aba_extension)
 
     return aba_framework_extensions

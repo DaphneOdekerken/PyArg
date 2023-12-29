@@ -35,4 +35,4 @@ def apply(abaf: AssumptionBasedArgumentationFramework,
     if semantics_specification == 'SemiStable':
         return get_semi_stable_extensions.get_semi_stable_extensions(abaf)
     if semantics_specification == 'Grounded':
-        return get_ground_extensions.get_preferred_extensions(abaf)
+        return get_ground_extensions.get_grounded_extensions(abaf)

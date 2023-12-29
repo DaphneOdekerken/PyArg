@@ -13,10 +13,8 @@ def get_complete_extensions(
     af_extensions = get_complete_extensions_af.get_complete_extensions(af)
     aba_framework_extensions = set()
     for af_ext in af_extensions:
-        aba_ext = set()
-        for arg in af_ext:
-            if arg.conclusion in aba_framework.assumptions:
-                aba_ext.add(arg.conclusion)
-        aba_framework_extensions.add(frozenset(aba_ext))
+        aba_extension = {argument.conclusion for argument in af_ext
+                         if argument.conclusion in aba_framework.assumptions}
+        aba_framework_extensions.add(frozenset(aba_extension))
 
     return aba_framework_extensions

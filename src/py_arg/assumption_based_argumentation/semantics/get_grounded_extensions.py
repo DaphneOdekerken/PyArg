@@ -6,14 +6,14 @@ import py_arg.abstract_argumentation.semantics.get_grounded_extension \
     as get_grounded_extensions_af
 
 
-def get_preferred_extensions(
+def get_grounded_extensions(
         aba_framework: AssumptionBasedArgumentationFramework) -> \
         Set[FrozenSet[str]]:
     af = aba_framework.generate_af()
     af_extension = get_grounded_extensions_af.get_grounded_extension(af)
-    aba_framework_extensions = set()
-    for arg in af_extension:
-        if arg.conclusion in aba_framework.assumptions:
-            aba_framework_extensions.add(arg.conclusion)
-
+    aba_framework_extensions = {
+        argument.conclusion
+        for argument in af_extension
+        if argument.conclusion in aba_framework.assumptions
+    }
     return {frozenset(aba_framework_extensions)}

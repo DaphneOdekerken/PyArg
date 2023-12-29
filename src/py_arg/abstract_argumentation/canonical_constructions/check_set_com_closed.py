@@ -2,10 +2,11 @@ from typing import Set
 
 import py_arg.abstract_argumentation.canonical_constructions.aux_operators as\
     aux
+import py_arg.utils.powerset
 
 
 def apply(extension_set: Set) -> bool:
-    power = aux.powerset(extension_set)
+    power = py_arg.utils.powerset.powerset(extension_set)
     d = aux.downward_closure(extension_set)
     p = aux.big_p(extension_set)
     for es1, es2 in aux.tuples(power):

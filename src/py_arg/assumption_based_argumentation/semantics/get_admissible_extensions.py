@@ -1,11 +1,9 @@
 from typing import Set, FrozenSet
 
+from py_arg.abstract_argumentation.semantics.is_admissible import is_admissible
 from py_arg.assumption_based_argumentation.classes.aba_framework import \
     AssumptionBasedArgumentationFramework
-import py_arg.abstract_argumentation.semantics.is_admissible as \
-    is_admissible_af
-import py_arg.abstract_argumentation.canonical_constructions.aux_operators as \
-    aux
+from py_arg.utils.powerset import powerset
 
 
 def get_admissible_extensions(
@@ -14,12 +12,10 @@ def get_admissible_extensions(
     af = aba_framework.generate_af()
 
     aba_framework_extensions = set()
-    for ext in aux.powerset(aba_framework.assumptions):
-        af_ext = set()
-        for arg in af.arguments:
-            if arg.premise.issubset(ext):
-                af_ext.add(arg)
-        if is_admissible_af.is_admissible(af_ext, af):
-            aba_framework_extensions.add(ext)
+    for assumption_subset in powerset(aba_framework.assumptions):
+        potential_extension = {argument for argument in af.arguments
+                               if argument.premise <= assumption_subset}
+        if is_admissible(potential_extension, af):
+            aba_framework_extensions.add(assumption_subset)
 
     return aba_framework_extensions

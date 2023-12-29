@@ -1,4 +1,4 @@
-from typing import Dict, Set
+from typing import Dict, Set, FrozenSet
 
 from py_arg.assumption_based_argumentation.classes.instantiated_argument \
     import InstantiatedArgument
@@ -121,60 +121,56 @@ class AssumptionBasedArgumentationFramework:
         return AbstractArgumentationFramework('', arguments=list(arguments),
                                               defeats=list(defeats))
 
-    # I am basically reimplementing Prolog?
-    # A premise of an argument is a minimal set of assumptions implying an atom
-    # Premises of an atom are determined recursively, going through all rules
-    # implying the atom
-    # Dealing with all the combinations makes the code a bit convoluted, but
-    # basically it is only backtracking
-    def recursively_construct_argument(self, rules: Set[Rule], target: str,
-                                       visited: Set[str]):
-        premises_set = set()
+    def recursively_construct_argument(
+            self, rules: Set[Rule], target: str, visited: Set[str]) -> \
+            Set[FrozenSet]:
+        """
+        A premise of an argument is a minimal set of assumptions implying an
+        atom. Premises of an atom are determined recursively, going through
+        all rules implying the atom.
+        """
+        # First split the rules into relevant rules (having the target as
+        # their head) and other rules.
         relevant_rules = set()
         rest_rules = set()
-
         for rule in rules:
             if rule.head == target:
                 relevant_rules.add(rule)
             else:
                 rest_rules.add(rule)
 
+        premises_set = set()
         for rule in relevant_rules:
-            rule_premises = set()
-            if len(rule.body) == 0:
-                rule_premises.add(frozenset())
-            asm = set()
-            for atom in rule.body:
-                if atom in self.assumptions:
-                    asm.add(atom)
-            rule_premises = {frozenset(asm)}
+            assumptions_in_rule_body = {atom for atom in rule.body
+                                        if atom in self.assumptions}
+            rule_premises = {frozenset(assumptions_in_rule_body)}
             for atom in rule.body:
                 if atom not in self.assumptions:
-                    rule_premises = self.merge(
-                        rule_premises,
-                        self.recursively_construct_argument(
-                            rest_rules, atom, visited.copy().union({atom})))
+                    atom_rule_premises = self.recursively_construct_argument(
+                                rest_rules, atom, visited.copy().union({atom}))
+                    rule_premises = self.merge_premise_sets(rule_premises,
+                                                            atom_rule_premises)
             premises_set = premises_set.union(rule_premises)
 
         return premises_set
 
-    # crossproductlike merge
-    def merge(self, premise_set_set1: Set[frozenset],
-              premise_set_set2: Set[frozenset]):
-        if len(premise_set_set1) == 0:
+    @staticmethod
+    def merge_premise_sets(premise_set_set1: Set[frozenset],
+                           premise_set_set2: Set[frozenset]):
+        """
+        Merge premise sets.
+        """
+        if not premise_set_set1:
             return premise_set_set2
-        out = set()
-        for s1 in premise_set_set1:
-            for s2 in premise_set_set2:
-                out.add(s1.union(s2))
-        return out
+        return {set_1.union(set_2)
+                for set_1 in premise_set_set1
+                for set_2 in premise_set_set2}
 
     def reduce(self):
-        rm = set()
-        for rule1 in self.rules:
-            for rule2 in self.rules:
-                if rule1.head == rule2.head and \
-                        rule1.body.issubset(rule2.body) and \
-                        not rule2.body.issubset(rule1.body):
-                    rm.add(rule2)
-        self.rules = self.rules.difference(rm)
+        reduction = set()
+        for rule in self.rules:
+            if not any(other_rule.body < rule.body
+                       for other_rule in self.rules
+                       if other_rule.head == rule.head):
+                reduction.add(rule)
+        self.rules = reduction
