@@ -84,8 +84,6 @@ class AssumptionBasedArgumentationFramework:
             for premise in arg1.premise:
                 for arg2 in arguments:
                     if self.contraries[premise] == arg2.conclusion:
-                        arg1.add_ingoing_defeat(arg2)
-                        arg2.add_outgoing_defeat(arg1)
                         defeats.add(Defeat(arg2, arg1))
 
         return AbstractArgumentationFramework('', arguments=list(arguments),
@@ -114,8 +112,6 @@ class AssumptionBasedArgumentationFramework:
             for premise in arg1.premise:
                 for arg2 in arguments:
                     if self.contraries[premise] == arg2.conclusion:
-                        arg1.add_ingoing_defeat(arg2)
-                        arg2.add_outgoing_defeat(arg1)
                         defeats.add(Defeat(arg2, arg1))
 
         return AbstractArgumentationFramework('', arguments=list(arguments),

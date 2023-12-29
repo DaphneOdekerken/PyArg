@@ -23,6 +23,6 @@ def compute_all_literal_grounded_justification_status_naive(
     for grounded_argument in grounded_extension:
         result[grounded_argument.conclusion] = EnumJustificationLabel.DEFENDED
         for attacked_argument in \
-                grounded_argument.get_outgoing_defeat_arguments:
+                arg_framework.get_outgoing_defeat_arguments(grounded_argument):
             result[attacked_argument.conclusion] = EnumJustificationLabel.OUT
     return LiteralLabels(result)

@@ -21,10 +21,6 @@ class AbstractArgumentationFramework:
         else:
             self._defeats = defeats
 
-        for defeat in self._defeats:
-            defeat.from_argument.add_outgoing_defeat(defeat.to_argument)
-            defeat.to_argument.add_ingoing_defeat(defeat.from_argument)
-
     def __repr__(self):
         return '( [' + ', '.join(argument.name
                                  for argument in self.arguments) + \

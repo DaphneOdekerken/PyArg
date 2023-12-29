@@ -48,21 +48,6 @@ class IncompleteArgumentationFramework:
         else:
             self._uncertain_defeats = uncertain_defeats
 
-        for defeat in self._defeats + self._uncertain_defeats:
-            if defeat.from_argument.name in self._arguments.keys():
-                defeat_from_argument = self._arguments[
-                    defeat.from_argument.name]
-            else:
-                defeat_from_argument = self._uncertain_arguments[
-                    defeat.from_argument.name]
-            if defeat.to_argument.name in self._arguments.keys():
-                defeat_to_argument = self._arguments[defeat.to_argument.name]
-            else:
-                defeat_to_argument = self._uncertain_arguments[
-                    defeat.to_argument.name]
-            defeat_from_argument.add_outgoing_defeat(defeat.to_argument)
-            defeat_to_argument.add_ingoing_defeat(defeat.from_argument)
-
     def __eq__(self, other):
         return isinstance(other, IncompleteArgumentationFramework) and \
             self.arguments == other.arguments and \
