@@ -12,6 +12,10 @@ from py_arg.abstract_argumentation.generators.\
 
 
 class ErdosRenyiGenerator:
+    """
+    Edgar N. Gilbert "Random graphs." The Annals of Mathematical Statistics
+    30.4 (1959): 1141-1144.
+    """
     def __init__(self, nr_of_arguments: int, prob_edge: float,
                  is_directed: bool = True, seed: int = None):
         self.nr_of_arguments = nr_of_arguments

@@ -16,6 +16,11 @@ from py_arg.abstract_argumentation.generators.enforce_prob_cycle import \
 
 
 class BarabasiAlbert:
+    """
+    Implementation based on networkx of:
+    Albert-László Barabási, and Réka Albert. "Emergence of scaling in random
+    networks." science 286.5439 (1999): 509-512.
+    """
     def __init__(self, nr_of_arguments: int, nr_attach_node_to: int,
                  prob_cycle: float, seed: int = None):
         self.nr_of_arguments = nr_of_arguments
@@ -43,7 +48,7 @@ class BarabasiAlbert:
     def generate(self, name: Optional[str] = None) -> \
             AbstractArgumentationFramework:
         """
-        Generate a Watts-Strogatz small-world graph.
+        Generate a Barabasi-Albert graph.
 
         :param name: Name of the new framework (optional).
         :return: The resulting random AbstractArgumentationFramework.

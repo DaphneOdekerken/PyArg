@@ -11,6 +11,12 @@ from py_arg.aspic.classes.strict_rule import StrictRule
 
 
 class LayeredArgumentationSystemGenerator:
+    """
+    This generator is based on procedure described in Appendix C2 of
+    Daphne Odekerken, Floris Bex, AnneMarie Borg, & Bas Testerink (2022).
+    Approximating stability for applied argument-based inquiry. Intelligent
+    Systems with Applications, 16, 200110.
+    """
     def __init__(self, nr_of_literals: int, nr_of_rules: int,
                  rule_antecedent_distribution: Dict[int, int],
                  literal_layer_distribution: Dict[int, int],

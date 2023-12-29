@@ -133,7 +133,10 @@ def toggle_reference_modal(nr_of_clicks: int, is_open: bool, url_path: str):
         return is_open, ''
 
     reference_folder = pathlib.Path.cwd() / 'reference_texts'
-    search_name = url_path[1:].replace('-', '_') + '.md'
+    if url_path == '/':
+        search_name = '90_pyarg.md'
+    else:
+        search_name = url_path[1:].replace('-', '_') + '.md'
     search_file = reference_folder / search_name
     if search_file.is_file():
         with open(search_file, 'r') as file:
