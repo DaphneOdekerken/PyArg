@@ -1,16 +1,12 @@
 from typing import List, Dict
 
 from py_arg.aspic.classes.argumentation_theory import ArgumentationTheory
-from py_arg_visualisation.functions.graph_data_functions.get_color \
-    import get_color
-from py_arg_visualisation.functions.ordering_functions.\
-    get_ordering_by_specification import get_ordering_by_specification
 
 
 def get_argumentation_theory_aspic_graph_data(
-        argumentation_theory: ArgumentationTheory, ordering_specification: str,
+        argumentation_theory: ArgumentationTheory,
         selected_arguments: Dict[str, List[str]],
-        color_blind_mode: bool):
+        color_blind_mode: bool, show_contradictories: bool):
     """
     Calculate the data needed for the graphical representation of the
     argumentation theory and ordering
@@ -22,6 +18,7 @@ def get_argumentation_theory_aspic_graph_data(
     :param selected_arguments: Arguments to be marked with a different
     color (e.g. because they are in some extension)
     :param color_blind_mode: Is the color-blind mode on?
+    :param show_contradictories: Do we display the contradictories?
     """
     data_nodes = []
     data_edges = []
@@ -29,30 +26,34 @@ def get_argumentation_theory_aspic_graph_data(
     used_literals = set()
     for knowledge in argumentation_theory.knowledge_base:
         used_literals.add(knowledge)
-        for contra in knowledge.contraries_and_contradictories:
-            used_literals.add(contra)
+        if show_contradictories:
+            for contra in knowledge.contraries_and_contradictories:
+                used_literals.add(contra)
     for rule in argumentation_theory.argumentation_system.rules:
         for antecedent in rule.antecedents:
             used_literals.add(antecedent)
-            for contra in antecedent.contraries_and_contradictories:
-                used_literals.add(contra)
+            if show_contradictories:
+                for contra in antecedent.contraries_and_contradictories:
+                    used_literals.add(contra)
         used_literals.add(rule.consequent)
-        for contra in rule.consequent.contraries_and_contradictories:
-            used_literals.add(contra)
+        if show_contradictories:
+            for contra in rule.consequent.contraries_and_contradictories:
+                used_literals.add(contra)
 
     # Contradictories
-    contra_counter = 0
-    for literal in used_literals:
-        for contrary in literal.contraries_and_contradictories:
-            if literal <= contrary:
-                contra_id = 'C' + str(contra_counter)
-                data_edges.append({'id': contra_id, 'arrows': '',
-                                   'from': literal.s1, 'to': contrary.s1,
-                                   'color': {'color': 'red'},
-                                   'smooth': {
-                                       'enabled': True,
-                                       'type': 'curvedCCW'}})
-                contra_counter += 1
+    if show_contradictories:
+        contra_counter = 0
+        for literal in used_literals:
+            for contrary in literal.contraries_and_contradictories:
+                if literal <= contrary:
+                    contra_id = 'C' + str(contra_counter)
+                    data_edges.append({'id': contra_id, 'arrows': '',
+                                       'from': literal.s1, 'to': contrary.s1,
+                                       'color': {'color': 'red'},
+                                       'smooth': {
+                                           'enabled': True,
+                                           'type': 'curvedCCW'}})
+                    contra_counter += 1
 
     # Create nodes for used literals
     for literal in used_literals:

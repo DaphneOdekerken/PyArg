@@ -27,8 +27,8 @@ from py_arg.abstract_argumentation.semantics. \
     get_argumentation_framework_extensions
 from py_arg_visualisation.functions.extensions_functions. \
     get_acceptance_strategy import get_acceptance_strategy
-from py_arg_visualisation.functions.graph_data_functions.get_aspic_graph_data import \
-    get_argumentation_theory_aspic_graph_data
+from py_arg_visualisation.functions.graph_data_functions.get_aspic_graph_data \
+    import get_argumentation_theory_aspic_graph_data
 from py_arg_visualisation.functions.graph_data_functions. \
     get_at_graph_data import get_argumentation_theory_af_graph_data
 from py_arg_visualisation.functions.import_functions. \
@@ -81,7 +81,15 @@ def get_aspic_layout(aspic_setting, structured_evaluation,
                     dcc.Tab(label='Structured visualisation', children=[
                         visdcc.Network(data={'nodes': [], 'edges': []},
                                        id='22-aspic-graph',
-                                       options=aspic_options)]),
+                                       options=aspic_options),
+                        dbc.Checklist(
+                            options=[{'label': 'Show contradictories',
+                                      'value': 'show_contra'}],
+                            value=['show_contra'],
+                            inline=True, switch=True,
+                            id='22-aspic-graph-show-contradictories'
+                        ),
+                    ]),
                 ]))])])
     return dbc.Row([left_column, right_column])
 
@@ -302,7 +310,8 @@ def generate_random_argumentation_theory(nr_of_clicks: int):
     Input('ordering-choice', 'value'),
     Input('ordering-link', 'value'),
     Input('selected-argument-store-structured', 'data'),
-    State('color-blind-mode', 'on'),
+    Input('color-blind-mode', 'on'),
+    Input('22-aspic-graph-show-contradictories', 'value'),
     prevent_initial_call=True
 )
 def create_argumentation_theory(
@@ -310,7 +319,7 @@ def create_argumentation_theory(
         defeasible_rules_str: str, ordinary_premise_preferences_str: str,
         defeasible_rule_preferences_str: str, ordering_choice_value: str,
         ordering_link_value: str, selected_arguments: Dict[str, List[str]],
-        color_blind_mode: bool):
+        color_blind_mode: bool, show_contradictories: bool):
     # Read the ordering
     ordering_specification = ordering_choice_value + '_' + ordering_link_value
 
@@ -328,9 +337,11 @@ def create_argumentation_theory(
     af_graph_data = get_argumentation_theory_af_graph_data(
         arg_theory, ordering_specification, selected_arguments,
         color_blind_mode)
+
+    show_contra_bool = 'show_contra' in show_contradictories
     aspic_graph_data = get_argumentation_theory_aspic_graph_data(
-        arg_theory, ordering_specification, selected_arguments,
-        color_blind_mode)
+        arg_theory, selected_arguments,
+        color_blind_mode, show_contra_bool)
     return af_graph_data, aspic_graph_data
 
 
