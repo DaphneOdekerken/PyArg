@@ -22,13 +22,15 @@ from py_arg_visualisation.functions.explanations_functions. \
 from py_arg_visualisation.functions.explanations_functions. \
     get_at_explanations import get_str_explanations
 from py_arg.aspic.semantics.get_accepted_formulas import get_accepted_formulas
-from py_arg.abstract_argumentation.semantics.\
+from py_arg.abstract_argumentation.semantics. \
     get_argumentation_framework_extensions import \
     get_argumentation_framework_extensions
-from py_arg_visualisation.functions.extensions_functions.\
+from py_arg_visualisation.functions.extensions_functions. \
     get_acceptance_strategy import get_acceptance_strategy
+from py_arg_visualisation.functions.graph_data_functions.get_aspic_graph_data import \
+    get_argumentation_theory_aspic_graph_data
 from py_arg_visualisation.functions.graph_data_functions. \
-    get_at_graph_data import get_argumentation_theory_graph_data
+    get_at_graph_data import get_argumentation_theory_af_graph_data
 from py_arg_visualisation.functions.import_functions. \
     read_argumentation_theory_functions import \
     read_argumentation_theory
@@ -52,13 +54,35 @@ def get_aspic_layout(aspic_setting, structured_evaluation,
                               title='Explanation', item_id='Explanation')
         ], id='structured-evaluation-accordion')
     )
+
+    aspic_options = {
+        'physics': {'enabled': True},
+        'solver': 'hierarchicalRepulsion',
+        'layout': {'hierarchical': {'enabled': True, 'direction': 'DU',
+                                    'sortMethod': 'directed'}},
+        'wind': {'x': 50, 'y': 50},
+        'improvedLayout': True,
+        'height': '500px',
+        'edges': {'color': {
+            'inherit': False,
+        }},
+        'interaction': {'hover': True},
+    }
+    af_options = {'height': '500px'}
+
     right_column = dbc.Col([
         dbc.Row([
-            dbc.Card(visdcc.Network(data={'nodes': [], 'edges': []},
-                                    id='structured-argumentation-graph',
-                                    options={'height': '500px'}), body=True),
-        ])
-    ])
+            dbc.Card(
+                dcc.Tabs([
+                    dcc.Tab(label='AF visualisation', children=[
+                        visdcc.Network(data={'nodes': [], 'edges': []},
+                                       id='22-af-graph',
+                                       options=af_options)]),
+                    dcc.Tab(label='Structured visualisation', children=[
+                        visdcc.Network(data={'nodes': [], 'edges': []},
+                                       id='22-aspic-graph',
+                                       options=aspic_options)]),
+                ]))])])
     return dbc.Row([left_column, right_column])
 
 
@@ -267,7 +291,8 @@ def generate_random_argumentation_theory(nr_of_clicks: int):
 
 
 @callback(
-    Output('structured-argumentation-graph', 'data'),
+    Output('22-af-graph', 'data'),
+    Output('22-aspic-graph', 'data'),
     Input('aspic-axioms', 'value'),
     Input('aspic-ordinary-premises', 'value'),
     Input('aspic-strict-rules', 'value'),
@@ -300,9 +325,13 @@ def create_argumentation_theory(
             {}, {}, [], []), [], [])
 
     # Generate the graph data for this argumentation theory
-    return get_argumentation_theory_graph_data(
+    af_graph_data = get_argumentation_theory_af_graph_data(
         arg_theory, ordering_specification, selected_arguments,
         color_blind_mode)
+    aspic_graph_data = get_argumentation_theory_aspic_graph_data(
+        arg_theory, ordering_specification, selected_arguments,
+        color_blind_mode)
+    return af_graph_data, aspic_graph_data
 
 
 @callback(

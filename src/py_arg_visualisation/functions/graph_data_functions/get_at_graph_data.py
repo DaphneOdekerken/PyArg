@@ -7,7 +7,7 @@ from py_arg_visualisation.functions.ordering_functions.\
     get_ordering_by_specification import get_ordering_by_specification
 
 
-def get_argumentation_theory_graph_data(
+def get_argumentation_theory_af_graph_data(
         argumentation_theory: ArgumentationTheory, ordering_specification: str,
         selected_arguments: Dict[str, List[str]],
         color_blind_mode: bool):
