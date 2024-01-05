@@ -4,6 +4,7 @@ import pathlib
 import random
 
 import dash
+import visdcc
 from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 
@@ -17,6 +18,8 @@ from py_arg.incomplete_aspic.algorithms.stability.stability_labeler import \
     StabilityLabeler
 from py_arg.incomplete_aspic.classes.incomplete_argumentation_theory import \
     IncompleteArgumentationTheory
+from py_arg_visualisation.functions.graph_data_functions. \
+    get_incomplete_aspic_graph_data import get_incomplete_aspic_graph_data
 
 dash.register_page(__name__, name='Inquiry Dialogue System',
                    title='Inquiry Dialogue System')
@@ -39,8 +42,32 @@ left_column = dbc.Col(
     ]
 )
 right_column = dbc.Col([
-    html.B('Topic stability status or next question'),
-    html.P(id='50-stability-status')
+    dcc.Tabs([
+        dcc.Tab([
+            html.B('Topic stability status or next question'),
+            html.P(id='50-stability-status')
+        ], label='Frontend'),
+        dcc.Tab([
+            html.B('Visualisation argumentation theory'),
+            visdcc.Network(data={'nodes': [], 'edges': []},
+                           id='50-aspic-graph',
+                           options={
+                               'physics': {'enabled': True},
+                               'solver': 'hierarchicalRepulsion',
+                               'layout': {'hierarchical':
+                                    {'enabled': True,
+                                     'direction': 'DU',
+                                     'sortMethod': 'directed'}},
+                               'wind': {'x': 50, 'y': 50},
+                               'improvedLayout': True,
+                               'height': '500px',
+                               'edges': {'color': {
+                                   'inherit': False,
+                               }},
+                               'interaction': {'hover': True},
+                           })
+        ], label='Backend')
+    ])
 ])
 layout = html.Div([
     html.H1('Argumentation-based inquiry dialogue system'),
@@ -138,6 +165,7 @@ def update_knowledge_base_options(queryables, current_value,
 
 @callback(
     Output('50-stability-status', 'children'),
+    Output('50-aspic-graph', 'data'),
     State('50-queryables-dropdown', 'value'),
     Input('50-knowledge-base', 'value'),
     State('50-argumentation-system', 'data'),
@@ -167,15 +195,23 @@ def update_stability_status(positive_queryables, knowledge_base,
 
     stability_labeler_labels = StabilityLabeler().label(
         incomplete_argumentation_theory)
+
     topic_literal = opened_as.language[topic_str]
     topic_label = stability_labeler_labels.literal_labeling[topic_literal]
     if topic_label.is_stable:
-        return 'The topic is ' + topic_label.stability_str.lower() + '.'
+        user_text = 'The topic is ' + topic_label.stability_str.lower() + '.'
+        questions = []
+    else:
+        relevance_lister = FourBoolRelevanceLister()
+        relevance_lister.update(incomplete_argumentation_theory,
+                                stability_labeler_labels)
+        questions = relevance_lister.relevance_list[topic_literal]
+        random_question = random.choice(list(questions))
+        user_text = 'The topic is not stable yet. Do you know something ' \
+                    'about ' + random_question.s1 + '?'
 
-    relevance_lister = FourBoolRelevanceLister()
-    relevance_lister.update(incomplete_argumentation_theory,
-                            stability_labeler_labels)
-    questions = relevance_lister.relevance_list[topic_literal]
-    random_question = random.choice(list(questions))
-    return 'The topic is not stable yet. Do you know something about ' + \
-        random_question.s1 + '?'
+    graph_data = get_incomplete_aspic_graph_data(
+        incomplete_argumentation_theory, stability_labeler_labels,
+        topic_literal, questions)
+
+    return user_text, graph_data
