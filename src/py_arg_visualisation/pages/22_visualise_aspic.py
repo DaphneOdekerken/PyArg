@@ -1,12 +1,15 @@
+import base64
 import json
 from typing import List, Dict
 
 import dash
 import dash_bootstrap_components as dbc
 import visdcc
-from dash import html, callback, Input, Output, State, ALL, dcc
+from dash import ctx, html, callback, Input, Output, State, ALL, dcc
 from dash.exceptions import PreventUpdate
 
+from py_arg.abstract_argumentation.import_export.argumentation_framework_from_json_reader import \
+    ArgumentationFrameworkFromJsonReader
 from py_arg.aspic.classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic.classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic.classes.instantiated_argument import InstantiatedArgument
@@ -16,6 +19,10 @@ from py_arg.aspic.generators.argumentation_system_generators. \
 from py_arg.aspic.generators.argumentation_theory_generators. \
     argumentation_theory_generator import \
     ArgumentationTheoryGenerator
+from py_arg.aspic.import_export.argumentation_theory_from_json_reader import \
+    ArgumentationTheoryFromJsonReader
+from py_arg.aspic.import_export.argumentation_theory_to_json_writer import \
+    ArgumentationTheoryToJSONWriter
 from py_arg_visualisation.functions.explanations_functions. \
     explanation_function_options import \
     EXPLANATION_FUNCTION_OPTIONS
@@ -98,9 +105,14 @@ def get_aspic_setting_specification_div():
     return html.Div(children=[
         dcc.Store(id='selected-argument-store-structured'),
         dbc.Col([
-            dbc.Row(dbc.Button('Generate random',
-                               id='generate-random-arg-theory-button',
-                               n_clicks=0)),
+            dbc.Row([dbc.Col(dbc.Button(
+                'Generate random', id='generate-random-arg-theory-button',
+                n_clicks=0, className='w-100')),
+                     dbc.Col(dcc.Upload(dbc.Button(
+                         'Open existing AT', n_clicks=0, className='w-100'),
+                         id='22-open-existing-aspic-at'
+                     ))],
+                    className='mt-2'),
             dbc.Row([
                 dbc.Col([html.B('Axioms')]),
                 dbc.Col([html.B('Ordinary premises')]),
@@ -162,6 +174,21 @@ def get_aspic_setting_specification_div():
                     ],
                     value='last_link', id='ordering-link')),
             ]),
+            dbc.Row([
+                dbc.InputGroup([
+                    dbc.InputGroupText('Filename'),
+                    dbc.Input(value='edited_aspic_theory',
+                              id='22-aspic-theory-filename'),
+                    dbc.InputGroupText('.'),
+                    dbc.Select(
+                        options=[{'label': extension, 'value': extension}
+                                 for extension in ['JSON']],
+                        value='JSON', id='22-aspic-theory-extension'),
+                    dbc.Button('Download',
+                               id='22-aspic-theory-download-button'),
+                ], className='mt-2'),
+                dcc.Download(id='22-aspic-theory-download')
+            ])
         ])
     ])
 
@@ -238,6 +265,42 @@ layout = html.Div(
 
 
 @callback(
+    Output('22-aspic-theory-download', 'data'),
+    Input('22-aspic-theory-download-button', 'n_clicks'),
+    State('aspic-axioms', 'value'),
+    State('aspic-ordinary-premises', 'value'),
+    State('aspic-strict-rules', 'value'),
+    State('aspic-defeasible-rules', 'value'),
+    State('ordinary-prem-preferences', 'value'),
+    State('defeasible-rule-preferences', 'value'),
+    State('22-aspic-theory-filename', 'value'),
+    State('22-aspic-theory-extension', 'value'),
+    prevent_initial_call=True,
+)
+def download_generated_abstract_argumentation_framework(
+        _nr_clicks: int,
+        axioms_str: str, ordinary_premises_str: str, strict_rules_str: str,
+        defeasible_rules_str: str, ordinary_premise_preferences_str: str,
+        defeasible_rule_preferences_str: str,
+        filename: str,
+        extension: str):
+    arg_theory = read_argumentation_theory(
+        axioms_str, ordinary_premises_str, strict_rules_str,
+        defeasible_rules_str, ordinary_premise_preferences_str,
+        defeasible_rule_preferences_str)
+
+    if extension == 'JSON':
+        argumentation_theory_json = \
+            ArgumentationTheoryToJSONWriter().to_dict(arg_theory)
+        argumentation_theory_str = json.dumps(argumentation_theory_json)
+    else:
+        raise NotImplementedError
+
+    return {'content': argumentation_theory_str,
+            'filename': filename + '.' + extension}
+
+
+@callback(
     Output('structured-explanation-function', 'options'),
     Output('structured-explanation-function', 'value'),
     [Input('structured-explanation-type', 'value')]
@@ -254,10 +317,15 @@ def setting_choice(choice: str):
     Output('aspic-defeasible-rules', 'value'),
     Output('ordinary-prem-preferences', 'value'),
     Output('defeasible-rule-preferences', 'value'),
-    Input('generate-random-arg-theory-button', 'n_clicks')
+    Input('generate-random-arg-theory-button', 'n_clicks'),
+    Input('22-open-existing-aspic-at', 'contents'),
+    State('22-open-existing-aspic-at', 'filename')
 )
-def generate_random_argumentation_theory(nr_of_clicks: int):
-    if nr_of_clicks > 0:
+def generate_random_argumentation_theory(
+        nr_of_clicks_random_button: int,
+        load_arg_theory_content, load_arg_theory_filename):
+    if ctx.triggered_id == 'generate-random-arg-theory-button' and \
+            nr_of_clicks_random_button > 0:
         argumentation_system_generator = LayeredArgumentationSystemGenerator(
             nr_of_literals=10, nr_of_rules=5,
             rule_antecedent_distribution={1: 4, 2: 1},
@@ -269,33 +337,47 @@ def generate_random_argumentation_theory(nr_of_clicks: int):
             argumentation_system, knowledge_literal_ratio=0.4,
             axiom_knowledge_ratio=0.5)
         argumentation_theory = argumentation_theory_generator.generate()
-        aspic_axioms_value = \
-            '\n'.join(str(axiom)
-                      for axiom in argumentation_theory.knowledge_base_axioms)
-        aspic_ordinary_premises_value = \
-            '\n'.join(str(premise)
-                      for premise in argumentation_theory.
-                      knowledge_base_ordinary_premises)
-        aspic_strict_rule = \
-            '\n'.join(str(strict_rule)
-                      for strict_rule in argumentation_system.strict_rules)
-        aspic_defeasible_rule = \
-            '\n'.join(f'{defeasible_rule.id}: {str(defeasible_rule)}'
-                      for defeasible_rule in argumentation_system.
-                      defeasible_rules)
-        aspic_ordinary_premise_preference_value = \
-            '\n'.join(f'{str(preference[0])} < {str(preference[1])}'
-                      for preference in argumentation_theory.
-                      ordinary_premise_preferences.preference_tuples)
-        aspic_defeasible_rule_preference_vale = \
-            '\n'.join(f'{preference[0].id} < {preference[1].id}'
-                      for preference in argumentation_system.rule_preferences.
-                      preference_tuples)
-        return aspic_axioms_value, aspic_ordinary_premises_value, \
-            aspic_strict_rule, aspic_defeasible_rule, \
-            aspic_ordinary_premise_preference_value, \
-            aspic_defeasible_rule_preference_vale
-    return '', '', '', '', '', ''
+    elif ctx.triggered_id == '22-open-existing-aspic-at':
+        content_type, content_str = load_arg_theory_content.split(',')
+        decoded = base64.b64decode(content_str)
+
+        # name = load_arg_theory_filename.split('.')[0]
+        if load_arg_theory_filename.upper().endswith('.JSON'):
+            argumentation_theory = \
+                ArgumentationTheoryFromJsonReader().from_json(json.loads(
+                    decoded))
+            argumentation_system = argumentation_theory.argumentation_system
+        else:
+            raise NotImplementedError('This extension has no reader yet.')
+    else:
+        return '', '', '', '', '', ''
+
+    aspic_axioms_value = \
+        '\n'.join(str(axiom)
+                  for axiom in argumentation_theory.knowledge_base_axioms)
+    aspic_ordinary_premises_value = \
+        '\n'.join(str(premise)
+                  for premise in argumentation_theory.
+                  knowledge_base_ordinary_premises)
+    aspic_strict_rule = \
+        '\n'.join(str(strict_rule)
+                  for strict_rule in argumentation_system.strict_rules)
+    aspic_defeasible_rule = \
+        '\n'.join(f'{defeasible_rule.id}: {str(defeasible_rule)}'
+                  for defeasible_rule in argumentation_system.
+                  defeasible_rules)
+    aspic_ordinary_premise_preference_value = \
+        '\n'.join(f'{str(preference[0])} < {str(preference[1])}'
+                  for preference in argumentation_theory.
+                  ordinary_premise_preferences.preference_tuples)
+    aspic_defeasible_rule_preference_vale = \
+        '\n'.join(f'{preference[0].id} < {preference[1].id}'
+                  for preference in argumentation_system.rule_preferences.
+                  preference_tuples)
+    return aspic_axioms_value, aspic_ordinary_premises_value, \
+        aspic_strict_rule, aspic_defeasible_rule, \
+        aspic_ordinary_premise_preference_value, \
+        aspic_defeasible_rule_preference_vale
 
 
 @callback(
