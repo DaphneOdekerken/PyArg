@@ -44,15 +44,15 @@ def instantiate_incomplete_argumentation_theory_generator(nr_of_literals, nr_of_
     ), topics
 
 
-literal_sizes = [20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
+literal_sizes = [7500, 10000]
 rule_literal_ratios = [0.5, 1, 1.5]
 
 for literal_size in literal_sizes:
     for rule_literal_ratio in rule_literal_ratios:
         rule_size = int(rule_literal_ratio * literal_size)
-        for arg_sys_nr in range(25):
+        for arg_sys_nr in range(5):
             generator, topic_literals = instantiate_incomplete_argumentation_theory_generator(literal_size, rule_size)
-            for iat_nr in range(25):
+            for iat_nr in range(5):
                 iat = generator.generate()
                 IncompleteArgumentationTheoryToLPFileWriter().write(
                     incomplete_argumentation_theory=iat,
