@@ -6,36 +6,29 @@ from py_arg.incomplete_aspic_classes.incomplete_argumentation_theory import Inco
 
 class StabilityLabeler:
     def __init__(self):
-        pass
+        self.parents = None
+        self.children = None
 
-    def label(self, incomplete_argumentation_theory: IncompleteArgumentationTheory) -> StabilityLabels:
-        # Preprocessing: take the initial labeling from the SatisfiabilityLabeler
-        labels = SatisfiabilityLabeler().label(incomplete_argumentation_theory)
-        rules_visited = {rule: False for rule in incomplete_argumentation_theory.argumentation_system.rules}
+    def label(self, iat: IncompleteArgumentationTheory) -> StabilityLabels:
+        # Preprocessing: initial labeling from the SatisfiabilityLabeler
+        labels = SatisfiabilityLabeler().label(iat)
+        rules_visited = \
+            {rule: False for rule in iat.argumentation_system.rules}
 
         # Connect literals, so we can ask for their children and parents
-        connect_parents_and_children(incomplete_argumentation_theory)
+        self.parents, self.children = connect_parents_and_children(iat)
 
-        # TODO remove again: compute argument height
-        # literal_height = {lit_str: 0
-        #                   for lit_str in set(incomplete_argumentation_theory.argumentation_system.language.keys())}
-        # change = True
-        # while change:
-        #     change = False
-        #     for rule in incomplete_argumentation_theory.argumentation_system.defeasible_rules:
-        #         max_antecedent_height = max(literal_height[lit_str.s1] for lit_str in rule.antecedents)
-        #         if max_antecedent_height + 1 > literal_height[rule.consequent.s1]:
-        #             literal_height[rule.consequent.s1] = max_antecedent_height + 1
-        #             change = True
-
-        # Start by coloring leaves (literals for which there is no rule) and observables
-        leaves_and_observables = [literal
-                                  for literal in incomplete_argumentation_theory.argumentation_system.language.values()
-                                  if not literal.children or incomplete_argumentation_theory.is_queryable(literal)]
+        # Start by coloring leaves (literals for which there is no rule) and 
+        # observables
+        leaves_and_observables = \
+            [literal
+             for literal in iat.argumentation_system.language.values()
+             if not self.children[literal.s1] or iat.is_queryable(literal)]
         rules_to_reconsider = set()
         for literal in leaves_and_observables:
-            self.color_literal(incomplete_argumentation_theory, literal, labels)
-            rules_to_reconsider = rules_to_reconsider | set(literal.parents)
+            self.color_literal(iat, literal, labels)
+            rules_to_reconsider = rules_to_reconsider | self.parents[
+                literal.s1]
 
         # Color rules and (contraries of) their conclusions
         while rules_to_reconsider:
@@ -49,93 +42,94 @@ class StabilityLabeler:
             # If this was the first time the rule was considered or if its label changed, it may influence others.
             if not rules_visited[rule] or labels.rule_labeling[rule] != old_rule_label:
                 old_literal_label = labels.literal_labeling[rule.consequent].__copy__()
-                self.color_literal(incomplete_argumentation_theory, rule.consequent, labels)
+                self.color_literal(iat, rule.consequent, labels)
                 if labels.literal_labeling[rule.consequent] != old_literal_label:
-                    rules_to_reconsider = rules_to_reconsider | set(rule.consequent.parents)
+                    rules_to_reconsider = rules_to_reconsider | self.parents[
+                        rule.consequent.s1]
                 for contrary_literal in rule.consequent.contraries_and_contradictories:
                     old_contrary_literal_label = labels.literal_labeling[contrary_literal].__copy__()
-                    self.color_literal(incomplete_argumentation_theory, contrary_literal, labels)
+                    self.color_literal(iat, contrary_literal, labels)
                     if labels.literal_labeling[contrary_literal] != old_contrary_literal_label:
-                        rules_to_reconsider = rules_to_reconsider | set(contrary_literal.parents)
+                        rules_to_reconsider = \
+                            rules_to_reconsider | self.parents[
+                                contrary_literal.s1]
                 rules_visited[rule] = True
 
         return labels
 
-    @staticmethod
-    def color_literal(incomplete_argumentation_theory, literal, labels):
+    def color_literal(self, iat, literal, labels):
         """
         Color the Literal, that is: check, based on observations/rules for this literal/rules for its contraries, if
         this Literal can still become unsatisfiable/defended/out/blocked.
         """
-        if incomplete_argumentation_theory.is_queryable(literal) and \
-                literal in incomplete_argumentation_theory.knowledge_base:
+        if iat.is_queryable(literal) and literal in iat.knowledge_base:
             # L-U-a: The literal is observed, so it cannot be unsatisfiable.
             labels.literal_labeling[literal].unsatisfiable = False
-        elif any([not labels.rule_labeling[rule].unsatisfiable for rule in literal.children]):
+        elif any([not labels.rule_labeling[rule].unsatisfiable for rule in self.children[literal.s1]]):
             # L-U-b: There is a rule-based argument for the literal, so it cannot be unsatisfiable.
             labels.literal_labeling[literal].unsatisfiable = False
 
-        if incomplete_argumentation_theory.is_queryable(literal):
-            if any([contrary_literal in incomplete_argumentation_theory.knowledge_base
+        if iat.is_queryable(literal):
+            if any([contrary_literal in iat.knowledge_base
                     for contrary_literal in literal.contraries_and_contradictories]):
                 # L-D-a: A contrary of the literal is observed, so the literal cannot be in the grounded extension.
                 labels.literal_labeling[literal].defended = False
         else:
-            if all([not labels.rule_labeling[rule].defended for rule in literal.children]):
+            if all([not labels.rule_labeling[rule].defended for rule in self.children[literal.s1]]):
                 # L-D-b: The literal is not observable and there is no defended rule, so the literal cannot be defended.
                 labels.literal_labeling[literal].defended = False
             elif any([not labels.rule_labeling[contrary_rule].unsatisfiable and
                       not labels.rule_labeling[contrary_rule].out
                       for contrary_literal in literal.contraries_and_contradictories
-                      for contrary_rule in contrary_literal.children]):
+                      for contrary_rule in self.children[contrary_literal.s1]]):
                 # L-D-c: The literal is not observable and there is a defended or blocked rule for a contrary, so the
                 # literal cannot be defended.
                 labels.literal_labeling[literal].defended = False
 
-        if incomplete_argumentation_theory.is_queryable(literal):
-            if literal in incomplete_argumentation_theory.knowledge_base:
+        if iat.is_queryable(literal):
+            if literal in iat.knowledge_base:
                 # L-O-a: Observed literals cannot be out.
                 labels.literal_labeling[literal].out = False
-            elif all([any([contrary_contrary_literal in incomplete_argumentation_theory.knowledge_base
+            elif all([any([contrary_contrary_literal in iat.knowledge_base
                            for contrary_contrary_literal in contrary_literal.contraries_and_contradictories])
                       for contrary_literal in literal.contraries_and_contradictories]):
-                if all([not labels.rule_labeling[rule].out for rule in literal.children]):
+                if all([not labels.rule_labeling[rule].out for rule in self.children[literal.s1]]):
                     # L-O-b
                     labels.literal_labeling[literal].out = False
                 elif any([not labels.rule_labeling[rule].unsatisfiable and not labels.rule_labeling[rule].out
-                          for rule in literal.children]):
+                          for rule in self.children[literal.s1]]):
                     # L-O-c
                     labels.literal_labeling[literal].out = False
         else:
-            if all([not labels.rule_labeling[rule].out for rule in literal.children]):
+            if all([not labels.rule_labeling[rule].out for rule in self.children[literal.s1]]):
                 # L-O-d
                 labels.literal_labeling[literal].out = False
             elif any([not labels.rule_labeling[rule].unsatisfiable and not labels.rule_labeling[rule].out
-                      for rule in literal.children]):
+                      for rule in self.children[literal.s1]]):
                 # L-O-e
                 labels.literal_labeling[literal].out = False
         if all([not labels.rule_labeling[rule].defended and not labels.rule_labeling[rule].out and
-                not labels.rule_labeling[rule].blocked for rule in literal.children]):
+                not labels.rule_labeling[rule].blocked for rule in self.children[literal.s1]]):
             # L-O-f: There is no rule-based argument for the literal, so the literal cannot be out.
             labels.literal_labeling[literal].out = False
 
-        if incomplete_argumentation_theory.is_queryable(literal):
+        if iat.is_queryable(literal):
             # L-B-a: Observable literals cannot be blocked (only defended or unsatisfiable).
             labels.literal_labeling[literal].blocked = False
         elif all([not labels.rule_labeling[rule].defended and
-                  not labels.rule_labeling[rule].blocked for rule in literal.children]):
+                  not labels.rule_labeling[rule].blocked for rule in self.children[literal.s1]]):
             # L-B-b: There is no defended or blocked rule-based argument for the literal, so it cannot be blocked.
             labels.literal_labeling[literal].blocked = False
         elif all([not labels.rule_labeling[contrary_rule].blocked and
                   not labels.rule_labeling[contrary_rule].defended
                   for contrary_literal in literal.contraries_and_contradictories
-                  for contrary_rule in contrary_literal.children]):
-            if all([not labels.rule_labeling[rule].blocked for rule in literal.children]):
+                  for contrary_rule in self.children[contrary_literal.s1]]):
+            if all([not labels.rule_labeling[rule].blocked for rule in self.children[literal.s1]]):
                 # L-B-c: There is no rule-based counterargument that is strong enough.
                 labels.literal_labeling[literal].blocked = False
             elif any([not labels.rule_labeling[rule].unsatisfiable and not labels.rule_labeling[rule].out and
                       not labels.rule_labeling[rule].blocked
-                      for rule in literal.children]):
+                      for rule in self.children[literal.s1]]):
                 # L-B-d: There is a rule-based argument in the grounded extension.
                 labels.literal_labeling[literal].blocked = False
 
