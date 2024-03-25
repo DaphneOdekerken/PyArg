@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using the ASPIC+ functionalities &mdash; py_arg 2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=60dbed4a"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using the ABA functionalities" href="aba_examples.html" />
+    <link rel="prev" title="Using the abstract argumentation functionalities" href="abstract_examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            py_arg
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="abstract_examples.html">Using the abstract argumentation functionalities</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using the ASPIC+ functionalities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-an-aspic-argumentation-theory-from-scratch">Creating an ASPIC+ argumentation theory from scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#printing-all-arguments-and-their-properties">Printing all arguments and their properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#printing-all-attacks">Printing all attacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#printing-specific-attacks">Printing specific attacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-an-abstract-argumentation-framework">Creating an abstract argumentation framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#finding-extensions">Finding extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="aba_examples.html">Using the ABA functionalities</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py_arg</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Using the ASPIC+ functionalities</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/aspic_examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="using-the-aspic-functionalities">
+<h1>Using the ASPIC+ functionalities<a class="headerlink" href="#using-the-aspic-functionalities" title="Link to this heading"></a></h1>
+<p>In case you use the PyArg package <code class="docutils literal notranslate"><span class="pre">python-argumentation</span></code>, we provide
+below an example of some of its possibilities.</p>
+<section id="creating-an-aspic-argumentation-theory-from-scratch">
+<h2>Creating an ASPIC+ argumentation theory from scratch<a class="headerlink" href="#creating-an-aspic-argumentation-theory-from-scratch" title="Link to this heading"></a></h2>
+<p>The example below is taken from S.J. Modgil &amp; H. Prakken, A general
+account of argumentation with preferences. <em>Artificial Intelligence</em> 195
+(2013): 361-397.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_arg.aspic_classes.argumentation_system</span> <span class="kn">import</span> <span class="n">ArgumentationSystem</span>
+<span class="kn">from</span> <span class="nn">py_arg.aspic_classes.argumentation_theory</span> <span class="kn">import</span> <span class="n">ArgumentationTheory</span>
+<span class="kn">from</span> <span class="nn">py_arg.aspic_classes.defeasible_rule</span> <span class="kn">import</span> <span class="n">DefeasibleRule</span>
+<span class="kn">from</span> <span class="nn">py_arg.aspic_classes.literal</span> <span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">py_arg.aspic_classes.strict_rule</span> <span class="kn">import</span> <span class="n">StrictRule</span>
+
+
+<span class="k">def</span> <span class="nf">get_argumentation_theory</span><span class="p">():</span>
+    <span class="c1"># Language</span>
+    <span class="n">literal_str_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">]</span>
+    <span class="n">literal_str_list</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">literal_str</span> <span class="k">for</span> <span class="n">literal_str</span> <span class="ow">in</span> <span class="n">literal_str_list</span><span class="p">]</span>
+    <span class="n">literal_str_list</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;~&#39;</span> <span class="o">+</span> <span class="n">literal_str</span> <span class="k">for</span> <span class="n">literal_str</span> <span class="ow">in</span> <span class="n">literal_str_list</span><span class="p">]</span>
+    <span class="n">language</span> <span class="o">=</span> <span class="p">{</span><span class="n">literal_str</span><span class="p">:</span> <span class="n">Literal</span><span class="p">(</span><span class="n">literal_str</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">literal_str</span> <span class="ow">in</span> <span class="n">literal_str_list</span><span class="p">}</span>
+
+    <span class="c1"># Contradiction function</span>
+    <span class="n">contraries_and_contradictories</span> <span class="o">=</span> <span class="p">{</span><span class="n">literal_str</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">literal_str</span> <span class="ow">in</span> <span class="n">language</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+    <span class="k">for</span> <span class="n">literal_str</span> <span class="ow">in</span> <span class="n">language</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">literal_str</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">):</span>
+            <span class="n">contraries_and_contradictories</span><span class="p">[</span><span class="n">literal_str</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">language</span><span class="p">[</span><span class="n">literal_str</span><span class="p">[</span><span class="mi">1</span><span class="p">:]])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">contraries_and_contradictories</span><span class="p">[</span><span class="n">literal_str</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">language</span><span class="p">[</span><span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">literal_str</span><span class="p">])</span>
+
+    <span class="c1"># Strict rules</span>
+    <span class="n">strict_rules</span> <span class="o">=</span> <span class="p">[</span><span class="n">StrictRule</span><span class="p">(</span><span class="s1">&#39;s1&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">language</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">],</span> <span class="n">language</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]},</span> <span class="n">language</span><span class="p">[</span><span class="s1">&#39;-p&#39;</span><span class="p">])]</span>
+
+    <span class="c1"># Defeasible rules</span>
+    <span class="n">d1</span> <span class="o">=</span> <span class="n">DefeasibleRule</span><span class="p">(</span><span class="s1">&#39;d1&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">language</span><span class="p">[</span><span class="s1">&#39;~s&#39;</span><span class="p">]},</span> <span class="n">language</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">])</span>
+    <span class="n">d2</span> <span class="o">=</span> <span class="n">DefeasibleRule</span><span class="p">(</span><span class="s1">&#39;d2&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">language</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">]},</span> <span class="n">language</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">])</span>
+    <span class="n">d3</span> <span class="o">=</span> <span class="n">DefeasibleRule</span><span class="p">(</span><span class="s1">&#39;d3&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">language</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]},</span> <span class="n">language</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">])</span>
+    <span class="n">defeasible_rules</span> <span class="o">=</span> <span class="p">[</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">d3</span><span class="p">]</span>
+
+    <span class="c1"># n (naming from defeasible rules to literals) and updating the contradiction function</span>
+    <span class="k">for</span> <span class="n">defeasible_rule</span> <span class="ow">in</span> <span class="n">defeasible_rules</span><span class="p">:</span>
+        <span class="n">defeasible_rule_literal</span> <span class="o">=</span> <span class="n">Literal</span><span class="o">.</span><span class="n">from_defeasible_rule</span><span class="p">(</span><span class="n">defeasible_rule</span><span class="p">)</span>
+        <span class="n">defeasible_rule_literal_negation</span> <span class="o">=</span> <span class="n">Literal</span><span class="o">.</span><span class="n">from_defeasible_rule_negation</span><span class="p">(</span><span class="n">defeasible_rule</span><span class="p">)</span>
+        <span class="n">language</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">defeasible_rule_literal</span><span class="p">)]</span> <span class="o">=</span> <span class="n">defeasible_rule_literal</span>
+        <span class="n">language</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">defeasible_rule_literal_negation</span><span class="p">)]</span> <span class="o">=</span> <span class="n">defeasible_rule_literal_negation</span>
+        <span class="n">contraries_and_contradictories</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">defeasible_rule_literal</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="n">defeasible_rule_literal_negation</span><span class="p">]</span>
+        <span class="n">contraries_and_contradictories</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">defeasible_rule_literal_negation</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="n">defeasible_rule_literal</span><span class="p">]</span>
+
+    <span class="c1"># Argumentation system</span>
+    <span class="n">arg_sys</span> <span class="o">=</span> <span class="n">ArgumentationSystem</span><span class="p">(</span><span class="n">language</span><span class="p">,</span> <span class="n">contraries_and_contradictories</span><span class="p">,</span> <span class="n">strict_rules</span><span class="p">,</span> <span class="n">defeasible_rules</span><span class="p">)</span>
+
+    <span class="c1"># Knowledge base</span>
+    <span class="n">axioms</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ordinary_premises</span> <span class="o">=</span> <span class="p">[</span><span class="n">language</span><span class="p">[</span><span class="n">literal_str</span><span class="p">]</span> <span class="k">for</span> <span class="n">literal_str</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="s1">&#39;~s&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Argumentation theory</span>
+    <span class="n">arg_theory</span> <span class="o">=</span> <span class="n">ArgumentationTheory</span><span class="p">(</span><span class="n">arg_sys</span><span class="p">,</span> <span class="n">axioms</span><span class="p">,</span> <span class="n">ordinary_premises</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg_theory</span>
+</pre></div>
+</div>
+</section>
+<section id="printing-all-arguments-and-their-properties">
+<h2>Printing all arguments and their properties<a class="headerlink" href="#printing-all-arguments-and-their-properties" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">argumentation_theory</span> <span class="o">=</span> <span class="n">get_argumentation_theory</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">argument</span> <span class="ow">in</span> <span class="n">argumentation_theory</span><span class="o">.</span><span class="n">all_arguments</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The argument is: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">argument</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Conclusion: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">argument</span><span class="o">.</span><span class="n">conclusion</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Premises: {&#39;</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">premise</span><span class="p">)</span> <span class="k">for</span> <span class="n">premise</span> <span class="ow">in</span> <span class="n">argument</span><span class="o">.</span><span class="n">premises</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Strict rules: {&#39;</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">argument</span><span class="o">.</span><span class="n">strict_rules</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Defeasible rules: {&#39;</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">argument</span><span class="o">.</span><span class="n">defeasible_rules</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Top rule: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">argument</span><span class="o">.</span><span class="n">top_rule</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="printing-all-attacks">
+<h2>Printing all attacks<a class="headerlink" href="#printing-all-attacks" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">argumentation_theory</span> <span class="o">=</span> <span class="n">get_argumentation_theory</span><span class="p">()</span>
+
+<span class="c1"># All attacks, independent of type</span>
+<span class="k">for</span> <span class="n">attack</span> <span class="ow">in</span> <span class="n">argumentation_theory</span><span class="o">.</span><span class="n">all_attacks</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">attack</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="printing-specific-attacks">
+<h2>Printing specific attacks<a class="headerlink" href="#printing-specific-attacks" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">argumentation_theory</span> <span class="o">=</span> <span class="n">get_argumentation_theory</span><span class="p">()</span>
+
+<span class="c1"># All undercutters</span>
+<span class="n">all_underminers</span> <span class="o">=</span> <span class="p">[(</span><span class="n">argument_a</span><span class="p">,</span> <span class="n">argument_b</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">argument_a</span> <span class="ow">in</span> <span class="n">argumentation_theory</span><span class="o">.</span><span class="n">all_arguments</span>
+    <span class="k">for</span> <span class="n">argument_b</span> <span class="ow">in</span> <span class="n">argumentation_theory</span><span class="o">.</span><span class="n">all_arguments</span>
+    <span class="k">if</span> <span class="n">argumentation_theory</span><span class="o">.</span><span class="n">undermines</span><span class="p">(</span><span class="n">argument_a</span><span class="p">,</span> <span class="n">argument_b</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*Underminers:*&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">attack</span> <span class="ow">in</span> <span class="n">all_underminers</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">attack</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-an-abstract-argumentation-framework">
+<h2>Creating an abstract argumentation framework<a class="headerlink" href="#creating-an-abstract-argumentation-framework" title="Link to this heading"></a></h2>
+<p>Note: if no specific ordering is given, last link elitist ordering is
+chosen as default ordering</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arg_theory</span> <span class="o">=</span> <span class="n">get_argumentation_theory</span><span class="p">()</span>
+<span class="n">af</span> <span class="o">=</span> <span class="n">arg_theory</span><span class="o">.</span><span class="n">create_abstract_argumentation_framework</span><span class="p">(</span><span class="s1">&#39;af&#39;</span><span class="p">)</span>
+
+<span class="n">arg_for_r</span> <span class="o">=</span> <span class="n">af</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">&#39;r (ordinary premise)&#39;</span><span class="p">)</span>
+<span class="n">defeaters_of_r</span> <span class="o">=</span> <span class="n">arg_for_r</span><span class="o">.</span><span class="n">get_ingoing_defeat_arguments</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*Defeaters of the argument for r*&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">defeater</span> <span class="ow">in</span> <span class="n">defeaters_of_r</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">defeater</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="n">arg_for_not_r</span> <span class="o">=</span> <span class="n">af</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">&#39;-r (ordinary premise)&#39;</span><span class="p">)</span>
+<span class="n">defeated_by_not_r</span> <span class="o">=</span> <span class="n">arg_for_not_r</span><span class="o">.</span><span class="n">get_outgoing_defeat_arguments</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*Arguments defeated by the argument for not r*&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">defeated</span> <span class="ow">in</span> <span class="n">defeated_by_not_r</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">defeated</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="finding-extensions">
+<h2>Finding extensions<a class="headerlink" href="#finding-extensions" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_arg.algorithms.semantics.get_complete_extensions</span> <span class="kn">import</span> <span class="n">get_complete_extensions</span>
+<span class="kn">from</span> <span class="nn">py_arg.algorithms.semantics.get_grounded_extension</span> <span class="kn">import</span> <span class="n">get_grounded_extension</span>
+
+
+<span class="n">grounded_extension</span> <span class="o">=</span> <span class="n">get_grounded_extension</span><span class="p">(</span><span class="n">af</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*Grounded extension:*&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">grounded</span><span class="p">)</span> <span class="k">for</span> <span class="n">grounded</span> <span class="ow">in</span> <span class="n">grounded_extension</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="n">complete_extensions</span> <span class="o">=</span> <span class="n">get_complete_extensions</span><span class="p">(</span><span class="n">af</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*Complete extensions:*&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">complete_extension</span> <span class="ow">in</span> <span class="n">complete_extensions</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">complete</span><span class="p">)</span> <span class="k">for</span> <span class="n">complete</span> <span class="ow">in</span> <span class="n">complete_extension</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="abstract_examples.html" class="btn btn-neutral float-left" title="Using the abstract argumentation functionalities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="aba_examples.html" class="btn btn-neutral float-right" title="Using the ABA functionalities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daphne Odekerken.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
