@@ -19,8 +19,8 @@ next(S,S1) :- fg(S,X), S1 = S+1, S < state_max.                       % (5)
 final(S) :- next(S,S1), not next(S1,_). % not \exists _ .. % (6)
 
 % (7,8,9) Solutions (position values) calculation with length
-len(accepted,X,L)   :- fr(S,X), L = 2*S.   % Two plies = one e:  len = 0,2,4, ..
-len(defeated,X,L)    :- fg(S,X), L = 2*S-1. % Green is 1 ply behind: len = 1,3,5, ..
+len(accepted,X,L) :- fr(S,X), L = 2*S.   % Two plies = one e:  len = 0,2,4, ..
+len(defeated,X,L) :- fg(S,X), L = 2*S-1. % Green is 1 ply behind: len = 1,3,5, ..
 len(undefined,X,"∞") :- pos(X), not len(accepted,X,_), not len(defeated,X,_). % Gap = draws
 
 #show final/1.

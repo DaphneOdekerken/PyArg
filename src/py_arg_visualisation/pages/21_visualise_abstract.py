@@ -52,7 +52,7 @@ from py_arg.abstract_argumentation.semantics.\
 from py_arg_visualisation.functions.extensions_functions.\
     get_acceptance_strategy import get_acceptance_strategy
 from py_arg_visualisation.functions.graph_data_functions.get_af_dot_string \
-    import generate_plain_dot_string, generate_dot_strings
+    import generate_plain_dot_string, generate_dot_string
 from py_arg_visualisation.functions.graph_data_functions.\
     get_af_graph_data import get_argumentation_framework_graph_data
 from py_arg_visualisation.functions.import_functions.\
@@ -176,11 +176,11 @@ right_column = dbc.Col([
         dbc.Row([
             dbc.Card(
                 dcc.Tabs([
-                    dcc.Tab(label='AF visualisation', children=[
+                    dcc.Tab(label='Default visualisation', children=[
                         visdcc.Network(data={'nodes': [], 'edges': []},
                                        id='abstract-argumentation-graph',
                                        options={'height': '500px'})]),
-                    dcc.Tab(label='Explanation visualisation', children=[
+                    dcc.Tab(label='Layered visualisation', children=[
                         html.Div([
                             dash_interactive_graphviz.DashInteractiveGraphviz(
                                 id='explanation-graph',
@@ -281,8 +281,11 @@ def create_abstract_argumentation_framework(
     data = get_argumentation_framework_graph_data(
         arg_framework, selected_arguments, color_blind_mode)
 
-    # dot_source = generate_plain_dot_string(arg_framework)
-    dot_source = generate_dot_strings(arg_framework, color_blind_mode)[0]
+    if not selected_arguments:
+        dot_source = generate_plain_dot_string(arg_framework)
+    else:
+        dot_source = generate_dot_string(
+            arg_framework, selected_arguments, color_blind_mode)
     return data, dot_source
 
 
