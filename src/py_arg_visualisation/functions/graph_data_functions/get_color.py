@@ -10,6 +10,10 @@ def get_color(required_color: str, color_blind_mode: bool) -> str:
             return '#ffffbf'
         if required_color == 'red':
             return '#d7191c'
+        if required_color == 'light-green':
+            return '#4c9bd6'
+        if required_color == 'light-red':
+            return '#ff393c'
     else:
         if required_color == 'gray':
             return '#AAAAAA'
@@ -21,4 +25,10 @@ def get_color(required_color: str, color_blind_mode: bool) -> str:
             return '#fff2cc'
         if required_color == 'red':
             return '#e60c3f'
+        if required_color == 'light-green':
+            return '#4ae2cb'
+        if required_color == 'light-red':
+            return '#ff2c5f'
+    if required_color == 'black':
+        return '#000000'
     raise NotImplementedError

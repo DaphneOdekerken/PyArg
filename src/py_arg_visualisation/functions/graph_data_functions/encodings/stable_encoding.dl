@@ -1,0 +1,5 @@
+defeated(X) :- attack(Y,X), accepted(Y).
+accepted(X) :- pos(X), not defeated(X).
+
+#show defeated/1.
+#show accepted/1.

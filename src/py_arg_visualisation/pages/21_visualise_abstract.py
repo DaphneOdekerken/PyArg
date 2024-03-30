@@ -7,6 +7,7 @@ import visdcc
 from dash import html, callback, Input, Output, State, ALL, dcc
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
+import dash_interactive_graphviz
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
@@ -50,6 +51,8 @@ from py_arg.abstract_argumentation.semantics.\
     get_argumentation_framework_extensions
 from py_arg_visualisation.functions.extensions_functions.\
     get_acceptance_strategy import get_acceptance_strategy
+from py_arg_visualisation.functions.graph_data_functions.get_af_dot_string \
+    import generate_plain_dot_string, generate_dot_strings
 from py_arg_visualisation.functions.graph_data_functions.\
     get_af_graph_data import get_argumentation_framework_graph_data
 from py_arg_visualisation.functions.import_functions.\
@@ -168,13 +171,32 @@ left_column = dbc.Col(
                           title='Explanation', item_id='Explanation')
     ], id='abstract-evaluation-accordion')
 )
+
 right_column = dbc.Col([
-    dbc.Row([
-        dbc.Card(visdcc.Network(data={'nodes': [], 'edges': []},
-                                id='abstract-argumentation-graph',
-                                options={'height': '500px'}), body=True),
-    ])
-])
+        dbc.Row([
+            dbc.Card(
+                dcc.Tabs([
+                    dcc.Tab(label='AF visualisation', children=[
+                        visdcc.Network(data={'nodes': [], 'edges': []},
+                                       id='abstract-argumentation-graph',
+                                       options={'height': '500px'})]),
+                    dcc.Tab(label='Explanation visualisation', children=[
+                        html.Div([
+                            dash_interactive_graphviz.DashInteractiveGraphviz(
+                                id='explanation-graph',
+                                style={'height': '500px'}
+                            )
+                            # dbc.Checklist(
+                            #     options=[{'label': 'Show contradictories',
+                            #               'value': 'show_contra'}],
+                            #     value=['show_contra'],
+                            #     inline=True, switch=True,
+                            #     id='22-aspic-graph-show-contradictories'
+                            # ),
+                            ], style={'height': '500px'})
+                    ]),
+                ]))])])
+
 layout_abstract = dbc.Row([left_column, right_column])
 layout = html.Div([html.H1(
     'Visualisation of abstract argumentation frameworks'), layout_abstract])
@@ -234,10 +256,11 @@ def generate_abstract_argumentation_framework(
 
 @callback(
     Output('abstract-argumentation-graph', 'data'),
+    Output('explanation-graph', 'dot_source'),
     Input('abstract-arguments', 'value'),
     Input('abstract-attacks', 'value'),
     Input('selected-argument-store-abstract', 'data'),
-    State('color-blind-mode', 'on'),
+    Input('color-blind-mode', 'on'),
     prevent_initial_call=True
 )
 def create_abstract_argumentation_framework(
@@ -257,7 +280,10 @@ def create_abstract_argumentation_framework(
 
     data = get_argumentation_framework_graph_data(
         arg_framework, selected_arguments, color_blind_mode)
-    return data
+
+    # dot_source = generate_plain_dot_string(arg_framework)
+    dot_source = generate_dot_strings(arg_framework, color_blind_mode)[0]
+    return data, dot_source
 
 
 @callback(
