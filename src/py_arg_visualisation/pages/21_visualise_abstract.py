@@ -185,14 +185,16 @@ right_column = dbc.Col([
                             dash_interactive_graphviz.DashInteractiveGraphviz(
                                 id='explanation-graph',
                                 style={'height': '500px'}
+                            ),
+                            html.Label('Layout:', style={'margin-top': '50px', 'display': 'inline-block'}),
+                            dcc.Dropdown(
+                                placeholder="Layout",
+                                options=['LR', 'RL', 'BT', 'TB'],
+                                value='BT',
+                                id='21-abstract-graph-layout',
+                                clearable=False,
+                                style={'width': '80px', 'position': 'absolute', 'top': '50px', 'left': '33px'}
                             )
-                            # dbc.Checklist(
-                            #     options=[{'label': 'Show contradictories',
-                            #               'value': 'show_contra'}],
-                            #     value=['show_contra'],
-                            #     inline=True, switch=True,
-                            #     id='22-aspic-graph-show-contradictories'
-                            # ),
                             ], style={'height': '500px'})
                     ]),
                 ]))])])
@@ -207,7 +209,7 @@ layout = html.Div([html.H1(
     Output('abstract-attacks', 'value'),
     Input('generate-random-af-button', 'n_clicks'),
     Input('upload-af', 'contents'),
-    State('upload-af', 'filename')
+    State('upload-af', 'filename'),
 )
 def generate_abstract_argumentation_framework(
         _nr_of_clicks_random: int, af_content: str, af_filename: str):
@@ -261,11 +263,13 @@ def generate_abstract_argumentation_framework(
     Input('abstract-attacks', 'value'),
     Input('selected-argument-store-abstract', 'data'),
     Input('color-blind-mode', 'on'),
+    Input('21-abstract-graph-layout', 'value'),
     prevent_initial_call=True
 )
 def create_abstract_argumentation_framework(
         arguments: str, attacks: str, selected_arguments: Dict[str, List[str]],
-        color_blind_mode: bool):
+        color_blind_mode: bool, layout: str):
+    print(layout)
     """
     Send the AF data to the graph for plotting.
     """
@@ -282,10 +286,10 @@ def create_abstract_argumentation_framework(
         arg_framework, selected_arguments, color_blind_mode)
 
     if not selected_arguments:
-        dot_source = generate_plain_dot_string(arg_framework)
+        dot_source = generate_plain_dot_string(arg_framework, layout)
     else:
         dot_source = generate_dot_string(
-            arg_framework, selected_arguments, color_blind_mode)
+            arg_framework, selected_arguments, color_blind_mode,layout)
     return data, dot_source
 
 
