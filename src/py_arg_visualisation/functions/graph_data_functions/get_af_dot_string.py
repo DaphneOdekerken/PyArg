@@ -8,9 +8,9 @@ from py_arg_visualisation.functions.graph_data_functions.get_color import \
 PATH_TO_ENCODINGS = pathlib.Path(__file__).parent / 'encodings'
 
 
-def generate_plain_dot_string(argumentation_framework):
+def generate_plain_dot_string(argumentation_framework, layout=any):
     dot_string = "digraph {\n"
-    dot_string += "    // Node defaults can be set here if needed\n"
+    dot_string += " rankdir={}  // Node defaults can be set here if needed\n".format(layout)
 
     # Adding node information
     for argument in argumentation_framework.arguments:
@@ -26,11 +26,11 @@ def generate_plain_dot_string(argumentation_framework):
 
 
 def generate_dot_string(
-        argumentation_framework, selected_arguments, color_blind_mode=False):
+        argumentation_framework, selected_arguments, color_blind_mode=False, layout=any):
     gr_status_by_arg, number_by_argument = get_numbered_grounded_extension(
         argumentation_framework)
     dot_string = "digraph {\n"
-    dot_string += "    // Node defaults can be set here if needed\n"
+    dot_string +=" rankdir={}  // Node defaults can be set here if needed\n".format(layout)
 
     # Adding node information
     is_extension_representation = False
@@ -89,7 +89,11 @@ def generate_dot_string(
 
             constraint = False
             style = 'solid'
-            label = from_argument_number
+            try:
+                num = int(from_argument_number)
+                label = str( num + 1)
+            except ValueError:
+                label = from_argument_number
             if from_argument_grounded_state == 'accepted' and \
                     to_argument_grounded_state == 'defeated':
                 full_color = get_color('green', color_blind_mode)
@@ -100,7 +104,7 @@ def generate_dot_string(
                     to_argument_grounded_state == 'defeated':
                 constraint = True
                 full_color = get_color('black', color_blind_mode)
-                style = 'dotted'
+                style = 'dashed'
                 label = ''
             else:
                 grounded_edge_color = get_color('yellow', color_blind_mode)
