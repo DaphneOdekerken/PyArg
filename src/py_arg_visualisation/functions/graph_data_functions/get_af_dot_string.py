@@ -120,7 +120,7 @@ def generate_dot_string(
                         f'{extension_edge_color}:{grounded_edge_color}'
                 elif from_argument_extension_state == 'undefined' and \
                         to_argument_extension_state == 'undefined':
-                    full_color = get_color('yellow', color_blind_mode)
+                    full_color = get_color('dark-yellow', color_blind_mode)
                 else:
                     extension_edge_color = get_color('black', color_blind_mode)
                     full_color = \
