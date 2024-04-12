@@ -270,41 +270,39 @@ def generate_abstract_argumentation_framework(
     Input('selected-argument-store-abstract', 'data'),
     Input('color-blind-mode', 'on'),
     Input('21-abstract-graph-layout', 'value'),
-    Input("abstract-evaluation-accordion", "active_item"),
-    State("selected-argument-store-abstract", "data"),
+    Input('abstract-evaluation-accordion', 'active_item'),
     prevent_initial_call=True
 )
 def create_abstract_argumentation_framework(
         arguments: str, attacks: str, selected_arguments: Dict[str, List[str]],
-        color_blind_mode: bool, dot_layout: str, active_item: str,
-        stored_selected_arguments: Dict[str, List[str]], ):
+        color_blind_mode: bool, dot_layout: str, active_item: str):
     """
     Send the AF data to the graph for plotting.
     """
+
+    # Read the argumentation framework; in case of an error, display nothing.
     try:
         arg_framework = read_argumentation_framework(arguments, attacks)
     except ValueError:
         arg_framework = AbstractArgumentationFramework()
 
-    if dash.callback_context.triggered_id != \
-            'selected-argument-store-abstract':
+    # Do not display old colors if the argumentation framework has changed.
+    if dash.ctx.triggered_id in ['abstract-arguments', 'abstract-attacks']:
+        selected_arguments = None
+
+    # Do not display colors if the argumentation framework tab is open.
+    if active_item == 'ArgumentationFramework':
         selected_arguments = None
 
     data = get_argumentation_framework_graph_data(
         arg_framework, selected_arguments, color_blind_mode)
 
-    if active_item == 'ArgumentationFramework' or \
-            not stored_selected_arguments:
-        dot_source = generate_plain_dot_string(arg_framework, dot_layout)
-    else:
-        selected_arguments = (
-            stored_selected_arguments
-            if selected_arguments is None and active_item != 'ArgumentationFramework'
-            else selected_arguments
-        )
+    if selected_arguments:
         dot_source = generate_dot_string(
-            arg_framework, selected_arguments, color_blind_mode, dot_layout
-        )
+            arg_framework, selected_arguments, color_blind_mode, dot_layout)
+    else:
+        dot_source = generate_plain_dot_string(arg_framework, dot_layout)
+
     return data, dot_source
 
 
