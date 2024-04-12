@@ -11,51 +11,51 @@ import dash_interactive_graphviz
 
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
-from py_arg.abstract_argumentation.generators.\
+from py_arg.abstract_argumentation.generators. \
     abstract_argumentation_framework_generator import \
     AbstractArgumentationFrameworkGenerator
-from py_arg.abstract_argumentation.import_export.\
+from py_arg.abstract_argumentation.import_export. \
     argumentation_framework_from_aspartix_format_reader import \
     ArgumentationFrameworkFromASPARTIXFormatReader
-from py_arg.abstract_argumentation.import_export.\
+from py_arg.abstract_argumentation.import_export. \
     argumentation_framework_from_iccma23_format_reader import \
     ArgumentationFrameworkFromICCMA23FormatReader
-from py_arg.abstract_argumentation.import_export.\
+from py_arg.abstract_argumentation.import_export. \
     argumentation_framework_from_json_reader import \
     ArgumentationFrameworkFromJsonReader
-from py_arg.abstract_argumentation.import_export.\
+from py_arg.abstract_argumentation.import_export. \
     argumentation_framework_from_trivial_graph_format_reader import \
     ArgumentationFrameworkFromTrivialGraphFormatReader
-from py_arg.abstract_argumentation.import_export.\
+from py_arg.abstract_argumentation.import_export. \
     argumentation_framework_to_aspartix_format_writer import \
     ArgumentationFrameworkToASPARTIXFormatWriter
-from py_arg.abstract_argumentation.import_export.\
+from py_arg.abstract_argumentation.import_export. \
     argumentation_framework_to_iccma23_format_writer import \
     ArgumentationFrameworkToICCMA23FormatWriter
-from py_arg.abstract_argumentation.import_export.\
+from py_arg.abstract_argumentation.import_export. \
     argumentation_framework_to_json_writer import \
     ArgumentationFrameworkToJSONWriter
-from py_arg.abstract_argumentation.import_export.\
+from py_arg.abstract_argumentation.import_export. \
     argumentation_framework_to_trivial_graph_format_writer import \
     ArgumentationFrameworkToTrivialGraphFormatWriter
-from py_arg_visualisation.functions.explanations_functions.\
+from py_arg_visualisation.functions.explanations_functions. \
     explanation_function_options import \
     EXPLANATION_FUNCTION_OPTIONS
-from py_arg_visualisation.functions.explanations_functions.\
+from py_arg_visualisation.functions.explanations_functions. \
     get_af_explanations import \
     get_argumentation_framework_explanations
 from py_arg.abstract_argumentation.semantics.get_accepted_arguments import \
     get_accepted_arguments
-from py_arg.abstract_argumentation.semantics.\
+from py_arg.abstract_argumentation.semantics. \
     get_argumentation_framework_extensions import \
     get_argumentation_framework_extensions
-from py_arg_visualisation.functions.extensions_functions.\
+from py_arg_visualisation.functions.extensions_functions. \
     get_acceptance_strategy import get_acceptance_strategy
 from py_arg_visualisation.functions.graph_data_functions.get_af_dot_string \
     import generate_plain_dot_string, generate_dot_string
-from py_arg_visualisation.functions.graph_data_functions.\
+from py_arg_visualisation.functions.graph_data_functions. \
     get_af_graph_data import get_argumentation_framework_graph_data
-from py_arg_visualisation.functions.import_functions.\
+from py_arg_visualisation.functions.import_functions. \
     read_argumentation_framework_functions import \
     read_argumentation_framework
 
@@ -72,10 +72,10 @@ def get_abstract_setting_specification_div():
                 'Generate random',
                 id='generate-random-af-button', n_clicks=0,
                 className='w-100')),
-                     dbc.Col(dcc.Upload(dbc.Button(
-                         'Open existing AF', className='w-100'),
-                         id='upload-af'))
-                     ], className='mt-2'),
+                dbc.Col(dcc.Upload(dbc.Button(
+                    'Open existing AF', className='w-100'),
+                    id='upload-af'))
+            ], className='mt-2'),
             dbc.Row([
                 dbc.Col([
                     html.B('Arguments'),
@@ -165,7 +165,7 @@ left_column = dbc.Col(
     dbc.Accordion([
         dbc.AccordionItem(get_abstract_setting_specification_div(),
                           title='Abstract Argumentation Framework',
-                          item_id="Plain_AF"),
+                          item_id='ArgumentationFramework'),
         dbc.AccordionItem(get_abstract_evaluation_div(),
                           title='Evaluation', item_id='Evaluation'),
         dbc.AccordionItem(get_abstract_explanation_div(),
@@ -174,31 +174,36 @@ left_column = dbc.Col(
 )
 
 right_column = dbc.Col([
-        dbc.Row([
-            dbc.Card(
-                dcc.Tabs([
-                    dcc.Tab(label='Default visualisation', children=[
-                        visdcc.Network(data={'nodes': [], 'edges': []},
-                                       id='abstract-argumentation-graph',
-                                       options={'height': '500px'})]),
-                    dcc.Tab(label='Layered visualisation', children=[
-                        html.Div([
-                            dash_interactive_graphviz.DashInteractiveGraphviz(
-                                id='explanation-graph',
-                                style={'height': '500px'}
-                            ),
-                            html.Label('Layout:', style={'margin-top': '50px', 'display': 'inline-block'}),
-                            dcc.Dropdown(
-                                placeholder="Layout",
-                                options=['LR', 'RL', 'BT', 'TB'],
+    dbc.Row([
+        dbc.Card(
+            dcc.Tabs([
+                dcc.Tab(label='Default visualisation', children=[
+                    visdcc.Network(data={'nodes': [], 'edges': []},
+                                   id='abstract-argumentation-graph',
+                                   options={'height': '500px'})]),
+                dcc.Tab(label='Layered visualisation', children=[
+                    dbc.Row([
+                        dbc.Col(html.B('Layout')),
+                        dbc.Col(
+                            dbc.Select(
+                                options=[
+                                    {'label': 'Left to right', 'value': 'LR'},
+                                    {'label': 'Right to left', 'value': 'RL'},
+                                    {'label': 'Bottom to top', 'value': 'BT'},
+                                    {'label': 'Top to bottom', 'value': 'TB'}
+                                ],
                                 value='BT',
                                 id='21-abstract-graph-layout',
-                                clearable=False,
-                                style={'width': '80px', 'position': 'absolute', 'top': '50px', 'left': '33px'}
                             )
-                            ], style={'height': '500px'})
+                        )
                     ]),
-                ]))])])
+                    html.Div([
+                        dash_interactive_graphviz.DashInteractiveGraphviz(
+                            id='explanation-graph',
+                            style={'height': '500px'}
+                        )], style={'height': '500px'}),
+                ]),
+            ]))])])
 
 layout_abstract = dbc.Row([left_column, right_column])
 layout = html.Div([html.H1(
@@ -236,13 +241,13 @@ def generate_abstract_argumentation_framework(
             opened_af = ArgumentationFrameworkFromJsonReader().from_json(
                 json.loads(decoded))
         elif af_filename.upper().endswith('.TGF'):
-            opened_af = ArgumentationFrameworkFromTrivialGraphFormatReader.\
+            opened_af = ArgumentationFrameworkFromTrivialGraphFormatReader. \
                 from_tgf(decoded.decode(), name)
         elif af_filename.upper().endswith('.APX'):
-            opened_af = ArgumentationFrameworkFromASPARTIXFormatReader.\
+            opened_af = ArgumentationFrameworkFromASPARTIXFormatReader. \
                 from_apx(decoded.decode(), name)
         elif af_filename.upper().endswith('.ICCMA23'):
-            opened_af = ArgumentationFrameworkFromICCMA23FormatReader.\
+            opened_af = ArgumentationFrameworkFromICCMA23FormatReader. \
                 from_iccma23(decoded.decode(), name)
         else:
             raise NotImplementedError('This file format is currently not '
@@ -272,7 +277,7 @@ def generate_abstract_argumentation_framework(
 def create_abstract_argumentation_framework(
         arguments: str, attacks: str, selected_arguments: Dict[str, List[str]],
         color_blind_mode: bool, dot_layout: str, active_item: str,
-        stored_selected_arguments: Dict[str, List[str]],):
+        stored_selected_arguments: Dict[str, List[str]], ):
     """
     Send the AF data to the graph for plotting.
     """
@@ -288,12 +293,13 @@ def create_abstract_argumentation_framework(
     data = get_argumentation_framework_graph_data(
         arg_framework, selected_arguments, color_blind_mode)
 
-    if active_item == "Plain_AF" or not stored_selected_arguments:
+    if active_item == 'ArgumentationFramework' or \
+            not stored_selected_arguments:
         dot_source = generate_plain_dot_string(arg_framework, dot_layout)
     else:
         selected_arguments = (
             stored_selected_arguments
-            if selected_arguments is None and active_item != "Plain_AF"
+            if selected_arguments is None and active_item != 'ArgumentationFramework'
             else selected_arguments
         )
         dot_source = generate_dot_string(
@@ -487,5 +493,5 @@ def derive_explanations_abstract_argumentation_framework(
                         html.Ul([html.Li(str(explanation_value).replace(
                             'set()', '{}'))
                             for explanation_value in explanation_values])])
-                     for explanation_key, explanation_values in
+                        for explanation_key, explanation_values in
                         explanations.items()])
