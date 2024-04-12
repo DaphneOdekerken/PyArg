@@ -164,7 +164,8 @@ def get_abstract_explanation_div():
 left_column = dbc.Col(
     dbc.Accordion([
         dbc.AccordionItem(get_abstract_setting_specification_div(),
-                          title='Abstract Argumentation Framework'),
+                          title='Abstract Argumentation Framework',
+                          item_id="Plain_AF"),
         dbc.AccordionItem(get_abstract_evaluation_div(),
                           title='Evaluation', item_id='Evaluation'),
         dbc.AccordionItem(get_abstract_explanation_div(),
@@ -185,14 +186,16 @@ right_column = dbc.Col([
                             dash_interactive_graphviz.DashInteractiveGraphviz(
                                 id='explanation-graph',
                                 style={'height': '500px'}
+                            ),
+                            html.Label('Layout:', style={'margin-top': '50px', 'display': 'inline-block'}),
+                            dcc.Dropdown(
+                                placeholder="Layout",
+                                options=['LR', 'RL', 'BT', 'TB'],
+                                value='BT',
+                                id='21-abstract-graph-layout',
+                                clearable=False,
+                                style={'width': '80px', 'position': 'absolute', 'top': '50px', 'left': '33px'}
                             )
-                            # dbc.Checklist(
-                            #     options=[{'label': 'Show contradictories',
-                            #               'value': 'show_contra'}],
-                            #     value=['show_contra'],
-                            #     inline=True, switch=True,
-                            #     id='22-aspic-graph-show-contradictories'
-                            # ),
                             ], style={'height': '500px'})
                     ]),
                 ]))])])
@@ -207,7 +210,7 @@ layout = html.Div([html.H1(
     Output('abstract-attacks', 'value'),
     Input('generate-random-af-button', 'n_clicks'),
     Input('upload-af', 'contents'),
-    State('upload-af', 'filename')
+    State('upload-af', 'filename'),
 )
 def generate_abstract_argumentation_framework(
         _nr_of_clicks_random: int, af_content: str, af_filename: str):
@@ -261,11 +264,15 @@ def generate_abstract_argumentation_framework(
     Input('abstract-attacks', 'value'),
     Input('selected-argument-store-abstract', 'data'),
     Input('color-blind-mode', 'on'),
+    Input('21-abstract-graph-layout', 'value'),
+    Input("abstract-evaluation-accordion", "active_item"),
+    State("selected-argument-store-abstract", "data"),
     prevent_initial_call=True
 )
 def create_abstract_argumentation_framework(
         arguments: str, attacks: str, selected_arguments: Dict[str, List[str]],
-        color_blind_mode: bool):
+        color_blind_mode: bool, dot_layout: str, active_item: str,
+        stored_selected_arguments: Dict[str, List[str]],):
     """
     Send the AF data to the graph for plotting.
     """
@@ -281,11 +288,17 @@ def create_abstract_argumentation_framework(
     data = get_argumentation_framework_graph_data(
         arg_framework, selected_arguments, color_blind_mode)
 
-    if not selected_arguments:
-        dot_source = generate_plain_dot_string(arg_framework)
+    if active_item == "Plain_AF" or not stored_selected_arguments:
+        dot_source = generate_plain_dot_string(arg_framework, dot_layout)
     else:
+        selected_arguments = (
+            stored_selected_arguments
+            if selected_arguments is None and active_item != "Plain_AF"
+            else selected_arguments
+        )
         dot_source = generate_dot_string(
-            arg_framework, selected_arguments, color_blind_mode)
+            arg_framework, selected_arguments, color_blind_mode, dot_layout
+        )
     return data, dot_source
 
 
