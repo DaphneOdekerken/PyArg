@@ -286,10 +286,6 @@ def create_abstract_argumentation_framework(
     except ValueError:
         arg_framework = AbstractArgumentationFramework()
 
-    # Do not display old colors if the argumentation framework has changed.
-    if dash.ctx.triggered_id in ['abstract-arguments', 'abstract-attacks']:
-        selected_arguments = None
-
     # Do not display colors if the argumentation framework tab is open.
     if active_item == 'ArgumentationFramework':
         selected_arguments = None
@@ -420,15 +416,27 @@ def evaluate_abstract_argumentation_framework(arguments: str, attacks: str,
     Output('selected-argument-store-abstract', 'data'),
     Input({'type': 'extension-button-abstract', 'index': ALL}, 'n_clicks'),
     Input({'type': 'argument-button-abstract', 'index': ALL}, 'n_clicks'),
+    Input('abstract-arguments', 'value'),
+    Input('abstract-attacks', 'value'),
     State('selected-argument-store-abstract', 'data'),
 )
 def mark_extension_or_argument_in_graph(_nr_of_clicks_extension_values,
                                         _nr_of_clicks_argument_values,
+                                        _arguments, _attacks,
                                         old_selected_data: List[str]):
+    # Remove stored selected arguments after any updates in arguments/attacks.
+    if dash.ctx.triggered_id in ['abstract-arguments', 'abstract-attacks']:
+        return []
+
+    # Find the triggered button.
     button_clicked_id = \
         dash.callback_context.triggered[0]['prop_id'].split('.')[0]
+
+    # No triggered button, keep old selection.
     if button_clicked_id == '':
         return old_selected_data
+
+    # Update selected argument based on the clicked button.
     button_clicked_id_content = json.loads(button_clicked_id)
     button_clicked_id_type = button_clicked_id_content['type']
     button_clicked_id_index = button_clicked_id_content['index']
@@ -440,6 +448,7 @@ def mark_extension_or_argument_in_graph(_nr_of_clicks_extension_values,
                 'red': out_part.split('+')}
     elif button_clicked_id_type == 'argument-button-abstract':
         return {'blue': [button_clicked_id_index]}
+
     return []
 
 
