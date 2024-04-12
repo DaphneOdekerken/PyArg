@@ -124,7 +124,7 @@ def generate_dot_string(
                 else:
                     extension_edge_color = get_color('black', color_blind_mode)
                     full_color = \
-                        f'{extension_edge_color}:{grounded_edge_color}'
+                        f'{extension_edge_color}'
                     style = 'dashed'
                     label = ''
 
