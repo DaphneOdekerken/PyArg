@@ -25,7 +25,7 @@ def apply(extension_set: Set) -> ABAF:
     rules = abaf_adm_star.rules
     for ext_a, ext_b in aux.tuples(aux.reduce(extension_set).difference(frozenset())):
         for a in aux.unique_big_c(frozenset(set(ext_a).union(set(ext_b))), aux.reduce(extension_set)):
-            x_a_c = 'x_' + a + '_c'
+            x_a_c = 'χ_' + a + '_c'
             rules.add(Rule('', set(ext_a).union(set(ext_b)), x_a_c))
 
     return ABAF(assumptions, rules, language, contraries)

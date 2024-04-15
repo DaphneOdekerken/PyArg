@@ -1,3 +1,5 @@
+from py_arg.algorithms.classes.connected_literal import \
+    connect_parents_and_children
 from py_arg.algorithms.stability.stability_labels import StabilityLabels
 from py_arg.aspic_classes.literal import Literal
 from py_arg.aspic_classes.rule import Rule
@@ -17,10 +19,22 @@ class FourBoolRelevanceLister:
         self.b_relevant_rule = None
         self.four_bool_labels = None
         self.relevance_visited = None
+        self.parents = None
+        self.children = None
 
-    def update(self, incomplete_argumentation_theory: IncompleteArgumentationTheory, four_bool_labels: StabilityLabels):
-        literals = incomplete_argumentation_theory.argumentation_system.language.values()
-        rules = incomplete_argumentation_theory.argumentation_system.rules
+    def update(self, iat: IncompleteArgumentationTheory,
+               four_bool_labels: StabilityLabels,
+               parents=None,
+               children=None):
+        literals = iat.argumentation_system.language.values()
+        rules = iat.argumentation_system.rules
+
+        if parents and children:
+            self.parents = parents
+            self.children = children
+        else:
+            # Connect literals, so we can ask for their children and parents
+            self.parents, self.children = connect_parents_and_children(iat)
 
         self.u_relevant_literal = {literal: set() for literal in literals}
         self.d_relevant_literal = {literal: set() for literal in literals}
@@ -36,18 +50,18 @@ class FourBoolRelevanceLister:
         # Start by collecting relevant observables of leaves (or-nodes for which there is no rule) and observables
         nodes_to_update_relevancy_round = \
             [literal for literal in literals
-             if not literal.children or incomplete_argumentation_theory.is_queryable(literal)]
+             if not self.children[literal.s1] or iat.is_queryable(literal)]
 
         while nodes_to_update_relevancy_round:
             # Update literals
             new_rules_to_update_relevancy = set()
             for literal in nodes_to_update_relevancy_round:
                 old_relevancy = self._get_current_relevancy_for_literal(literal)
-                self._update_relevant_literals_for_literal(incomplete_argumentation_theory,
-                                                           literal, incomplete_argumentation_theory.knowledge_base)
+                self._update_relevant_literals_for_literal(iat,
+                                                           literal, iat.knowledge_base)
                 new_relevancy = self._get_current_relevancy_for_literal(literal)
                 if old_relevancy != new_relevancy:
-                    new_rules_to_update_relevancy = new_rules_to_update_relevancy | set(literal.parents)
+                    new_rules_to_update_relevancy = new_rules_to_update_relevancy | set(self.parents[literal.s1])
             nodes_to_update_relevancy_round = new_rules_to_update_relevancy
 
             # Update rules
@@ -100,7 +114,7 @@ class FourBoolRelevanceLister:
                                                           for contrary in literal.contraries_and_contradictories]):
                     u_relevant.add(literal)
 
-            for rule in literal.children:
+            for rule in self.children[literal.s1]:
                 if self._rule_label(rule).unsatisfiable:
                     u_relevant = u_relevant | self.u_relevant_rule[rule]
 
@@ -119,13 +133,13 @@ class FourBoolRelevanceLister:
             else:
                 if all([self._rule_label(rule).unsatisfiable or self._rule_label(rule).out
                         or self._rule_label(rule).blocked
-                        for rule in literal.children]):
-                    for rule in literal.children:
+                        for rule in self.children[literal.s1]]):
+                    for rule in self.children[literal.s1]:
                         if self._rule_label(rule).defended:
                             d_relevant = d_relevant | self.d_relevant_rule[rule]
 
                 for contrary in literal.contraries_and_contradictories:
-                    for contrary_rule in contrary.children:
+                    for contrary_rule in self.children[contrary.s1]:
                         if self._rule_label(contrary_rule).defended or self._rule_label(contrary_rule).blocked:
                             if self._rule_label(contrary_rule).unsatisfiable:
                                 d_relevant = d_relevant | self.u_relevant_rule[contrary_rule]
@@ -138,8 +152,8 @@ class FourBoolRelevanceLister:
         o_relevant = set()
 
         if self._lit_label(literal).out:
-            if all([self._rule_label(rule).unsatisfiable for rule in literal.children]):
-                for rule in literal.children:
+            if all([self._rule_label(rule).unsatisfiable for rule in self.children[literal.s1]]):
+                for rule in self.children[literal.s1]:
                     if self._rule_label(rule).defended:
                         o_relevant = o_relevant | self.d_relevant_rule[rule]
                     if self._rule_label(rule).out:
@@ -154,10 +168,10 @@ class FourBoolRelevanceLister:
             else:
                 if all([self._rule_label(rule).unsatisfiable or self._rule_label(rule).defended
                         or self._rule_label(rule).blocked
-                        for rule in literal.children]):
-                    for rule in literal.children:
+                        for rule in self.children[literal.s1]]):
+                    for rule in self.children[literal.s1]:
                         o_relevant = o_relevant | self.o_relevant_rule[rule]
-                for rule in literal.children:
+                for rule in self.children[literal.s1]:
                     if self._rule_label(rule).defended or self._rule_label(rule).blocked:
                         if self._rule_label(rule).unsatisfiable:
                             o_relevant = o_relevant | self.u_relevant_rule[rule]
@@ -170,29 +184,29 @@ class FourBoolRelevanceLister:
         b_relevant = set()
 
         if self._lit_label(literal).blocked and not incomplete_argumentation_theory.is_queryable(literal):
-            if all([self._rule_label(rule).unsatisfiable or self._rule_label(rule).out for rule in literal.children]):
-                for rule in literal.children:
+            if all([self._rule_label(rule).unsatisfiable or self._rule_label(rule).out for rule in self.children[literal.s1]]):
+                for rule in self.children[literal.s1]:
                     if self._rule_label(rule).defended:
                         b_relevant = b_relevant | self.d_relevant_rule[rule]
                     if self._rule_label(rule).blocked:
                         b_relevant = b_relevant | self.b_relevant_rule[rule]
 
             if all([self._rule_label(contrary_rule).unsatisfiable or self._rule_label(contrary_rule).out
-                    for contrary in literal.contraries_and_contradictories for contrary_rule in contrary.children]):
+                    for contrary in literal.contraries_and_contradictories for contrary_rule in self.children[contrary.s1]]):
                 if all([self._rule_label(rule).unsatisfiable or self._rule_label(rule).defended
                         or self._rule_label(rule).out
-                        for rule in literal.children]):
-                    for rule in literal.children:
+                        for rule in self.children[literal.s1]]):
+                    for rule in self.children[literal.s1]:
                         if self._rule_label(rule).blocked:
                             b_relevant = b_relevant | self.b_relevant_rule[rule]
                     for contrary in literal.contraries_and_contradictories:
-                        for contrary_rule in contrary.children:
+                        for contrary_rule in self.children[contrary.s1]:
                             if self._rule_label(contrary_rule).defended:
                                 b_relevant = b_relevant | self.d_relevant_rule[contrary_rule]
                             if self._rule_label(contrary_rule).blocked:
                                 b_relevant = b_relevant | self.b_relevant_rule[contrary_rule]
 
-                for rule in literal.children:
+                for rule in self.children[literal.s1]:
                     if self._rule_label(rule).defended:
                         if self._rule_label(rule).unsatisfiable:
                             b_relevant = b_relevant | self.u_relevant_rule[rule]
@@ -201,7 +215,7 @@ class FourBoolRelevanceLister:
                         if self._rule_label(rule).blocked:
                             b_relevant = b_relevant | self.b_relevant_rule[rule]
                 for contrary in literal.contraries_and_contradictories:
-                    for contrary_rule in contrary.children:
+                    for contrary_rule in self.children[contrary.s1]:
                         if self._rule_label(contrary_rule).defended:
                             b_relevant = b_relevant | self.d_relevant_rule[contrary_rule]
                         if self._rule_label(contrary_rule).blocked:

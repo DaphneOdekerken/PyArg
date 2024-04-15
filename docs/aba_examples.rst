@@ -34,5 +34,5 @@ Toni, Francesca. A tutorial on assumption-based argumentation. *Argument & Compu
     aba_framework = ABAF(assumptions, rules, language, contraries)
 
     # Get preferred extensions
-    extensions = get_preferred_extensions.apply(aba_framework)
+    extensions = get_preferred_extensions.get_preferred_extensions(aba_framework)
     print(extensions)

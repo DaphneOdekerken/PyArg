@@ -41,16 +41,9 @@ def powerset(iterable) -> Set[FrozenSet]:
 
 @staticmethod
 def big_p(extension_set: Set) -> Set[FrozenSet]:
-    p = pairs(extension_set)
-    power = powerset(big_a(extension_set))
+    out = powerset(big_a(extension_set))
+    out.difference(dcl(extension_set))
 
-    out = set()
-    for s in power:
-        if len(s) < 2:
-            continue
-        for e1, e2 in tuples(s):
-            if frozenset({e1, e2}) not in p:
-                out.add(s)
     return out
 
 

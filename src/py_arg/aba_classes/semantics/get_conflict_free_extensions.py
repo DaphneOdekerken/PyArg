@@ -4,17 +4,17 @@ from py_arg.aba_classes.aba_framework import ABAF
 import py_arg.algorithms.canonical_constructions.aux_operators as aux
 
 
-def apply(abaf: ABAF) -> Set[FrozenSet[str]]:
-    abaf_extensions = set()
-    af = abaf.generate_af()
-    for ext in aux.powerset(abaf.assumptions):
+def get_conflict_free_extensions(aba_framework: ABAF) -> Set[FrozenSet[str]]:
+    aba_framework_extensions = set()
+    af = aba_framework.generate_af()
+    for ext in aux.powerset(aba_framework.assumptions):
         cf = True
         for arg in af.arguments:
             if arg.premise.issubset(ext):
                 for asm in ext:
-                    if abaf.contraries[asm] == arg.conclusion:
+                    if aba_framework.contraries[asm] == arg.conclusion:
                         cf = False
         if cf:
-            abaf_extensions.add(ext)
+            aba_framework_extensions.add(ext)
 
-    return abaf_extensions
+    return aba_framework_extensions
