@@ -1,0 +1,9 @@
+attack_with_query_att(X,Y,Q1,Q2) :- attack(X,Y), query_att(Q1,Q2).
+attack_with_query_att(Q1,Q2,Q1,Q2) :- query_att(Q1,Q2).
+
+lab_with_query_att(in,X,Q1,Q2) :- argument(X), query_att(Q1,Q2), lab_with_query_att(out,Y,Q1,Q2) : attack_with_query_att(Y,X,Q1,Q2).
+lab_with_query_att(out,X,Q1,Q2) :- attack_with_query_att(Y,X,Q1,Q2), lab_with_query_att(in,Y,Q1,Q2).
+lab_with_query_att(undec,X,Q1,Q2) :- argument(X), query_att(Q1,Q2), not lab_with_query_att(in,X,Q1,Q2), not lab_with_query_att(out,X,Q1,Q2).
+
+add_query_att_relevant_for(J,Q1,Q2,T) :- query_att(Q1,Q2), topic(T), not lab(J,T), lab_with_query_att(J,T,Q1,Q2).
+remove_query_att_relevant_for(J,Q1,Q2,T) :- query_att(Q1,Q2), topic(T), lab(J,T), not lab_with_query_att(J,T,Q1,Q2).

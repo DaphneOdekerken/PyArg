@@ -1,0 +1,2 @@
+lab(out, Y) :- lab(in, X), attack(X, Y).
+lab(undec, X) :- argument(X), not lab(in, X), not lab(out, X).

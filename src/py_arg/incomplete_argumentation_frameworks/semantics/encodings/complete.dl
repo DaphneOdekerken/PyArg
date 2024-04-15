@@ -1,0 +1,6 @@
+lab(in, X) :- not not_in(X), argument(X).
+not_in(X) :- not lab(in,X), argument(X).
+:- lab(in,X), lab(in,Y), attack(X,Y).
+undefended(Y) :- attack(X,Y), not lab(out,X).
+:- lab(in,X), undefended(X).
+:- not_in(X), not undefended(X).

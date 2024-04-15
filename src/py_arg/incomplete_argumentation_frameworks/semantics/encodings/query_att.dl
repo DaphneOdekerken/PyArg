@@ -1,0 +1,4 @@
+{query_att(X,Y)} 1 :- uatt(X,Y).
+:- query_att(A,B), query_att(C,D), A < C.
+:- query_att(A,B), query_att(C,D), B < D.
+:- uatt(A,B), not query_att(X,Y) : uatt(X,Y).

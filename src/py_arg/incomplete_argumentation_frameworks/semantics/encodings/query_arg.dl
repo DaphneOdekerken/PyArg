@@ -1,0 +1,3 @@
+{query(X)} 1 :- uarg(X).
+:- query(X), query(Y), X < Y.
+:- uarg(Y), not query(X) : uarg(X).

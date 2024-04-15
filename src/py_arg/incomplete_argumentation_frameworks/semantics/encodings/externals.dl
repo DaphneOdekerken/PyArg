@@ -1,0 +1,14 @@
+#external eargument(X) : uarg(X).
+#external eatt(X,Y) : uatt(X,Y).
+#external enargument(X) : uarg(X).
+#external enatt(X,Y) : uatt(X,Y).
+
+argument(X) :- eargument(X).
+att(X,Y) :- eatt(X,Y).
+nargument(X) :- enargument(X).
+natt(X,Y) :- enatt(X,Y).
+
+argument(X) :- uarg(X), not nargument(X).
+nargument(X) :- uarg(X), not argument(X).
+att(X,Y) :- uatt(X,Y), not natt(X,Y).
+natt(X,Y) :- uatt(X,Y), not att(X,Y).

@@ -1,0 +1,1 @@
+attack(X,Y) :- att(X,Y), argument(X), argument(Y).

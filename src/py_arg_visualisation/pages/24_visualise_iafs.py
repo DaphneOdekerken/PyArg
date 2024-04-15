@@ -6,6 +6,7 @@ import dash
 import visdcc
 from dash import html, callback, Input, Output, State, dcc
 import dash_bootstrap_components as dbc
+from dash.exceptions import PreventUpdate
 
 from py_arg.incomplete_argumentation_frameworks.classes. \
     incomplete_argumentation_framework import IncompleteArgumentationFramework
@@ -15,6 +16,10 @@ from py_arg.incomplete_argumentation_frameworks.import_export.\
     iaf_from_json_reader import IAFFromJsonReader
 from py_arg.incomplete_argumentation_frameworks.import_export.\
     iaf_to_json_writer import IAFToJSONWriter
+from py_arg.incomplete_argumentation_frameworks.semantics.grounded_relevance import \
+    GroundedRelevanceWithPreprocessingSolver
+from py_arg.incomplete_argumentation_frameworks.semantics.grounded_stability import \
+    GroundedStabilitySolver
 from py_arg_visualisation.functions.graph_data_functions.get_iaf_graph_data \
     import get_iaf_graph_data
 from py_arg_visualisation.functions.import_functions.read_iaf_functions \
@@ -105,9 +110,14 @@ def get_abstract_evaluation_div():
                     options=[
                         {'label': 'Credulous', 'value': 'Credulous'},
                         {'label': 'Skeptical', 'value': 'Skeptical'}
-                    ], value='Credulous', id='24-iaf-evaluation-strategy')),
+                    ], value='Credulous', id='24-iaf-evaluation-strategy'))
             ]),
-            dbc.Row(id='24-iaf-evaluation')
+
+            dbc.Row([
+                dbc.Col(html.B('Topic argument')),
+                dbc.Col(dbc.Select(id='24-topic-argument'))
+            ]),
+            dbc.Row(dbc.Col(html.Div(id='24-iaf-evaluation')))
         ]),
     ])
 
@@ -137,6 +147,7 @@ layout = html.Div([html.H1(
 
 @callback(
     Output('24-iaf-argumentation-graph', 'data'),
+    Output('24-topic-argument', 'options'),
     Input('24-certain-arguments', 'value'),
     Input('24-certain-attacks', 'value'),
     Input('24-uncertain-arguments', 'value'),
@@ -146,7 +157,7 @@ layout = html.Div([html.H1(
     Input('24-iaf-evaluation-accordion', 'active_item'),
     prevent_initial_call=True
 )
-def create_abstract_argumentation_framework(
+def create_iaf(
         certain_arguments: str, certain_attacks: str,
         uncertain_arguments: str, uncertain_attacks: str,
         selected_arguments: Dict[str, List[str]],
@@ -168,8 +179,10 @@ def create_abstract_argumentation_framework(
         selected_arguments = None
 
     data = get_iaf_graph_data(iaf, selected_arguments, color_blind_mode)
+    topic_options = [{'label': argument.name, 'value': argument.name}
+                     for argument in iaf.arguments.values()]
 
-    return data
+    return data, topic_options
 
 
 @callback(
@@ -183,7 +196,7 @@ def create_abstract_argumentation_framework(
     State('24-iaf-extension', 'value'),
     prevent_initial_call=True,
 )
-def download_generated_abstract_argumentation_framework(
+def download_iaf(
         _nr_clicks: int, arguments_text: str, defeats_text: str,
         uncertain_arguments_text: str, uncertain_defeats_text: str,
         filename: str,
@@ -215,7 +228,7 @@ def download_generated_abstract_argumentation_framework(
     Input('24-upload-iaf', 'contents'),
     State('24-upload-iaf', 'filename'),
 )
-def generate_abstract_argumentation_framework(
+def generate_or_read_iaf(
         _nr_of_clicks_random: int, iaf_content: str, iaf_filename: str):
     """
     Generate a random AF after clicking the button and put the result in the
@@ -248,3 +261,47 @@ def generate_abstract_argumentation_framework(
                                          for defeat in iaf.uncertain_defeats))
     return arguments_value, attacks_value, uncertain_arguments_value, \
         uncertain_attacks_value
+
+
+@callback(
+    Output('24-iaf-evaluation', 'children'),
+    State('24-certain-arguments', 'value'),
+    State('24-certain-attacks', 'value'),
+    State('24-uncertain-arguments', 'value'),
+    State('24-uncertain-attacks', 'value'),
+    Input('24-iaf-evaluation-accordion', 'active_item'),
+    Input('24-iaf-evaluation-semantics', 'value'),
+    Input('24-iaf-evaluation-strategy', 'value'),
+    Input('24-topic-argument', 'value'),
+    prevent_initial_call=True
+)
+def display_stability_and_relevance(
+        arguments_text: str, defeats_text: str,
+        uncertain_arguments_text: str, uncertain_defeats_text: str,
+        active_item: str, semantics: str, strategy: str, topic: str):
+    if active_item != 'Evaluation':
+        raise PreventUpdate
+
+    try:
+        iaf = read_incomplete_argumentation_framework(
+            arguments_text, defeats_text,
+            uncertain_arguments_text, uncertain_defeats_text)
+    except ValueError:
+        iaf = IncompleteArgumentationFramework()
+
+    if not topic:
+        return ['Select a topic from the certain arguments.']
+
+    if semantics == 'Grounded' or (semantics == 'Complete' and strategy ==
+                                   'Skeptical'):
+        stability_solver = GroundedStabilitySolver()
+        stability_solver.enumerate_stable_arguments(iaf, topic)
+        stability_result = stability_solver.get_result()
+        if stability_result:
+            return [html.P(stability_result)]
+        relevance_solver = GroundedRelevanceWithPreprocessingSolver()
+        relevance_solver.enumerate_grounded_relevant_updates(iaf, topic)
+        relevant_updates = relevance_solver.get_result()
+        return [html.P(f'{topic} is unstable.'),
+                html.Ul([html.Li(relevant_item)
+                         for relevant_item in relevant_updates])]
