@@ -5,15 +5,17 @@ def get_color(required_color: str, color_blind_mode: bool) -> str:
         if required_color == 'blue':
             return '#6D90E3'
         if required_color == 'green':
-            return '#2c7bb6'
+            return '#40cfff'
         if required_color == 'yellow':
-            return '#ffffbf'
+            return '#FEFE62'
         if required_color == 'red':
-            return '#d7191c'
+            return '#ffb763'
         if required_color == 'light-green':
-            return '#84b9e1'
+            return '#a6e9ff'
         if required_color == 'light-red':
-            return '#ef7678'
+            return '#ffe6c9'
+        if required_color == 'dark-yellow':
+            return '#f1dd4b'
     else:
         if required_color == 'gray':
             return '#AAAAAA'
@@ -23,6 +25,8 @@ def get_color(required_color: str, color_blind_mode: bool) -> str:
             return '#2ac2ab'
         if required_color == 'yellow':
             return '#fff2cc'
+        if required_color == 'dark-yellow':
+            return '#AAAA00'
         if required_color == 'red':
             return '#e60c3f'
         if required_color == 'light-green':
