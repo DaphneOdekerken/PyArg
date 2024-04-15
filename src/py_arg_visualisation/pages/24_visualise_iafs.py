@@ -1,14 +1,20 @@
+import base64
+import json
 from typing import Dict, List
 
 import dash
 import visdcc
-from dash import html, callback, Input, Output, State, ALL, dcc
-from dash.exceptions import PreventUpdate
+from dash import html, callback, Input, Output, State, dcc
 import dash_bootstrap_components as dbc
-import dash_interactive_graphviz
 
-from py_arg.incomplete_argumentation_frameworks.classes.\
+from py_arg.incomplete_argumentation_frameworks.classes. \
     incomplete_argumentation_framework import IncompleteArgumentationFramework
+from py_arg.incomplete_argumentation_frameworks.generators.random_iaf_generator import \
+    IAFGenerator
+from py_arg.incomplete_argumentation_frameworks.import_export.\
+    iaf_from_json_reader import IAFFromJsonReader
+from py_arg.incomplete_argumentation_frameworks.import_export.\
+    iaf_to_json_writer import IAFToJSONWriter
 from py_arg_visualisation.functions.graph_data_functions.get_iaf_graph_data \
     import get_iaf_graph_data
 from py_arg_visualisation.functions.import_functions.read_iaf_functions \
@@ -72,8 +78,7 @@ def get_abstract_setting_specification_div():
                     dbc.InputGroupText('.'),
                     dbc.Select(
                         options=[{'label': extension, 'value': extension}
-                                 for extension in ['JSON', 'TGF', 'APX',
-                                                   'ICCMA23']],
+                                 for extension in ['JSON']],
                         value='JSON', id='24-iaf-extension'),
                     dbc.Button('Download', id='24-iaf-download-button'),
                 ], className='mt-2'),
@@ -165,3 +170,81 @@ def create_abstract_argumentation_framework(
     data = get_iaf_graph_data(iaf, selected_arguments, color_blind_mode)
 
     return data
+
+
+@callback(
+    Output('24-iaf-download', 'data'),
+    Input('24-iaf-download-button', 'n_clicks'),
+    State('24-certain-arguments', 'value'),
+    State('24-certain-attacks', 'value'),
+    State('24-uncertain-arguments', 'value'),
+    State('24-uncertain-attacks', 'value'),
+    State('24-iaf-filename', 'value'),
+    State('24-iaf-extension', 'value'),
+    prevent_initial_call=True,
+)
+def download_generated_abstract_argumentation_framework(
+        _nr_clicks: int, arguments_text: str, defeats_text: str,
+        uncertain_arguments_text: str, uncertain_defeats_text: str,
+        filename: str,
+        extension: str):
+    try:
+        iaf = read_incomplete_argumentation_framework(
+            arguments_text, defeats_text,
+            uncertain_arguments_text, uncertain_defeats_text)
+    except ValueError:
+        iaf = IncompleteArgumentationFramework()
+
+    if extension == 'JSON':
+        argumentation_framework_json = \
+            IAFToJSONWriter().to_dict(iaf)
+        argumentation_framework_str = json.dumps(argumentation_framework_json)
+    else:
+        raise NotImplementedError
+
+    return {'content': argumentation_framework_str,
+            'filename': filename + '.' + extension}
+
+
+@callback(
+    Output('24-certain-arguments', 'value'),
+    Output('24-certain-attacks', 'value'),
+    Output('24-uncertain-arguments', 'value'),
+    Output('24-uncertain-attacks', 'value'),
+    Input('24-generate-random-af-button', 'n_clicks'),
+    Input('24-upload-iaf', 'contents'),
+    State('24-upload-iaf', 'filename'),
+)
+def generate_abstract_argumentation_framework(
+        _nr_of_clicks_random: int, iaf_content: str, iaf_filename: str):
+    """
+    Generate a random AF after clicking the button and put the result in the
+    text box.
+    """
+    if dash.callback_context.triggered_id == '24-generate-random-af-button':
+        iaf = IAFGenerator(5, 5, 0.4).generate()
+    elif dash.callback_context.triggered_id == '24-upload-iaf':
+        content_type, content_str = iaf_content.split(',')
+        decoded = base64.b64decode(content_str)
+
+        if iaf_filename.upper().endswith('.JSON'):
+            iaf = IAFFromJsonReader().from_json(json.loads(decoded))
+        else:
+            raise NotImplementedError('This file format is currently not '
+                                      'supported.')
+    else:
+        return '', '', '', ''
+
+    arguments_value = '\n'.join((str(arg)
+                                 for arg in iaf.arguments.values()))
+    attacks_value = '\n'.join((f'({str(defeat.from_argument)},'
+                               f'{str(defeat.to_argument)})'
+                               for defeat in iaf.defeats))
+    uncertain_arguments_value = '\n'.join((str(arg)
+                                           for arg in
+                                           iaf.uncertain_arguments.values()))
+    uncertain_attacks_value = '\n'.join((f'({str(defeat.from_argument)},'
+                                         f'{str(defeat.to_argument)})'
+                                         for defeat in iaf.uncertain_defeats))
+    return arguments_value, attacks_value, uncertain_arguments_value, \
+        uncertain_attacks_value
