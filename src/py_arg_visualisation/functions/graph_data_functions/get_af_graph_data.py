@@ -1,16 +1,21 @@
 from typing import List, Optional, Dict
 
-from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from py_arg_visualisation.functions.graph_data_functions.get_color import get_color
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
+from py_arg_visualisation.functions.graph_data_functions.get_color \
+    import get_color
 
 
-def get_argumentation_framework_graph_data(arg_framework: AbstractArgumentationFramework,
-                                           selected_arguments: Optional[Dict[str, List[str]]],
-                                           color_blind_mode: bool):
+def get_argumentation_framework_graph_data(
+        arg_framework: AbstractArgumentationFramework,
+        selected_arguments: Optional[Dict[str, List[str]]],
+        color_blind_mode: bool):
     """
-    Calculate the data needed for the graphical representation of the argumentation framework
+    Calculate the data needed for the graphical representation of the
+    argumentation framework
 
-    :param arg_framework: The abstract argumentation framework that needs to be visualized.
+    :param arg_framework: The abstract argumentation framework that needs to be
+    visualized.
     :param selected_arguments: The arguments to be marked in a specific color.
     :param color_blind_mode: Is the color-blind mode on?
     """
@@ -53,10 +58,13 @@ def get_argumentation_framework_graph_data(arg_framework: AbstractArgumentationF
                               'color': get_color('gray', color_blind_mode)}
                              for argument in arg_framework.arguments
                              if argument.name in other_arguments]
-    data_nodes = data_nodes_blue + data_nodes_red + data_nodes_yellow + data_nodes_green + data_nodes_unselected
+    data_nodes = data_nodes_blue + data_nodes_red + data_nodes_yellow + \
+        data_nodes_green + data_nodes_unselected
 
-    data_edges = [{'id': str(defeat.from_argument) + '-' + str(defeat.to_argument),
-                   'from': str(defeat.from_argument), 'to': str(defeat.to_argument), 'arrows': 'to'}
-                  for defeat in arg_framework.defeats]
+    data_edges = [{
+        'id': str(defeat.from_argument) + '-' + str(defeat.to_argument),
+        'from': str(defeat.from_argument),
+        'to': str(defeat.to_argument), 'arrows': 'to'}
+        for defeat in arg_framework.defeats]
     data = {'nodes': data_nodes, 'edges': data_edges}
     return data

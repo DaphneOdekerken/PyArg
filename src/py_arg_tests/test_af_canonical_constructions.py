@@ -1,158 +1,227 @@
 import unittest
 
-import py_arg.algorithms.semantics.get_stable_extensions as get_stable_extensions
-import py_arg.algorithms.canonical_constructions.check_com_closed as check_com_closed
-import py_arg.algorithms.canonical_constructions.check_set_com_closed as check_set_com_closed
-import py_arg.algorithms.canonical_constructions.check_conf_sens as check_conf_sens
-import py_arg.algorithms.canonical_constructions.check_set_conf_sens as check_set_conf_sens
-
-import py_arg.algorithms.canonical_constructions.canonical_af.canonical_cf as canonical_cf
-import py_arg.algorithms.canonical_constructions.canonical_af.canonical_st as canonical_st
-import py_arg.algorithms.canonical_constructions.canonical_af.canonical_def as canonical_def
-
-from py_arg.abstract_argumentation_classes.abstract_argumentation_framework import AbstractArgumentationFramework
-from py_arg.abstract_argumentation_classes.argument import Argument
-from py_arg.abstract_argumentation_classes.defeat import Defeat
-from py_arg.algorithms.canonical_constructions import aux_operators, check_incomparable, check_tight
+from py_arg.abstract_argumentation.canonical_constructions.aux_operators \
+    import downward_closure
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af. \
+    canonical_def import get_cnf_defense_formula, get_defense_formula, \
+    get_canonical_def_framework
+from py_arg.abstract_argumentation.canonical_constructions.check_properties \
+    import is_incomparable, is_tight, is_conflict_sensitive, is_com_closed
+from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
+    import AbstractArgumentationFramework
+from py_arg.abstract_argumentation.classes.argument import Argument
+from py_arg.abstract_argumentation.classes.defeat import Defeat
+from py_arg.abstract_argumentation.semantics.get_admissible_sets import \
+    get_admissible_sets
+from py_arg.abstract_argumentation.semantics.get_complete_extensions import \
+    get_complete_extensions
+from py_arg.abstract_argumentation.semantics.get_naive_extensions import \
+    get_naive_extensions
+from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
+    get_preferred_extensions
+from py_arg.abstract_argumentation.semantics.get_semistable_extensions import \
+    get_semi_stable_extensions
+from py_arg.abstract_argumentation.semantics.get_stable_extensions import \
+    get_stable_extensions
 
 
 class TestCanonicalConstructions(unittest.TestCase):
-
-    def test_properties(self):
-        one = frozenset({'a'})
-        two = frozenset({'a', 'b'})
-        three = frozenset({'a', 'c'})
-        four = frozenset({'b', 'c'})
-
-        es = set({one, two, three})
-        es2 = set({four, two, three})
-
-        print('init')
-        print(es)
-        print('bigA')
-        print(aux_operators.big_a(es))
-        print('bigC')
-        print(aux_operators.big_c(frozenset({'b'}), es))
-        print('pairs')
-        print(aux_operators.pairs(es))
-        print('powerset')
-        print(aux_operators.powerset(aux_operators.big_a(es)))
-        print('bigP')
-        print(aux_operators.big_p(es))
-        print('dcl')
-        print(aux_operators.dcl(es))
-        print('incomparable')
-        print(check_incomparable.apply(es))
-        print('set_conf_sens')
-        print(check_set_conf_sens.apply(es))
-        print('conf_sens')
-        print(check_conf_sens.apply(es))
-        print('com_closed')
-        print(check_com_closed.apply(es))
-        print('set_com_closed')
-        print(check_set_com_closed.apply(es))
-        print('tight')
-        print(check_tight.apply(es))
-
-        print('tight2')
-        print(check_tight.apply(es2))
-
-    def test_construct_af(self):
+    def test_example_1_and_2(self):
+        # Example 1.
         a = Argument('a')
         b = Argument('b')
         c = Argument('c')
-        def1 = Defeat(a, b)
-        def2 = Defeat(a, c)
-        def3 = Defeat(b, c)
+        set_1 = frozenset({a, b})
+        set_2 = frozenset({a, c})
+        set_3 = frozenset({b, c})
+        extension_set = {set_1, set_2, set_3}
+        self.assertTrue(is_incomparable(extension_set))
 
-        af = AbstractArgumentationFramework('', arguments=[a, b, c], defeats=[def1, def2, def3])
-        print(af.arguments)
-        for defeat in af.defeats:
-            print(defeat.from_argument.name + ' attacks ' + defeat.to_argument.name)
+        # Example 2.
+        self.assertFalse(is_tight(extension_set))
 
-    def test_cf_construction(self):
+        d = Argument('d')
+        extension_set = {set_1, set_2, frozenset({b, d}), frozenset({c, d})}
+        self.assertTrue(is_tight(extension_set))
+
+    def test_example_3(self):
+        # Example 3.
+        a_1 = Argument('a1')
+        a_2 = Argument('a2')
+        a_3 = Argument('a3')
+        b_1 = Argument('b1')
+        b_2 = Argument('b2')
+        b_3 = Argument('b3')
+        defeats = [Defeat(x, y) for x, y in
+                   [(a_1, b_1), (a_2, b_2), (a_3, b_3),
+                    (a_1, a_2), (a_2, a_3), (a_3, a_1),
+                    (a_2, a_1), (a_3, a_2), (a_1, a_3)]]
+        af = AbstractArgumentationFramework(
+            '', [a_1, a_2, a_3, b_1, b_2, b_3], defeats)
+
+        gt_stable = {
+            frozenset({a_1, b_2, b_3}),
+            frozenset({a_2, b_1, b_3}),
+            frozenset({a_3, b_1, b_2})
+        }
+        stable = get_stable_extensions(af)
+        self.assertSetEqual(gt_stable, stable)
+
+        # TODO add test for stage semantics, once implemented.
+
+        gt_naive = gt_stable.union({frozenset({b_1, b_2, b_3})})
+        naive = get_naive_extensions(af)
+        self.assertSetEqual(gt_naive, naive)
+
+        self.assertTrue(is_tight(stable))
+
+        stable_dcl = downward_closure(stable)
+        self.assertFalse(is_tight(stable_dcl))
+
+    def test_example_4(self):
+        # Example 4.
+        a = Argument('a')
+        a_prime = Argument('a_prime')
+        b = Argument('b')
+        b_prime = Argument('b_prime')
+        c = Argument('c')
+        d = Argument('d')
+        e = Argument('e')
+        f = Argument('f')
+        arguments = [a, a_prime, b, b_prime, c, d, e, f]
+        defeats = [Defeat(x, y) for x, y in [
+            (a_prime, a_prime), (a_prime, a), (a, a_prime), (a, c), (c, a),
+            (b_prime, b_prime), (b_prime, b), (b, b_prime), (b, d), (d, b),
+            (c, d), (d, c), (c, f), (d, f), (f, f), (f, e)
+        ]]
+        af = AbstractArgumentationFramework('af', arguments, defeats)
+
+        gt_preferred = {
+            frozenset({a, b}),
+            frozenset({a, d, e}),
+            frozenset({b, c, e})
+        }
+        preferred = get_preferred_extensions(af)
+        self.assertSetEqual(gt_preferred, preferred)
+
+        semi_stable = get_semi_stable_extensions(af)
+        self.assertSetEqual(gt_preferred, semi_stable)
+
+        self.assertTrue(is_conflict_sensitive(preferred))
+        self.assertFalse(is_tight(preferred))
+
+    def test_example_5(self):
+        # Example 5.
+        a = Argument('a')
+        b = Argument('b')
+        a_prime = Argument('a_prime')
+        b_prime = Argument('b_prime')
+        c = Argument('c')
+        arguments = [a, b, a_prime, b_prime, c]
+        defeats = [Defeat(x, y) for x, y in [
+            (a, a_prime), (a_prime, a_prime), (a_prime, a), (a_prime, c),
+            (b, b_prime), (b_prime, b_prime), (b_prime, b), (b_prime, c)
+        ]]
+        af = AbstractArgumentationFramework('af', arguments, defeats)
+
+        gt_complete = {
+            frozenset({}),
+            frozenset({a}),
+            frozenset({b}),
+            frozenset({a, b, c})
+        }
+        complete = get_complete_extensions(af)
+        self.assertSetEqual(gt_complete, complete)
+        self.assertTrue(is_com_closed(complete))
+        self.assertFalse(is_conflict_sensitive(complete))
+
+    def test_example_figure_4(self):
+        a_1 = Argument('a1')
+        a_2 = Argument('a2')
+        a_3 = Argument('a3')
+        b_1 = Argument('b1')
+        b_2 = Argument('b2')
+        b_3 = Argument('b3')
+        big_e_overline = Argument('-E')
+        defeats = [Defeat(x, y) for x, y in
+                   [(a_1, b_1), (a_2, b_2), (a_3, b_3),
+                    (b_1, a_1), (b_2, a_2), (b_3, a_3),
+                    (a_1, a_2), (a_2, a_3), (a_3, a_1),
+                    (a_2, a_1), (a_3, a_2), (a_1, a_3),
+                    (a_1, big_e_overline), (a_2, big_e_overline),
+                    (a_3, big_e_overline), (big_e_overline, big_e_overline)]]
+        af = AbstractArgumentationFramework(
+            '', [a_1, a_2, a_3, b_1, b_2, b_3, big_e_overline], defeats)
+
+        extension_set = {
+            frozenset({a_1, b_2, b_3}),
+            frozenset({a_2, b_1, b_3}),
+            frozenset({a_3, b_1, b_2})
+        }
+        stable = get_stable_extensions(af)
+        self.assertSetEqual(extension_set, stable)
+
+        # TODO: add test for stage (once implemented).
+
+    def test_example_6_and_7(self):
         a = Argument('a')
         b = Argument('b')
         c = Argument('c')
         d = Argument('d')
+        extension_set = {
+            frozenset(),
+            frozenset({a}),
+            frozenset({b, c}),
+            frozenset({a, c, d})
+        }
 
-        one = frozenset({})
-        two = frozenset({a})
-        three = frozenset({b, c})
-        four = frozenset({a, c, d})
+        gt_defence_formula_a = {frozenset(), frozenset({c, d})}
+        gt_defence_formula_b = {frozenset({c})}
+        gt_defence_formula_c = {frozenset({b}), frozenset({a, d})}
+        gt_defence_formula_d = {frozenset({a, c})}
 
-        es = set({one, two, three, four})
+        defence_formula_a = get_defense_formula(extension_set, a)
+        defence_formula_b = get_defense_formula(extension_set, b)
+        defence_formula_c = get_defense_formula(extension_set, c)
+        defence_formula_d = get_defense_formula(extension_set, d)
 
-        af_cf = canonical_cf.apply(es)
-        print(af_cf.arguments)
-        for defeat in af_cf.defeats:
-            print(defeat.from_argument.name + ' attacks ' + defeat.to_argument.name)
+        self.assertSetEqual(gt_defence_formula_a, defence_formula_a)
+        self.assertSetEqual(gt_defence_formula_b, defence_formula_b)
+        self.assertSetEqual(gt_defence_formula_c, defence_formula_c)
+        self.assertSetEqual(gt_defence_formula_d, defence_formula_d)
 
-    def test_sem_stb(self):
-        a = Argument('a')
-        b = Argument('b')
-        c = Argument('c')
-        def1 = Defeat(a, b)
-        def2 = Defeat(b, a)
-        def3 = Defeat(b, c)
+        gt_cnf_defence_formula_a = set()
+        gt_cnf_defence_formula_b = {frozenset({c})}
+        gt_cnf_defence_formula_c = {frozenset({a, b}), frozenset({b, d})}
+        gt_cnf_defence_formula_d = {frozenset({a}), frozenset({c})}
 
-        af = AbstractArgumentationFramework('', arguments=[a, b, c], defeats=[def1, def2, def3])
+        cnf_defence_formula_a = get_cnf_defense_formula(extension_set, a)
+        cnf_defence_formula_b = get_cnf_defense_formula(extension_set, b)
+        cnf_defence_formula_c = get_cnf_defense_formula(extension_set, c)
+        cnf_defence_formula_d = get_cnf_defense_formula(extension_set, d)
 
-        stable_ext = get_stable_extensions.get_stable_extensions(af)
+        self.assertSetEqual(gt_cnf_defence_formula_a, cnf_defence_formula_a)
+        self.assertSetEqual(gt_cnf_defence_formula_b, cnf_defence_formula_b)
+        self.assertSetEqual(gt_cnf_defence_formula_c, cnf_defence_formula_c)
+        self.assertSetEqual(gt_cnf_defence_formula_d, cnf_defence_formula_d)
 
-        print(stable_ext)
+        canonical_def_framework = get_canonical_def_framework(extension_set)
+        self.assertEqual(len(canonical_def_framework.arguments), 9)
+        self.assertEqual(len(canonical_def_framework.defeats), 21)
+        admissible = get_admissible_sets(canonical_def_framework)
+        self.assertSetEqual(admissible, extension_set)
 
-    def test_st_construction(self):
-        a = Argument('a')
-        b = Argument('b')
-        c = Argument('c')
-        d = Argument('d')
-
-        one = frozenset({})
-        two = frozenset({a})
-        three = frozenset({b, c})
-        four = frozenset({a, c, d})
-
-        es = set({one, two, three, four})
-
-        af = canonical_st.apply(es)
-        print(af.arguments)
-        for defeats in af.defeats:
-            print(defeats.from_argument.name + ' attacks ' + defeats.to_argument.name)
-
-    def test_defence_formula(self):
-        a = Argument('a')
-        b = Argument('b')
-        c = Argument('c')
-        d = Argument('d')
-
-        one = frozenset({})
-        two = frozenset({a})
-        three = frozenset({b, c})
-        four = frozenset({a, c, d})
-
-        es = set({one, two, three, four})
-
-        cnf = canonical_def.defence_formula(es, a)
-        dnf = canonical_def.disjunctive_defence_formula(es, a)
-        print(cnf)
-        print(dnf)
-
-    def test_canonical_def(self):
+    def test_example_8(self):
         a = Argument('a')
         b = Argument('b')
         c = Argument('c')
         d = Argument('d')
-
-        one = frozenset({})
-        two = frozenset({a})
-        three = frozenset({b, c})
-        four = frozenset({a, c, d})
-
-        es = set({one, two, three, four})
-
-        af = canonical_def.apply(es)
-
-        print(af.arguments)
-        for defeat in af.defeats:
-            print(defeat.from_argument.name + ' attacks ' + defeat.to_argument.name)
+        e = Argument('e')
+        f = Argument('f')
+        x = Argument('x')
+        extension_set = {
+            frozenset(), frozenset({a}), frozenset({b}), frozenset({c}),
+            frozenset({a, b, c}), frozenset({a, d, e}), frozenset({b, d, f}),
+            frozenset({x, c}), frozenset({x, d})
+        }
+        self.assertTrue(is_com_closed(extension_set))

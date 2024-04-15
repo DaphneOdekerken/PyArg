@@ -5,14 +5,25 @@ import dash_bootstrap_components as dbc
 import visdcc
 from dash import html, callback, Input, Output, State
 
-from py_arg.abstract_argumentation_classes.argument import Argument
-from py_arg.algorithms.canonical_constructions import check_incomparable
-from py_arg.algorithms.canonical_constructions import check_non_empty, check_tight
-from py_arg.algorithms.canonical_constructions import check_conf_sens, check_dcl_tight, check_contains_empty, \
-    check_unary, check_downward_closed
-from py_arg.algorithms.canonical_constructions.canonical_af import construct_af_stage, construct_af_cf, \
-    construct_af_naive, construct_af_adm, construct_af_grd, construct_af_stb
-from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data import get_argumentation_framework_graph_data
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    construct_af_cf import \
+    construct_argumentation_framework_conflict_free
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    construct_af_grd import construct_argumentation_framework_grounded
+from py_arg.abstract_argumentation.canonical_constructions.check_properties \
+    import is_conflict_sensitive, is_incomparable, is_tight, is_dcl_tight, \
+    is_non_empty, is_downward_closed, is_unary, contains_empty_set
+from py_arg.abstract_argumentation.classes.argument import Argument
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af\
+    .construct_af_stage import construct_argumentation_framework_stage
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af.\
+    construct_af_adm import construct_argumentation_framework_admissible
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af\
+    .construct_af_naive import construct_argumentation_framework_naive
+from py_arg.abstract_argumentation.canonical_constructions.canonical_af\
+    .construct_af_stb import construct_argumentation_framework_stable
+from py_arg_visualisation.functions.graph_data_functions.get_af_graph_data \
+    import get_argumentation_framework_graph_data
 
 dash.register_page(__name__, name='Canonical', title='Canonical')
 
@@ -47,7 +58,8 @@ properties_table = html.Div([html.Table([
         html.Td(id='41-cf-downward-closed'),
         html.Td(), html.Td(), html.Td(),
         html.Td(id='41-cf-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-conflict-free-button'))
+        html.Td(), html.Td(dbc.Button('Generate',
+                                      id='41-generate-conflict-free-button'))
     ]),
     html.Tr([
         html.Td('Admissible'), html.Td(),
@@ -55,7 +67,8 @@ properties_table = html.Div([html.Table([
         html.Td(), html.Td(),
         html.Td(id='41-adm-contains-empty'),
         html.Td(id='41-adm-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-admissible-button'))
+        html.Td(), html.Td(dbc.Button('Generate',
+                                      id='41-generate-admissible-button'))
     ]),
     html.Tr([
         html.Td('Grounded'), html.Td(), html.Td(), html.Td(),
@@ -68,14 +81,16 @@ properties_table = html.Div([html.Table([
         html.Td(), html.Td(), html.Td(id='41-stb-incomparable'),
         html.Td(),
         html.Td(), html.Td(),
-        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-stable-button'))
+        html.Td(), html.Td(dbc.Button('Generate',
+                                      id='41-generate-stable-button'))
     ]),
     html.Tr([
         html.Td('Naive'), html.Td(), html.Td(), html.Td(),
         html.Td(id='41-na-incomparable'),
         html.Td(id='41-na-dcl-tight'), html.Td(),
         html.Td(id='41-na-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-naive-button'))
+        html.Td(), html.Td(dbc.Button('Generate',
+                                      id='41-generate-naive-button'))
     ]),
     html.Tr([
         html.Td('Stage'), html.Td(id='41-stg-tight'),
@@ -83,7 +98,8 @@ properties_table = html.Div([html.Table([
         html.Td(id='41-stg-incomparable'),
         html.Td(), html.Td(),
         html.Td(id='41-stg-non-empty'),
-        html.Td(), html.Td(dbc.Button('Generate', id='41-generate-stage-button'))
+        html.Td(), html.Td(dbc.Button('Generate',
+                                      id='41-generate-stage-button'))
     ]),
 ])])
 
@@ -94,7 +110,8 @@ layout = html.Div(
             dbc.Col([
                 html.B('Enter your set of extensions here'),
                 dbc.Textarea(id='41-extension-sets-textarea',
-                             placeholder='Put each set on a new line and represent sets as {X, Y, Z}.',
+                             placeholder='Put each set on a new line and '
+                                         'represent sets as {X, Y, Z}.',
                              style={'height': '200px'}),
                 html.B('Properties and semantics'),
                 properties_table,
@@ -112,8 +129,10 @@ def read_extension_sets_from_str(extension_sets_str: str):
     input_extension_set = set()
     for extension in extensions_set:
         extension = extension.replace('{', '').replace('}', '')
-        argument_strs = [argument_str.strip() for argument_str in extension.split(',')]
-        argument_set = frozenset(Argument(argument_str) for argument_str in argument_strs
+        argument_strs = [argument_str.strip()
+                         for argument_str in extension.split(',')]
+        argument_set = frozenset(Argument(argument_str)
+                                 for argument_str in argument_strs
                                  if argument_str)
         input_extension_set.add(argument_set)
     return input_extension_set
@@ -161,56 +180,56 @@ def fill_properties_table(extension_sets_str: str):
     negative_icon = '❌'
 
     # Test which properties hold
-    tight = check_tight.apply(input_extension_set)
+    tight = is_tight(input_extension_set)
     if tight:
         tight_style = {'background-color': green}
         tight_value = positive_icon
     else:
         tight_style = {'background-color': red}
         tight_value = negative_icon
-    conf_sens = check_conf_sens.apply(input_extension_set)
+    conf_sens = is_conflict_sensitive(input_extension_set)
     if conf_sens:
         conf_sens_style = {'background-color': green}
         conf_sens_value = positive_icon
     else:
         conf_sens_style = {'background-color': red}
         conf_sens_value = negative_icon
-    downward_closed = check_downward_closed.apply(input_extension_set)
+    downward_closed = is_downward_closed(input_extension_set)
     if downward_closed:
         downward_closed_style = {'background-color': green}
         downward_closed_value = positive_icon
     else:
         downward_closed_style = {'background-color': red}
         downward_closed_value = negative_icon
-    incomparable = check_incomparable.apply(input_extension_set)
+    incomparable = is_incomparable(input_extension_set)
     if incomparable:
         incomparable_style = {'background-color': green}
         incomparable_value = positive_icon
     else:
         incomparable_style = {'background-color': red}
         incomparable_value = negative_icon
-    dcl_tight = check_dcl_tight.apply(input_extension_set)
+    dcl_tight = is_dcl_tight(input_extension_set)
     if dcl_tight:
         dcl_tight_style = {'background-color': green}
         dcl_tight_value = positive_icon
     else:
         dcl_tight_style = {'background-color': red}
         dcl_tight_value = negative_icon
-    contains_empty = check_contains_empty.apply(input_extension_set)
+    contains_empty = contains_empty_set(input_extension_set)
     if contains_empty:
         contains_empty_style = {'background-color': green}
         contains_empty_value = positive_icon
     else:
         contains_empty_style = {'background-color': red}
         contains_empty_value = negative_icon
-    unary = check_unary.apply(input_extension_set)
+    unary = is_unary(input_extension_set)
     if unary:
         unary_style = {'background-color': green}
         unary_value = positive_icon
     else:
         unary_style = {'background-color': red}
         unary_value = negative_icon
-    non_empty = check_non_empty.apply(input_extension_set)
+    non_empty = is_non_empty(input_extension_set)
     if non_empty:
         non_empty_style = {'background-color': green}
         non_empty_value = positive_icon
@@ -225,9 +244,11 @@ def fill_properties_table(extension_sets_str: str):
     naive_realizable = non_empty and incomparable and dcl_tight
     stg_realizable = tight and incomparable and non_empty
 
-    return tight_style, conf_sens_style, downward_closed_style, incomparable_style, dcl_tight_style, \
+    return tight_style, conf_sens_style, downward_closed_style, \
+        incomparable_style, dcl_tight_style, \
         contains_empty_style, non_empty_style, unary_style, \
-        not cf_realizable, not adm_realizable, not grd_realizable, not stb_realizable, not naive_realizable, \
+        not cf_realizable, not adm_realizable, not grd_realizable, \
+        not stb_realizable, not naive_realizable, \
         not stg_realizable, \
         tight_value, downward_closed_value, non_empty_value, \
         conf_sens_value, contains_empty_value, non_empty_value, \
@@ -262,27 +283,31 @@ def get_canonical_argumentation_framework(extension_sets_str: str,
     triggered_id = dash.ctx.triggered_id
 
     if triggered_id == '41-generate-admissible-button':
-        af = construct_af_adm.apply(input_extension_set)
+        af = construct_argumentation_framework_admissible(input_extension_set)
     elif triggered_id == '41-generate-conflict-free-button':
-        af = construct_af_cf.apply(input_extension_set)
+        af = construct_argumentation_framework_conflict_free(
+            input_extension_set)
     elif triggered_id == '41-generate-grounded-button':
-        af = construct_af_grd.apply(input_extension_set)
+        af = construct_argumentation_framework_grounded(input_extension_set)
     elif triggered_id == '41-generate-naive-button':
-        af = construct_af_naive.apply(input_extension_set)
+        af = construct_argumentation_framework_naive(input_extension_set)
     elif triggered_id == '41-generate-stage-button':
-        af = construct_af_stage.apply(input_extension_set)
+        af = construct_argumentation_framework_stage(input_extension_set)
     elif triggered_id == '41-generate-stable-button':
-        af = construct_af_stb.apply(input_extension_set)
+        af = construct_argumentation_framework_stable(input_extension_set)
     else:
         raise NotImplementedError
 
-    graph_data = get_argumentation_framework_graph_data(af, None, color_blind_mode)
+    graph_data = get_argumentation_framework_graph_data(
+        af, None, color_blind_mode)
 
     return [
         html.B('Canonical argumentation framework'),
         dbc.Col(html.P('AF = (A, D) where A = {{{a}}} and D = {{{d}}}.'.format(
             a=', '.join(str(arg) for arg in af.arguments),
-            d='; '.join('(' + str(defeat.from_argument) + ', ' + str(defeat.to_argument) + ')'
+            d='; '.join('(' + str(defeat.from_argument) + ', ' + str(
+                defeat.to_argument) + ')'
                         for defeat in af.defeats)))),
-        dbc.Col(visdcc.Network(data=graph_data, options={'height': '500px'}, id='canonical-graph')),
+        dbc.Col(visdcc.Network(data=graph_data, options={'height': '500px'},
+                               id='canonical-graph')),
     ]

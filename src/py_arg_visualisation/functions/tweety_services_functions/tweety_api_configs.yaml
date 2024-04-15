@@ -1,0 +1,11 @@
+
+base_url: http://127.0.0.1:8080/
+payload:
+  cmd: 'info'
+  email: "pyarg@mail.com"
+  nr_of_arguments: 3
+  attacks: [[1,2]]
+  semantics: null
+  solver: null
+  timeout: 600
+  unit_timeout: ms

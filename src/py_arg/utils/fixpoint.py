@@ -5,7 +5,8 @@ T = TypeVar('T')
 
 def get_least_fixed_point(function: Callable[[T], T], function_input: T) -> T:
     """
-    Get the least fixed point of a given function, by applying this function until the result did not change any more.
+    Get the least fixed point of a given function, by applying this function
+    until the result did not change anymore.
 
     :param function: The function that should be applied iteratively.
     :param function_input: Initial input.

@@ -1,25 +1,43 @@
-from py_arg.algorithms.explanation.defending import get_defending, get_dir_defending
-from py_arg.algorithms.explanation.not_defending import get_not_defending, get_no_dir_defending, get_no_self_defense
-from py_arg.algorithms.explanation.suff_nec import get_sufficient_or_necessary
+from py_arg.abstract_argumentation.explanation.get_defending_arguments \
+    import get_defending_arguments_in_extensions, \
+    get_directly_defending_arguments
+from py_arg.abstract_argumentation.explanation.get_attackers_without_defense \
+    import get_attackers_without_defense_in_extensions, get_no_dir_defending, \
+    get_no_self_defense
+from py_arg.abstract_argumentation.explanation.suff_nec \
+    import get_sufficient_or_necessary
 
 
-def get_str_explanations(argumentation_theory, semantics, ordering_specification, extensions, accepted_formulas,
+def get_str_explanations(argumentation_theory, semantics,
+                         ordering_specification, extensions, accepted_formulas,
                          function, expl_type, strategy, form):
     """
-    Calculate, for each formula, the explanations, given the function, type, strategy and form.
+    Calculate, for each formula, the explanations, given the function, type,
+    strategy and form.
 
-    :param argumentation_theory: the argumentation theory the explanation has to be calculated from.
+    :param argumentation_theory: the argumentation theory the explanation has
+    to be calculated from.
     :param semantics: The semantics used to determine (non-)acceptance.
-    :param ordering_specification: The chosen ordering, combining both last/weakest link and democratic/elitist.
-    :param extensions: The sets of accepted arguments in arg_framework, based on semantics.
-    :param accepted_formulas: The formulas that are considered accepted given the extensions and strategy.
-    :param function: The explanation function, to determine the content of the explanation.
-    :param expl_type: The explanation type, to determine acceptance/non-acceptance explanation.
-    :param strategy: The strategy of the explanation, whether credulous or skeptical reasoning.
-    :param form: The form of the explanation, for example, explanations in terms of arguments, rules or premises.
-    :return: A dictionary with for each (non-)accepted argument its explanation, given the parameters.
+    :param ordering_specification: The chosen ordering, combining both
+    last/weakest link and democratic/elitist.
+    :param extensions: The sets of accepted arguments in arg_framework,
+    based on semantics.
+    :param accepted_formulas: The formulas that are considered accepted
+    given the extensions and strategy.
+    :param function: The explanation function, to determine the content
+    of the explanation.
+    :param expl_type: The explanation type, to determine
+    acceptance/non-acceptance explanation.
+    :param strategy: The strategy of the explanation, whether credulous
+    or skeptical reasoning.
+    :param form: The form of the explanation, for example, explanations
+    in terms of arguments, rules or premises.
+    :return: A dictionary with for each (non-)accepted argument its
+    explanation, given the parameters.
     """
-    argumentation_framework = argumentation_theory.create_abstract_argumentation_framework('af', ordering_specification)
+    argumentation_framework = \
+        argumentation_theory.create_abstract_argumentation_framework(
+            'af', ordering_specification)
     abstract_explanation = {}
     if expl_type == 'Acceptance':
         for formula in accepted_formulas:
@@ -28,11 +46,14 @@ def get_str_explanations(argumentation_theory, semantics, ordering_specification
             suff_expl = []
             for arg in form_arg:
                 if function == 'Defending':
-                    arg_expl.extend(get_defending(argumentation_framework, arg, extensions))
+                    arg_expl.extend(get_defending_arguments_in_extensions(
+                        argumentation_framework, arg, extensions))
                 elif function == 'DirDefending':
-                    arg_expl.extend(get_dir_defending(argumentation_framework, arg, extensions))
+                    arg_expl.extend(get_directly_defending_arguments(
+                        argumentation_framework, arg, extensions))
                 else:
-                    suff_expl.extend(get_sufficient_or_necessary(argumentation_framework, arg, 'Suff', expl_type))
+                    suff_expl.extend(get_sufficient_or_necessary(
+                        argumentation_framework, arg, 'Suff', expl_type))
             if suff_expl != []:
                 if function == 'Suff':
                     arg_expl.extend(suff_expl)
@@ -45,14 +66,16 @@ def get_str_explanations(argumentation_theory, semantics, ordering_specification
                         for sets in suff_expl:
                             set_expl = []
                             for arg in sets:
-                                if form == 'Prem' and arg.premises not in form_expl:
+                                if form == 'Prem' and \
+                                        arg.premises not in form_expl:
                                     set_expl.append(arg.premises)
                                 elif form == 'Rule':
                                     defrules = arg.defeasible_rules
                                     rules = defrules.union(arg.strict_rules)
                                     if rules not in form_expl:
                                         set_expl.append(rules)
-                                elif form == 'SubArg' and arg.sub_arguments not in form_expl:
+                                elif form == 'SubArg' \
+                                        and arg.sub_arguments not in form_expl:
                                     set_expl.append(arg.sub_arguments)
                                 elif form == 'SubArgConclusions':
                                     subargconc = set()
@@ -102,11 +125,15 @@ def get_str_explanations(argumentation_theory, semantics, ordering_specification
             arg_expl = []
             for arg in form_arg:
                 if function == 'NoDefAgainst':
-                    arg_expl.extend(get_not_defending(argumentation_framework, arg, extensions))
+                    arg_expl.extend(
+                        get_attackers_without_defense_in_extensions(
+                            argumentation_framework, arg, extensions))
                 elif function == 'NoDirDefense':
-                    arg_expl.extend(get_no_dir_defending(argumentation_framework, arg, extensions))
+                    arg_expl.extend(get_no_dir_defending(
+                        argumentation_framework, arg, extensions))
                 elif function == 'NoSelfDefense':
-                    arg_expl.extend(get_no_self_defense(argumentation_framework, arg, extensions))
+                    arg_expl.extend(get_no_self_defense(
+                        argumentation_framework, arg, extensions))
             abstract_explanation[str(formula)] = arg_expl
 
     if form == 'Arg':
@@ -128,7 +155,8 @@ def get_str_explanations(argumentation_theory, semantics, ordering_specification
 #                        if arg.top_rule != None:
 #                            if arg.top_rule not in form_expl:
 #                                form_expl.append(arg.top_rule)
-                    elif form == 'SubArg' and arg.sub_arguments not in form_expl:
+                    elif form == 'SubArg' and \
+                            arg.sub_arguments not in form_expl:
                         form_expl.append(arg.sub_arguments)
                     elif form == 'SubArgConclusions':
                         subargconc = set()

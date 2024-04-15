@@ -1,0 +1,29 @@
+#const state_max = 100.
+
+% win-e rule in "doubled form" (2 rounds for 1, simplifying queries & termination)
+win_o(S, X) :- attack(Y,X), not win_u(S,Y), next(S,_).  % (1)
+win_u(S1,X) :- attack(Y,X), not win_o(S,Y), next(S,S1). % (2)
+
+% First-Green: when was a win_u first derived?
+fg(S1,X) :- next(S,S1), not win_u(S,X), win_u(S1,X).  % (3)
+
+% First-Red: when did a loss first drop from win_o?
+fr(0,X)  :- pos(X), not win_o(0,X).
+fr(S1,X) :- next(S,S1), not final(S), win_o(S,X), not win_o(S1,X). % (4)
+
+% (5) Generating new states, as long as necessary
+next(0,1).
+next(S,S1) :- fg(S,X), S1 = S+1, S < state_max.                       % (5)
+
+% Using clingo's "_" semantics to obtain final state (second last)
+final(S) :- next(S,S1), not next(S1,_). % not \exists _ .. % (6)
+
+% (7,8,9) Solutions (position values) calculation with length
+len(accepted,X,L) :- fr(S,X), L = 2*S.   % Two plies = one e:  len = 0,2,4, ..
+len(defeated,X,L) :- fg(S,X), L = 2*S-1. % Green is 1 ply behind: len = 1,3,5, ..
+len(undefined,X,"∞") :- pos(X), not len(accepted,X,_), not len(defeated,X,_). % Gap = draws
+
+#show final/1.
+#show fr/2.
+#show fg/2.
+#show len/3.
