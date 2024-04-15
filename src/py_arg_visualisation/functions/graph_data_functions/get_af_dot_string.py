@@ -107,6 +107,7 @@ def generate_dot_string(
                 style = 'dashed'
                 label = ''
             else:
+                
                 grounded_edge_color = get_color('yellow', color_blind_mode)
                 if from_argument_extension_state == 'accepted' and \
                         to_argument_extension_state == 'defeated':
@@ -120,11 +121,12 @@ def generate_dot_string(
                         f'{extension_edge_color}:{grounded_edge_color}'
                 elif from_argument_extension_state == 'undefined' and \
                         to_argument_extension_state == 'undefined':
-                    full_color = get_color('yellow', color_blind_mode)
+                    full_color = get_color('dark-yellow', color_blind_mode)
                 else:
+                    # constraint = True
                     extension_edge_color = get_color('black', color_blind_mode)
                     full_color = \
-                        f'{extension_edge_color}:{grounded_edge_color}'
+                        f'{extension_edge_color}'
                     style = 'dashed'
                     label = ''
 
@@ -142,7 +144,15 @@ def generate_dot_string(
             edge = f'"{attack.from_argument.name}" -> ' \
                    f'"{attack.to_argument.name}"\n'
         dot_string += "    "+edge
+    
+    
+    number_by_argument = {k: v for k, v in number_by_argument.items() if v != '∞'}
+    min_state_nodes = [node for node, value in number_by_argument.items() if value == min(number_by_argument.values())]
+    max_state_nodes = [node for node, value in number_by_argument.items() if value == max(number_by_argument.values())]
 
+    min_rank_string = f"{{rank = min {' '.join(min_state_nodes)}}}"
+    max_rank_string = f"{{rank = max {' '.join(max_state_nodes)}}}"
+    dot_string += f"    {min_rank_string}\n   {max_rank_string}\n"
     dot_string += "}"
     return dot_string
 
