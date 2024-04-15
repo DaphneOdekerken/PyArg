@@ -150,4 +150,4 @@ def toggle_reference_modal(nr_of_clicks: int, is_open: bool, url_path: str):
 
 # Running the app.
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
