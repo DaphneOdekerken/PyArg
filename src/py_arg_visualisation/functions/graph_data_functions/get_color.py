@@ -16,7 +16,7 @@ def get_color(required_color: str, color_blind_mode: bool) -> str:
             return '#ef7678'
     else:
         if required_color == 'gray':
-            return '#AAAAAA'
+            return '#DDDDDD'
         if required_color == 'blue':
             return '#6DCDE3'
         if required_color == 'green':
