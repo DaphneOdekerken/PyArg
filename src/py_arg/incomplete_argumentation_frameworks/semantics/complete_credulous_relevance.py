@@ -1,9 +1,12 @@
 import clingo
 import pathlib
 
-from grounded_relevance import ReachabilityPreprocessor
+from py_arg.incomplete_argumentation_frameworks.semantics.clingo_utils import \
+    add_iaf_and_topic_to_control
+from py_arg.incomplete_argumentation_frameworks.semantics.\
+    reachability_preprocessor import ReachabilityPreprocessor
 
-PATH_TO_ENCODINGS = pathlib.Path('encodings')
+PATH_TO_ENCODINGS = pathlib.Path(__file__).parent / 'encodings'
 
 
 class CompleteRelevanceSolver:
@@ -12,14 +15,11 @@ class CompleteRelevanceSolver:
         self.new_completion_model = None
         self.uncertain_arguments = []
         self.uncertain_attacks = []
+        self.argument_name_to_id = None
+        self.id_to_argument_name = None
 
-    def enumerate_complete_credulous_relevant_updates(
-            self, iaf_file, label: str, topic: str):
-        file = ReachabilityPreprocessor().enumerate_reachable(iaf_file)
-        iaf_file = file
-
-        # Parse input so that we can iterate over uncertain arguments/attacks.
-        self._parse_input(iaf_file)
+    def enumerate_relevant_updates(self, iaf, label: str, topic: str):
+        new_iaf = ReachabilityPreprocessor().enumerate_reachable(iaf, topic)
 
         # Line 2: instantiate relevant to add and remove.
         relevant_arguments_to_add = set()
@@ -29,22 +29,24 @@ class CompleteRelevanceSolver:
 
         # Line 3: prepare clingo.
         completion_control, guess_control = \
-            self._init_clingo(iaf_file, topic, label)
+            self._init_clingo(new_iaf, topic, label)
 
-        completions_tried = 0
+        # Parse input so that we can iterate over uncertain arguments/attacks.
+        self.uncertain_arguments = \
+            [self.argument_name_to_id[arg_name]
+             for arg_name in new_iaf.uncertain_arguments.keys()]
+        self.uncertain_attacks = \
+            [(self.argument_name_to_id[defeat.from_argument.name],
+              self.argument_name_to_id[defeat.to_argument.name])
+             for defeat in new_iaf.uncertain_defeats]
 
         # Line 4.
         while True:
             # Line 5.
-            with guess_control.solve(
-                    on_model=self._store_completion, async_=True) as handle:
-                handle.wait(5)
-                handle.cancel()
+            guess_control.solve(on_model=self._store_completion)
 
             # Line 6.
             if self.last_model:
-                completions_tried += 1
-                # print(completions_tried)
                 # Line 7 and 8: get the completion corresponding to last_model.
                 last_completion_arguments, last_completion_attacks = \
                     self._get_guessed_completion()
@@ -63,7 +65,8 @@ class CompleteRelevanceSolver:
                                 last_completion_attacks)
                         if addition_of_argument_is_relevant:
                             relevant_arguments_to_add.add(
-                                query_uncertain_argument)
+                                self.id_to_argument_name[
+                                    query_uncertain_argument])
 
                     # Line 16.
                     else:
@@ -76,7 +79,8 @@ class CompleteRelevanceSolver:
                                 last_completion_attacks)
                         if removal_of_argument_is_relevant:
                             relevant_arguments_to_remove.add(
-                                query_uncertain_argument)
+                                self.id_to_argument_name[
+                                    query_uncertain_argument])
 
                 # Line 9 (for uncertain attacks).
                 for query_uncertain_attack in self.uncertain_attacks:
@@ -92,7 +96,10 @@ class CompleteRelevanceSolver:
                                 new_attacks)
                         if addition_of_attack_is_relevant:
                             relevant_attacks_to_add.add(
-                                query_uncertain_attack)
+                                (self.id_to_argument_name[
+                                    query_uncertain_attack[0]],
+                                 self.id_to_argument_name[
+                                     query_uncertain_attack[1]]))
 
                     # Line 16.
                     else:
@@ -105,7 +112,10 @@ class CompleteRelevanceSolver:
                                 new_attacks)
                         if removal_of_attack_is_relevant:
                             relevant_attacks_to_remove.add(
-                                query_uncertain_attack)
+                                (self.id_to_argument_name[
+                                     query_uncertain_attack[0]],
+                                 self.id_to_argument_name[
+                                     query_uncertain_attack[1]]))
 
                 # Line 22: refine the original solver.
                 self._refine_guess_control(guess_control,
@@ -134,29 +144,18 @@ class CompleteRelevanceSolver:
                      symbol.arguments[1].name))
         return last_completion_arguments, last_completion_attacks
 
-    def _parse_input(self, iaf_file):
-        with open(iaf_file, 'r') as infile:
-            text = infile.read().split("\n")
-
-        for line in text:
-            if line.startswith('uarg'):
-                self.uncertain_arguments.append(
-                    line.split('(')[1].split(')')[0])
-            elif line.startswith('uatt'):
-                attack_from, attack_to = \
-                    map(str.strip, line.split('(')[1].split(')')[0].split(','))
-                self.uncertain_attacks.append((attack_from, attack_to))
-
     def _store_completion(self, model):
         self.last_model = model.symbols(shown=True)
 
     def _store_satisfiable(self, model):
         self.new_completion_model = model.symbols(shown=True)
 
-    def _init_clingo(self, iaf_file, topic: str, label: str):
+    def _init_clingo(self, iaf, topic: str, label: str):
         guess_control = clingo.Control()
-        guess_control.load(str(iaf_file))
-        guess_control.add(f':- not lab({label},{topic}).')
+        self.argument_name_to_id, self.id_to_argument_name = \
+            add_iaf_and_topic_to_control(iaf, topic, guess_control)
+        guess_control.add(f':- not lab({label},'
+                          f'{self.argument_name_to_id[topic]}).')
         guess_control.load(str(PATH_TO_ENCODINGS / 'complete.dl'))
         guess_control.load(str(PATH_TO_ENCODINGS / 'valid_completion.dl'))
         guess_control.load(str(PATH_TO_ENCODINGS / 'labels.dl'))
@@ -165,8 +164,9 @@ class CompleteRelevanceSolver:
         guess_control.ground([('base', [])], context=self)
 
         completion_control = clingo.Control()
-        completion_control.load(str(iaf_file))
-        completion_control.add(f':- not lab({label},{topic}).')
+        add_iaf_and_topic_to_control(iaf, topic, completion_control)
+        completion_control.add(f':- not lab({label},'
+                               f'{self.argument_name_to_id[topic]}).')
         completion_control.load(str(PATH_TO_ENCODINGS / 'complete.dl'))
         completion_control.load(str(PATH_TO_ENCODINGS / 'valid_completion.dl'))
         completion_control.load(str(PATH_TO_ENCODINGS / 'labels.dl'))
@@ -253,18 +253,3 @@ class CompleteRelevanceSolver:
         for external_to_remove in externals_to_remove_later:
             completion_control.assign_external(external_to_remove, False)
         self.new_completion_model = None
-
-
-if __name__ == '__main__':
-    example = pathlib.Path('examples') / 'ac.lp'
-    solver = CompleteRelevanceSolver()
-    rel_arguments_to_add, rel_attacks_to_add, \
-        rel_arguments_to_remove, rel_attacks_to_remove = \
-        solver.enumerate_complete_credulous_relevant_updates(
-            example, 'undec', 'c')
-    print('Relevant to add:')
-    print(rel_arguments_to_add)
-    print(rel_attacks_to_add)
-    print('Relevant to remove:')
-    print(rel_arguments_to_remove)
-    print(rel_attacks_to_remove)

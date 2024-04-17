@@ -15,6 +15,8 @@ from py_arg.incomplete_argumentation_frameworks.import_export.\
     iaf_from_json_reader import IAFFromJsonReader
 from py_arg.incomplete_argumentation_frameworks.import_export.\
     iaf_to_json_writer import IAFToJSONWriter
+from py_arg.incomplete_argumentation_frameworks.semantics.complete_credulous_relevance import \
+    CompleteRelevanceSolver
 from py_arg.incomplete_argumentation_frameworks.semantics.complete_credulous_stability import \
     CompleteCredulousStabilitySolver
 from py_arg.incomplete_argumentation_frameworks.semantics.\
@@ -263,6 +265,42 @@ def display_iaf(
                     result_text.append(html.P(
                         f'{topic} is not Stable-CP-Credulous'
                         f'-{label.upper()}.'))
+
+                    # Compute all relevant updates.
+                    relevance_solver = CompleteRelevanceSolver()
+                    relevant_arguments_to_add, relevant_attacks_to_add, \
+                        relevant_arguments_to_remove, \
+                        relevant_attacks_to_remove = \
+                        relevance_solver.enumerate_relevant_updates(
+                            iaf, label, topic)
+                    relevant_texts = []
+                    for argument in relevant_arguments_to_add:
+                        relevant_texts.append(
+                            f'Adding {argument} is CP-Credulous'
+                            f'-{label.upper()}-relevant for {topic}.')
+                        relevant_arguments.add(argument)
+                    for argument in relevant_arguments_to_remove:
+                        relevant_texts.append(
+                            f'Removing {argument} is CP-Credulous'
+                            f'-{label.upper()}-relevant for {topic}.')
+                        relevant_arguments.add(argument)
+                    for attack in relevant_attacks_to_add:
+                        relevant_texts.append(
+                            f'Adding ({attack[0]}, {attack[1]}) is '
+                            f'CP-Credulous-{label.upper()}-relevant for'
+                            f' {topic}.')
+                        relevant_attacks.add(attack)
+                    for attack in relevant_attacks_to_remove:
+                        relevant_texts.append(
+                            f'Removing ({attack[0]}, {attack[1]}) is '
+                            f'CP-Credulous-{label.upper()}-relevant for'
+                            f' {topic}.')
+                        relevant_attacks.add(attack)
+                    if relevant_texts:
+                        result_text.append(html.Ul([
+                            html.Li(relevant_text)
+                            for relevant_text in relevant_texts]))
+
             graph_data = get_iaf_graph_data(
                 iaf, topic, list(relevant_arguments),
                 list(relevant_attacks), color_blind_mode)
