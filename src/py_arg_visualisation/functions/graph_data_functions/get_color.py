@@ -1,7 +1,7 @@
 def get_color(required_color: str, color_blind_mode: bool) -> str:
     if color_blind_mode:
         if required_color == 'gray':
-            return '#dddddd'
+            return '#888888'
         if required_color == 'blue':
             return '#6D90E3'
         if required_color == 'green':
