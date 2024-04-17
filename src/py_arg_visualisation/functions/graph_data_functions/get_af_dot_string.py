@@ -35,6 +35,7 @@ def generate_dot_string(
     # Adding node information
     is_extension_representation = False
     argument_extension_state = {}
+    undefined_arguments = []
     unselected_arguments = \
         {arg.name for arg in argumentation_framework.arguments}
     for color, arguments in selected_arguments.items():
@@ -46,6 +47,8 @@ def generate_dot_string(
             status = 'defeated'
         elif color == 'yellow':
             status = 'undefined'
+            if len(arguments)!=0:
+                undefined_arguments=arguments
         else:
             status = 'other'
         for argument_name in arguments:
@@ -103,35 +106,35 @@ def generate_dot_string(
             elif from_argument_grounded_state != 'accepted' and \
                     to_argument_grounded_state == 'defeated':
                 constraint = True
-                full_color = get_color('black', color_blind_mode)
-                style = 'dashed'
+                full_color = get_color('gray', color_blind_mode)
+                style = 'dotted'
                 label = ''
             else:
                 
-                grounded_edge_color = get_color('yellow', color_blind_mode)
+                # grounded_edge_color = get_color('yellow', color_blind_mode)
                 if from_argument_extension_state == 'accepted' and \
                         to_argument_extension_state == 'defeated':
                     extension_edge_color = get_color('green', color_blind_mode)
                     full_color = \
-                        f'{extension_edge_color}:{grounded_edge_color}'
+                        f'{extension_edge_color}'
                 elif from_argument_extension_state == 'defeated' and \
                         to_argument_extension_state == 'accepted':
                     extension_edge_color = get_color('red', color_blind_mode)
                     full_color = \
-                        f'{extension_edge_color}:{grounded_edge_color}'
+                        f'{extension_edge_color}'
                 elif from_argument_extension_state == 'undefined' and \
                         to_argument_extension_state == 'undefined':
                     full_color = get_color('dark-yellow', color_blind_mode)
                 else:
-                    # constraint = True
-                    extension_edge_color = get_color('black', color_blind_mode)
+                    constraint = True
+                    extension_edge_color = get_color('gray', color_blind_mode)
                     full_color = \
                         f'{extension_edge_color}'
-                    style = 'dashed'
+                    style = 'dotted'
                     label = ''
 
             if constraint:
-                constraint_str = "constraint=false"
+                constraint_str = "constraint=true"
             else:
                 constraint_str = ''
 
@@ -151,7 +154,7 @@ def generate_dot_string(
     max_state_nodes = [node for node, value in number_by_argument.items() if value == max(number_by_argument.values())]
 
     min_rank_string = f"{{rank = min {' '.join(min_state_nodes)}}}"
-    max_rank_string = f"{{rank = max {' '.join(max_state_nodes)}}}"
+    max_rank_string = f"{{rank = max {' '.join(max_state_nodes+undefined_arguments)}}}"
     dot_string += f"    {min_rank_string}\n   {max_rank_string}\n"
     dot_string += "}"
     return dot_string
