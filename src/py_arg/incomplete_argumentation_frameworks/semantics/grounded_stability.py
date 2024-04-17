@@ -20,7 +20,7 @@ class GroundedStabilitySolver:
     def enumerate_stable_arguments(
             self, iaf: IncompleteArgumentationFramework, topic_str: str):
         control = clingo.Control(arguments=['--enum-mode=cautious'])
-        self.id_to_argument_name = \
+        _, self.id_to_argument_name = \
             add_iaf_and_topic_to_control(iaf, topic_str, control)
         control.load(str(PATH_TO_ENCODINGS / 'stability_filter.lp'))
         control.load(str(PATH_TO_ENCODINGS / 'grounded.dl'))

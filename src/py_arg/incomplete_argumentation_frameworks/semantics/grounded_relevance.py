@@ -56,7 +56,7 @@ class GroundedRelevanceWithPreprocessingSolver:
     def enumerate_grounded_relevant_updates(
             self, iaf: IncompleteArgumentationFramework, topic_str: str):
         control = clingo.Control(arguments=['--enum-mode=brave'])
-        self.id_to_argument_name = \
+        _, self.id_to_argument_name = \
             add_iaf_and_topic_to_control(iaf, topic_str, control)
         control.load(str(PATH_TO_ENCODINGS / 'filter.lp'))
         control.load(str(PATH_TO_ENCODINGS / 'grounded.dl'))

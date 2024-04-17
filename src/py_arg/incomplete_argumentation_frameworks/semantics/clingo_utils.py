@@ -34,4 +34,4 @@ def add_iaf_and_topic_to_control(
                            f'{argument_name_to_id[uatt.to_argument.name]}).')
     clingo_control.add('base', [], f'topic({argument_name_to_id[topic]}).')
 
-    return id_to_argument_name
+    return argument_name_to_id, id_to_argument_name

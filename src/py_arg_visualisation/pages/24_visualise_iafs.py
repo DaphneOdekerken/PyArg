@@ -15,6 +15,8 @@ from py_arg.incomplete_argumentation_frameworks.import_export.\
     iaf_from_json_reader import IAFFromJsonReader
 from py_arg.incomplete_argumentation_frameworks.import_export.\
     iaf_to_json_writer import IAFToJSONWriter
+from py_arg.incomplete_argumentation_frameworks.semantics.complete_credulous_stability import \
+    CompleteCredulousStabilitySolver
 from py_arg.incomplete_argumentation_frameworks.semantics.\
     grounded_relevance import GroundedRelevanceWithPreprocessingSolver
 from py_arg.incomplete_argumentation_frameworks.semantics.\
@@ -147,9 +149,9 @@ layout = html.Div([html.H1(
     Output('24-topic-argument', 'options'),
     Output('24-topic-argument', 'value'),
     Input('24-certain-arguments', 'value'),
-    State('24-certain-attacks', 'value'),
-    State('24-uncertain-arguments', 'value'),
-    State('24-uncertain-attacks', 'value'),
+    Input('24-certain-attacks', 'value'),
+    Input('24-uncertain-arguments', 'value'),
+    Input('24-uncertain-attacks', 'value'),
     prevent_initial_call=True
 )
 def update_topic(
@@ -212,6 +214,10 @@ def display_iaf(
         return get_iaf_graph_data(iaf, None, [], [], color_blind_mode), ''
 
     # Otherwise, we are in the evaluation tab.
+    if not topic:
+        return get_iaf_graph_data(iaf, None, [], [], color_blind_mode), \
+            'Choose a topic from the dropdown.'
+
     if semantics == 'Grounded':
         # Compute stability status of the topic.
         stability_solver = GroundedStabilitySolver()
@@ -239,6 +245,30 @@ def display_iaf(
                           html.Ul([html.Li(relevant_item)
                                    for relevant_item in relevant_updates])]
         return graph_data, relevance_text
+
+    if semantics == 'Complete':
+        if strategy == 'Credulous':
+            result_text = []
+            relevant_arguments = set()
+            relevant_attacks = set()
+            for label in ['in', 'out', 'undec']:
+                # Compute stability status of the topic.
+                stability_solver = CompleteCredulousStabilitySolver()
+                stable = stability_solver.check_complete_credulous_stability(
+                    iaf, label, topic)
+                if stable:
+                    result_text.append(html.P(
+                        f'{topic} is Stable-CP-Credulous-{label.upper()}.'))
+                else:
+                    result_text.append(html.P(
+                        f'{topic} is not Stable-CP-Credulous'
+                        f'-{label.upper()}.'))
+            graph_data = get_iaf_graph_data(
+                iaf, topic, list(relevant_arguments),
+                list(relevant_attacks), color_blind_mode)
+            return graph_data, result_text
+        else:
+            raise NotImplementedError()
 
     return get_iaf_graph_data(iaf, None, [], [], color_blind_mode), \
         'This semantics has no algorithm yet.'

@@ -52,10 +52,12 @@ def get_iaf_graph_data(
 
     data_edges = []
     for defeat in iaf.defeats:
+        edge_color = get_color('black', color_blind_mode)
         new_edge = {
             'id': str(defeat.from_argument) + '-' + str(defeat.to_argument),
             'from': str(defeat.from_argument),
-            'to': str(defeat.to_argument), 'arrows': 'to'}
+            'to': str(defeat.to_argument), 'arrows': 'to',
+            'dashes': False, 'color': {'color': edge_color}}
         data_edges.append(new_edge)
     for defeat in iaf.uncertain_defeats:
         if (str(defeat.from_argument), str(defeat.to_argument)) in \
