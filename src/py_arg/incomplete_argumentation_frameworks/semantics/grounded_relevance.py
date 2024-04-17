@@ -44,7 +44,7 @@ class GroundedRelevanceWithPreprocessingSolver:
                 result.append(f'Removing {q1} is '
                               f'{justification_status}-relevant for {q2}.')
             else:
-                q3 = self.id_to_argument_name[symbols.arguments[2].name]
+                q3 = self.id_to_argument_name[symbols.arguments[3].name]
                 if symbols.name == 'add_query_att_relevant_for':
                     result.append(f'Adding ({q1},{q2}) is '
                                   f'{justification_status}-relevant for {q3}.')
