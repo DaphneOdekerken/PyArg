@@ -5,7 +5,6 @@ import dash
 import visdcc
 from dash import html, callback, Input, Output, State, dcc
 import dash_bootstrap_components as dbc
-from dash.exceptions import PreventUpdate
 
 from py_arg.incomplete_argumentation_frameworks.classes. \
     incomplete_argumentation_framework import IncompleteArgumentationFramework
@@ -15,10 +14,14 @@ from py_arg.incomplete_argumentation_frameworks.import_export.\
     iaf_from_json_reader import IAFFromJsonReader
 from py_arg.incomplete_argumentation_frameworks.import_export.\
     iaf_to_json_writer import IAFToJSONWriter
-from py_arg.incomplete_argumentation_frameworks.semantics.complete_credulous_relevance import \
-    CompleteRelevanceSolver
-from py_arg.incomplete_argumentation_frameworks.semantics.complete_credulous_stability import \
-    CompleteCredulousStabilitySolver
+from py_arg.incomplete_argumentation_frameworks.semantics.\
+    complete_credulous_relevance import CompleteCredulousRelevanceSolver
+from py_arg.incomplete_argumentation_frameworks.semantics.\
+    complete_credulous_stability import CompleteCredulousStabilitySolver
+from py_arg.incomplete_argumentation_frameworks.semantics.\
+    complete_skeptical_relevance import CompleteSkepticalRelevanceSolver
+from py_arg.incomplete_argumentation_frameworks.semantics.\
+    complete_skeptical_stability import CompleteSkepticalStabilitySolver
 from py_arg.incomplete_argumentation_frameworks.semantics.\
     grounded_relevance import GroundedRelevanceWithPreprocessingSolver
 from py_arg.incomplete_argumentation_frameworks.semantics.\
@@ -249,64 +252,66 @@ def display_iaf(
         return graph_data, relevance_text
 
     if semantics == 'Complete':
-        if strategy == 'Credulous':
-            result_text = []
-            relevant_arguments = set()
-            relevant_attacks = set()
-            for label in ['in', 'out', 'undec']:
-                # Compute stability status of the topic.
+        result_text = []
+        relevant_arguments = set()
+        relevant_attacks = set()
+        for label in ['in', 'out', 'undec']:
+            # Compute stability status of the topic.
+            if strategy == 'Credulous':
                 stability_solver = CompleteCredulousStabilitySolver()
-                stable = stability_solver.check_complete_credulous_stability(
-                    iaf, label, topic)
-                if stable:
-                    result_text.append(html.P(
-                        f'{topic} is Stable-CP-Credulous-{label.upper()}.'))
+            else:
+                stability_solver = CompleteSkepticalStabilitySolver()
+            stable = stability_solver.check_stability(iaf, label, topic)
+            if stable:
+                result_text.append(html.P(
+                    f'{topic} is Stable-CP-{strategy}-{label.upper()}.'))
+            else:
+                result_text.append(html.P(
+                    f'{topic} is not Stable-CP-{strategy}'
+                    f'-{label.upper()}.'))
+
+                # Compute all relevant updates.
+                if strategy == 'Credulous':
+                    relevance_solver = CompleteCredulousRelevanceSolver()
                 else:
-                    result_text.append(html.P(
-                        f'{topic} is not Stable-CP-Credulous'
-                        f'-{label.upper()}.'))
+                    relevance_solver = CompleteSkepticalRelevanceSolver()
+                relevant_arguments_to_add, relevant_attacks_to_add, \
+                    relevant_arguments_to_remove, \
+                    relevant_attacks_to_remove = \
+                    relevance_solver.enumerate_relevant_updates(
+                        iaf, label, topic)
+                relevant_texts = []
+                for argument in relevant_arguments_to_add:
+                    relevant_texts.append(
+                        f'Adding {argument} is CP-{strategy}'
+                        f'-{label.upper()}-relevant for {topic}.')
+                    relevant_arguments.add(argument)
+                for argument in relevant_arguments_to_remove:
+                    relevant_texts.append(
+                        f'Removing {argument} is CP-{strategy}'
+                        f'-{label.upper()}-relevant for {topic}.')
+                    relevant_arguments.add(argument)
+                for attack in relevant_attacks_to_add:
+                    relevant_texts.append(
+                        f'Adding ({attack[0]}, {attack[1]}) is '
+                        f'CP-{strategy}-{label.upper()}-relevant for'
+                        f' {topic}.')
+                    relevant_attacks.add(attack)
+                for attack in relevant_attacks_to_remove:
+                    relevant_texts.append(
+                        f'Removing ({attack[0]}, {attack[1]}) is '
+                        f'CP-{strategy}-{label.upper()}-relevant for'
+                        f' {topic}.')
+                    relevant_attacks.add(attack)
+                if relevant_texts:
+                    result_text.append(html.Ul([
+                        html.Li(relevant_text)
+                        for relevant_text in relevant_texts]))
 
-                    # Compute all relevant updates.
-                    relevance_solver = CompleteRelevanceSolver()
-                    relevant_arguments_to_add, relevant_attacks_to_add, \
-                        relevant_arguments_to_remove, \
-                        relevant_attacks_to_remove = \
-                        relevance_solver.enumerate_relevant_updates(
-                            iaf, label, topic)
-                    relevant_texts = []
-                    for argument in relevant_arguments_to_add:
-                        relevant_texts.append(
-                            f'Adding {argument} is CP-Credulous'
-                            f'-{label.upper()}-relevant for {topic}.')
-                        relevant_arguments.add(argument)
-                    for argument in relevant_arguments_to_remove:
-                        relevant_texts.append(
-                            f'Removing {argument} is CP-Credulous'
-                            f'-{label.upper()}-relevant for {topic}.')
-                        relevant_arguments.add(argument)
-                    for attack in relevant_attacks_to_add:
-                        relevant_texts.append(
-                            f'Adding ({attack[0]}, {attack[1]}) is '
-                            f'CP-Credulous-{label.upper()}-relevant for'
-                            f' {topic}.')
-                        relevant_attacks.add(attack)
-                    for attack in relevant_attacks_to_remove:
-                        relevant_texts.append(
-                            f'Removing ({attack[0]}, {attack[1]}) is '
-                            f'CP-Credulous-{label.upper()}-relevant for'
-                            f' {topic}.')
-                        relevant_attacks.add(attack)
-                    if relevant_texts:
-                        result_text.append(html.Ul([
-                            html.Li(relevant_text)
-                            for relevant_text in relevant_texts]))
-
-            graph_data = get_iaf_graph_data(
-                iaf, topic, list(relevant_arguments),
-                list(relevant_attacks), color_blind_mode)
-            return graph_data, result_text
-        else:
-            raise NotImplementedError()
+        graph_data = get_iaf_graph_data(
+            iaf, topic, list(relevant_arguments),
+            list(relevant_attacks), color_blind_mode)
+        return graph_data, result_text
 
     return get_iaf_graph_data(iaf, None, [], [], color_blind_mode), \
         'This semantics has no algorithm yet.'

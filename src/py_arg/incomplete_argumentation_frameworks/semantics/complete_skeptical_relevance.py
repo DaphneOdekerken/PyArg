@@ -9,7 +9,7 @@ from py_arg.incomplete_argumentation_frameworks.semantics.\
 PATH_TO_ENCODINGS = pathlib.Path(__file__).parent / 'encodings'
 
 
-class CompleteCredulousRelevanceSolver:
+class CompleteSkepticalRelevanceSolver:
     def __init__(self):
         self.last_model = None
         self.new_completion_model = None
@@ -54,11 +54,11 @@ class CompleteCredulousRelevanceSolver:
                 # Line 9 (for uncertain arguments).
                 for query_uncertain_argument in self.uncertain_arguments:
                     # Line 10: check if query is new in this completion.
-                    if query_uncertain_argument in last_completion_arguments:
+                    if query_uncertain_argument not in \
+                            last_completion_arguments:
                         # Line 11-15: is adding this argument relevant?
-                        new_arguments = \
-                            [arg for arg in last_completion_arguments
-                             if arg != query_uncertain_argument]
+                        new_arguments = last_completion_arguments + \
+                                        [query_uncertain_argument]
                         addition_of_argument_is_relevant = \
                             self._check_answer_set_with_new_completion(
                                 completion_control, new_arguments,
@@ -71,8 +71,9 @@ class CompleteCredulousRelevanceSolver:
                     # Line 16.
                     else:
                         # Line 17-21: is removing this argument relevant?
-                        new_arguments = last_completion_arguments + \
-                                        [query_uncertain_argument]
+                        new_arguments = \
+                            [arg for arg in last_completion_arguments
+                             if arg != query_uncertain_argument]
                         removal_of_argument_is_relevant = \
                             self._check_answer_set_with_new_completion(
                                 completion_control, new_arguments,
@@ -85,11 +86,10 @@ class CompleteCredulousRelevanceSolver:
                 # Line 9 (for uncertain attacks).
                 for query_uncertain_attack in self.uncertain_attacks:
                     # Line 10: check if query is new in this completion.
-                    if query_uncertain_attack in last_completion_attacks:
+                    if query_uncertain_attack not in last_completion_attacks:
                         # Line 11-15: is adding this attack relevant?
                         new_attacks = \
-                            [att for att in last_completion_attacks
-                             if att != query_uncertain_attack]
+                            last_completion_attacks + [query_uncertain_attack]
                         addition_of_attack_is_relevant = \
                             self._check_answer_set_with_new_completion(
                                 completion_control, last_completion_arguments,
@@ -105,7 +105,8 @@ class CompleteCredulousRelevanceSolver:
                     else:
                         # Line 17-21: is removing this attack relevant?
                         new_attacks = \
-                            last_completion_attacks + [query_uncertain_attack]
+                            [att for att in last_completion_attacks
+                             if att != query_uncertain_attack]
                         removal_of_attack_is_relevant = \
                             self._check_answer_set_with_new_completion(
                                 completion_control, last_completion_arguments,
@@ -154,7 +155,7 @@ class CompleteCredulousRelevanceSolver:
         guess_control = clingo.Control()
         self.argument_name_to_id, self.id_to_argument_name = \
             add_iaf_and_topic_to_control(iaf, topic, guess_control)
-        guess_control.add(f':- not lab({label},'
+        guess_control.add(f':- lab({label},'
                           f'{self.argument_name_to_id[topic]}).')
         guess_control.load(str(PATH_TO_ENCODINGS / 'complete.dl'))
         guess_control.load(str(PATH_TO_ENCODINGS / 'valid_completion.dl'))
@@ -165,7 +166,7 @@ class CompleteCredulousRelevanceSolver:
 
         completion_control = clingo.Control()
         add_iaf_and_topic_to_control(iaf, topic, completion_control)
-        completion_control.add(f':- not lab({label},'
+        completion_control.add(f':- lab({label},'
                                f'{self.argument_name_to_id[topic]}).')
         completion_control.load(str(PATH_TO_ENCODINGS / 'complete.dl'))
         completion_control.load(str(PATH_TO_ENCODINGS / 'valid_completion.dl'))
@@ -233,10 +234,7 @@ class CompleteCredulousRelevanceSolver:
             completion_control.assign_external(new_a, True)
             externals_to_remove_later.append(new_a)
         # Run solver for completion.
-        with completion_control.solve(
-                on_model=self._store_satisfiable, async_=True) as handle:
-            handle.wait(5)
-            handle.cancel()
+        completion_control.solve(on_model=self._store_satisfiable)
 
         # Check satisfiability and store result.
         result = False

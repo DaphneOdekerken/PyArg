@@ -16,7 +16,7 @@ class CompleteCredulousStabilitySolver:
         self.uncertain_arguments = []
         self.uncertain_attacks = []
 
-    def check_complete_credulous_stability(
+    def check_stability(
             self, iaf, label: str, topic_str: str) -> bool:
         control = clingo.Control()
         self.argument_name_to_id, self.id_to_argument_name = \
