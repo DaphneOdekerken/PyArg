@@ -17,7 +17,21 @@ class GroundedRelevanceWithPreprocessingSolver:
     def on_model(self, model):
         self.last_model = model.symbols(shown=True)
 
-    def get_result(self):
+    def get_relevant_args_and_atts(self):
+        relevant_arg = set()
+        relevant_att = set()
+        for symbols in self.last_model:
+            q1 = self.id_to_argument_name[symbols.arguments[1].name]
+            if symbols.name in ['add_query_relevant_for',
+                                'remove_query_relevant_for']:
+                relevant_arg.add(q1)
+            else:
+                q2 = self.id_to_argument_name[symbols.arguments[2].name]
+                relevant_att.add((q1, q2))
+
+        return relevant_arg, relevant_att
+
+    def get_printable_result(self):
         result = []
         for symbols in self.last_model:
             justification_status = symbols.arguments[0].name.upper()
