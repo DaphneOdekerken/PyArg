@@ -45,23 +45,28 @@ def get_iaf_graph_data(
                 'border': get_color('black', color_blind_mode)}
 
     data_nodes_blue = [{'id': str(argument), 'label': str(argument),
-                        'color': get_custom_color('blue')}
+                        'color': get_custom_color('blue'),
+                        'shapeProperties': {'borderDashes': False}}
                        for argument in iaf.arguments.values()
                        if argument.name in blue]
     data_nodes_green = [{'id': str(argument), 'label': str(argument),
-                         'color': get_custom_color('green')}
+                         'color': get_custom_color('green'),
+                         'shapeProperties': {'borderDashes': False}}
                         for argument in iaf.arguments.values()
                         if argument.name in green]
     data_nodes_yellow = [{'id': str(argument), 'label': str(argument),
-                          'color': get_custom_color('yellow')}
+                          'color': get_custom_color('yellow'),
+                          'shapeProperties': {'borderDashes': False}}
                          for argument in iaf.arguments.values()
                          if argument.name in yellow]
     data_nodes_red = [{'id': str(argument), 'label': str(argument),
-                       'color': get_custom_color('red')}
+                       'color': get_custom_color('red'),
+                       'shapeProperties': {'borderDashes': False}}
                       for argument in iaf.arguments.values()
                       if argument.name in red]
     data_nodes_unselected = [{'id': str(argument), 'label': str(argument),
-                              'color': get_custom_color('gray')}
+                              'color': get_custom_color('gray'),
+                              'shapeProperties': {'borderDashes': False}}
                              for argument in iaf.arguments.values()
                              if argument.name in other_arguments]
     data_nodes = data_nodes_blue + data_nodes_red + data_nodes_yellow + \
@@ -114,7 +119,7 @@ def get_iaf_graph_data(
         'from': str(defeat.from_argument),
         'to': str(defeat.to_argument), 'arrows': 'to',
         'dashes': [2, 2]
-        }
+    }
         for defeat in iaf.uncertain_defeats]
     all_edges = data_edges + uncertain_data_edges
     data = {'nodes': all_nodes, 'edges': all_edges}
