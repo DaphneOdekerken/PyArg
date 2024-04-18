@@ -47,7 +47,6 @@ class CompleteCredulousRelevanceSolver:
 
             # Line 6.
             if self.last_model:
-                print(self.last_model)
                 # Line 7 and 8: get the completion corresponding to last_model.
                 last_completion_arguments, last_completion_attacks = \
                     self._get_guessed_completion()
@@ -232,10 +231,7 @@ class CompleteCredulousRelevanceSolver:
             completion_control.assign_external(new_a, True)
             externals_to_remove_later.append(new_a)
         # Run solver for completion.
-        with completion_control.solve(
-                on_model=self._store_satisfiable, async_=True) as handle:
-            handle.wait(5)
-            handle.cancel()
+        completion_control.solve(on_model=self._store_satisfiable)
 
         # Check satisfiability and store result.
         result = False

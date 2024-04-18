@@ -31,26 +31,30 @@ class GroundedRelevanceWithPreprocessingSolver:
 
         return relevant_arg, relevant_att
 
-    def get_printable_result(self):
+    def get_printable_result(self, justification_status):
         result = []
         for symbols in self.last_model:
-            justification_status = symbols.arguments[0].name.upper()
-            q1 = self.id_to_argument_name[symbols.arguments[1].name]
-            q2 = self.id_to_argument_name[symbols.arguments[2].name]
-            if symbols.name == 'add_query_relevant_for':
-                result.append(f'Adding {q1} is '
-                              f'{justification_status}-relevant for {q2}.')
-            elif symbols.name == 'remove_query_relevant_for':
-                result.append(f'Removing {q1} is '
-                              f'{justification_status}-relevant for {q2}.')
-            else:
-                q3 = self.id_to_argument_name[symbols.arguments[3].name]
-                if symbols.name == 'add_query_att_relevant_for':
-                    result.append(f'Adding ({q1},{q2}) is '
-                                  f'{justification_status}-relevant for {q3}.')
-                if symbols.name == 'remove_query_att_relevant_for':
-                    result.append(f'Removing ({q1},{q2}) is '
-                                  f'{justification_status}-relevant for {q3}.')
+            if justification_status == symbols.arguments[0].name:
+                q1 = self.id_to_argument_name[symbols.arguments[1].name]
+                q2 = self.id_to_argument_name[symbols.arguments[2].name]
+                if symbols.name == 'add_query_relevant_for':
+                    result.append(f'Adding {q1} is '
+                                  f'{justification_status.upper()}-'
+                                  f'relevant for {q2}.')
+                elif symbols.name == 'remove_query_relevant_for':
+                    result.append(f'Removing {q1} is '
+                                  f'{justification_status.upper()}-'
+                                  f'relevant for {q2}.')
+                else:
+                    q3 = self.id_to_argument_name[symbols.arguments[3].name]
+                    if symbols.name == 'add_query_att_relevant_for':
+                        result.append(f'Adding ({q1}, {q2}) is '
+                                      f'{justification_status.upper()}-'
+                                      f'relevant for {q3}.')
+                    if symbols.name == 'remove_query_att_relevant_for':
+                        result.append(f'Removing ({q1}, {q2}) is '
+                                      f'{justification_status.upper()}-'
+                                      f'relevant for {q3}.')
         return result
 
     def enumerate_grounded_relevant_updates(

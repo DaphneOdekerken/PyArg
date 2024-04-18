@@ -239,13 +239,15 @@ def display_iaf(
         # Otherwise compute all relevant updates.
         relevance_solver = GroundedRelevanceWithPreprocessingSolver()
         relevance_solver.enumerate_grounded_relevant_updates(iaf, topic)
-        relevant_updates = relevance_solver.get_printable_result()
         selected_arguments, selected_attacks = \
             relevance_solver.get_relevant_args_and_atts()
 
         # Show relevant updates.
         graph_data = get_iaf_graph_data(
             iaf, topic, selected_arguments, selected_attacks, color_blind_mode)
+        relevant_updates = []
+        for label in ['in', 'out', 'undec']:
+            relevant_updates += relevance_solver.get_printable_result(label)
         relevance_text = [html.P(f'{topic} is unstable.'),
                           html.Ul([html.Li(relevant_item)
                                    for relevant_item in relevant_updates])]
