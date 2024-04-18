@@ -47,6 +47,7 @@ class CompleteCredulousRelevanceSolver:
 
             # Line 6.
             if self.last_model:
+                print(self.last_model)
                 # Line 7 and 8: get the completion corresponding to last_model.
                 last_completion_arguments, last_completion_attacks = \
                     self._get_guessed_completion()
@@ -191,21 +192,19 @@ class CompleteCredulousRelevanceSolver:
                     not_argument_atom = backend.add_atom(not_arg_sym)
                     refinement_rule_body.append(not_argument_atom)
             for u_att in self.uncertain_attacks:
-                if u_att[0] in last_completion_arguments and \
-                        u_att[1] in last_completion_arguments:
-                    if u_att in last_completion_attacks:
-                        attack_sym = clingo.Function(
-                            'att', [clingo.Function(u_att[0]),
-                                    clingo.Function(u_att[1])])
-                        attack_atom = backend.add_atom(attack_sym)
-                        refinement_rule_body.append(attack_atom)
-                    else:
-                        not_attack_sym = clingo.Function(
-                            'natt', [clingo.Function(u_att[0]),
-                                     clingo.Function(u_att[1])])
-                        not_attack_atom = backend.add_atom(
-                            not_attack_sym)
-                        refinement_rule_body.append(not_attack_atom)
+                if u_att in last_completion_attacks:
+                    attack_sym = clingo.Function(
+                        'att', [clingo.Function(u_att[0]),
+                                clingo.Function(u_att[1])])
+                    attack_atom = backend.add_atom(attack_sym)
+                    refinement_rule_body.append(attack_atom)
+                else:
+                    not_attack_sym = clingo.Function(
+                        'natt', [clingo.Function(u_att[0]),
+                                 clingo.Function(u_att[1])])
+                    not_attack_atom = backend.add_atom(
+                        not_attack_sym)
+                    refinement_rule_body.append(not_attack_atom)
             backend.add_rule(head=[], body=refinement_rule_body)
 
     def _check_answer_set_with_new_completion(
