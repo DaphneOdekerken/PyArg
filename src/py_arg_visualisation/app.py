@@ -44,6 +44,8 @@ navbar = dbc.NavbarSimple(
                                      className='fw-bold text-white'),
                 dbc.DropdownMenuItem('ABA', href='23-visualise-aba',
                                      className='fw-bold text-white'),
+                dbc.DropdownMenuItem('IAF', href='24-visualise-iafs',
+                                     className='fw-bold text-white'),
             ],
             nav=True,
             in_navbar=True,

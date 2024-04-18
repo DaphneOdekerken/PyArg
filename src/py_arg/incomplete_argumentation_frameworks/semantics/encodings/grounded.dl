@@ -1,0 +1,1 @@
+lab(in, X) :- argument(X), lab(out, Y) : attack(Y,X).

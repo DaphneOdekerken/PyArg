@@ -1,0 +1,10 @@
+arg_with_query(X,Q) :- argument(X), query(Q).
+arg_with_query(Q,Q) :- query(Q).
+attack_with_query(X,Y,Q) :- att(X,Y), arg_with_query(X,Q), arg_with_query(Y,Q).
+
+lab_with_query(in,X,Q) :- arg_with_query(X,Q), lab_with_query(out,Y,Q) : attack_with_query(Y,X,Q).
+lab_with_query(out,X,Q) :- attack_with_query(Y,X,Q), lab_with_query(in,Y,Q).
+lab_with_query(undec,X,Q) :- arg_with_query(X,Q), not lab_with_query(in,X,Q), not lab_with_query(out,X,Q).
+
+add_query_relevant_for(J,Q,T) :- query(Q), topic(T), not lab(J,T), lab_with_query(J,T,Q).
+remove_query_relevant_for(J,Q,T) :- query(Q), topic(T), lab(J,T), not lab_with_query(J,T,Q).
