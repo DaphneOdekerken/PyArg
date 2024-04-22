@@ -433,12 +433,10 @@ def evaluate_abstract_argumentation_framework(arguments: str, attacks: str,
     Input({'type': 'argument-button-abstract', 'index': ALL}, 'n_clicks'),
     Input('abstract-arguments', 'value'),
     Input('abstract-attacks', 'value'),
-    State('selected-argument-store-abstract', 'data'),
 )
 def mark_extension_or_argument_in_graph(_nr_of_clicks_extension_values,
                                         _nr_of_clicks_argument_values,
-                                        _arguments, _attacks,
-                                        old_selected_data: List[str]):
+                                        _arguments, _attacks):
     # Remove stored selected arguments after any updates in arguments/attacks.
     if dash.ctx.triggered_id in ['abstract-arguments', 'abstract-attacks']:
         return []
@@ -449,7 +447,7 @@ def mark_extension_or_argument_in_graph(_nr_of_clicks_extension_values,
 
     # No triggered button, keep old selection.
     if button_clicked_id == '':
-        return old_selected_data
+        return []
 
     # Update selected argument based on the clicked button.
     button_clicked_id_content = json.loads(button_clicked_id)
