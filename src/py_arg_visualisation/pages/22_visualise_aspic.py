@@ -8,8 +8,6 @@ import visdcc
 from dash import ctx, html, callback, Input, Output, State, ALL, dcc
 from dash.exceptions import PreventUpdate
 
-from py_arg.abstract_argumentation.import_export.argumentation_framework_from_json_reader import \
-    ArgumentationFrameworkFromJsonReader
 from py_arg.aspic.classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic.classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic.classes.instantiated_argument import InstantiatedArgument
