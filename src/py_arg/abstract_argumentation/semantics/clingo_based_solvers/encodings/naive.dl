@@ -1,0 +1,19 @@
+% https://www.dbai.tuwien.ac.at/research/argumentation/aspartix/dung.html
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Encoding for naive extensions
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Guess a set S \subseteq A
+in(X) :- not out(X), arg(X).
+out(X) :- not in(X), arg(X).
+
+%% S has to be conflict-free
+:- in(X), in(Y), att(X,Y).
+
+%% Check Maximality
+
+okOut(X) :- in(Y), att(Y,X).
+okOut(X) :- in(Y), att(X,Y).
+okOut(X) :- att(X,X).
+:-  out(X), not okOut(X).

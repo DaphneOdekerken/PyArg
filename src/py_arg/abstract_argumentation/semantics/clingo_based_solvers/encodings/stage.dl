@@ -1,0 +1,74 @@
+% https://www.dbai.tuwien.ac.at/research/argumentation/aspartix/dung
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Encoding for stage extensions
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Guess a set S \subseteq A
+in(X) :- not out(X), arg(X).
+out(X) :- not in(X), arg(X).
+
+%% S has to be conflict-free
+:- in(X), in(Y), att(X,Y).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% For the remaining part we need to put an order on the domain.
+% Therefore, we define a successor-relation with infinum and supremum
+% as follows
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+lt(X,Y) :- arg(X),arg(Y), X<Y, not input_error.
+nsucc(X,Z) :- lt(X,Y), lt(Y,Z).
+succ(X,Y) :- lt(X,Y), not nsucc(X,Y).
+ninf(X) :- lt(Y,X).
+nsup(X) :- lt(X,Y).
+inf(X) :- not ninf(X), arg(X).
+sup(X) :- not nsup(X), arg(X).
+
+%% Computing the range S+ of the guessed set S
+in_range(X) :- in(X).
+in_range(X) :- in(Y), att(Y,X).
+not_in_range(X) :- arg(X), not in_range(X).
+
+%% Guess S' \supseteq S for semi-stable
+inN(X) | outN(X) :- arg(X), not input_error.
+
+% eqplus checks wheter S'+ equals S+
+eqplus_upto(X) :- inf(X), in_range(X), in_rangeN(X).
+eqplus_upto(X) :- inf(X), not_in_range(X), not_in_rangeN(X).
+eqplus_upto(X) :- succ(Z,X), in_range(X), in_rangeN(X), eqplus_upto(Z).
+eqplus_upto(X) :- succ(Z,X), not_in_range(X), not_in_rangeN(X), eqplus_upto(Z).
+
+eqplus :- sup(X), eqplus_upto(X).
+
+%% get those X \notin S' which are not defeated by S'
+%% using successor again...
+
+undefeated_upto(X,Y) :- inf(Y), outN(X), outN(Y).
+undefeated_upto(X,Y) :- inf(Y), outN(X),  not att(Y,X).
+
+undefeated_upto(X,Y) :- succ(Z,Y), undefeated_upto(X,Z), outN(Y).
+undefeated_upto(X,Y) :- succ(Z,Y), undefeated_upto(X,Z), not att(Y,X).
+
+not_in_rangeN(X) :- sup(Y), outN(X), undefeated_upto(X,Y).
+in_rangeN(X) :- inN(X).
+in_rangeN(X) :- outN(X), inN(Y), att(Y,X).
+
+%% fail if the AF is empty
+not_empty :- arg(X).
+fail :- not not_empty.
+
+%% S' has to be conflictfree - otherwise fail
+fail :- inN(X), inN(Y), att(X,Y).
+
+%% fail if S'+ equals S+
+fail :- eqplus.
+
+%% fail if S'+ \subset S+
+fail :- in_range(X), not_in_rangeN(X).
+
+inN(X) :- fail, arg(X).
+outN(X) :- fail, arg(X).
+
+%% do the final spoil-thing ...
+:- not fail.

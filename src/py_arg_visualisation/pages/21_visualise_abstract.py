@@ -123,6 +123,7 @@ def get_abstract_evaluation_div():
                     {'label': 'Grounded', 'value': 'Grounded'},
                     {'label': 'Preferred', 'value': 'Preferred'},
                     {'label': 'Ideal', 'value': 'Ideal'},
+                    {'label': 'Stage', 'value': 'Stage'},
                     {'label': 'Stable', 'value': 'Stable'},
                     {'label': 'Semi-stable', 'value': 'SemiStable'},
                     {'label': 'Eager', 'value': 'Eager'},

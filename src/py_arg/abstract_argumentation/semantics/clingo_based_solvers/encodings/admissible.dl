@@ -1,0 +1,22 @@
+% https://www.dbai.tuwien.ac.at/research/argumentation/aspartix/dung.html
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Encoding for admissible extensions
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Guess a set S \subseteq A
+in(X) :- not out(X), arg(X).
+out(X) :- not in(X), arg(X).
+
+%% S has to be conflict-free
+:- in(X), in(Y), att(X,Y).
+
+%% The argument x is defeated by the set S
+defeated(X) :- in(Y), att(Y,X).
+
+%% The argument x is not defended by S
+not_defended(X) :- att(Y,X), not defeated(Y).
+
+%% All arguments x \in S need to be defended by S
+:- in(X), not_defended(X).

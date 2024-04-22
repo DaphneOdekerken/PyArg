@@ -3,26 +3,28 @@ from typing import TypeVar, Set, FrozenSet
 from py_arg.abstract_argumentation.classes.abstract_argumentation_framework \
     import AbstractArgumentationFramework
 from py_arg.abstract_argumentation.classes.argument import Argument
-from py_arg.abstract_argumentation.semantics.get_admissible_sets \
-    import get_admissible_sets
-from py_arg.abstract_argumentation.semantics.get_complete_extensions import \
-    get_complete_extensions
+from py_arg.abstract_argumentation.semantics.clingo_based_solvers.\
+    admissible_solver import get_admissible_sets
+from py_arg.abstract_argumentation.semantics.clingo_based_solvers.\
+    complete_solver import get_complete_extensions
+from py_arg.abstract_argumentation.semantics.clingo_based_solvers.\
+    stage_solver import get_stage_extensions
 from py_arg.abstract_argumentation.semantics.get_conflict_free_extensions \
     import get_conflict_free_extensions
 from py_arg.abstract_argumentation.semantics.get_eager_extension \
     import get_eager_extensions
-from py_arg.abstract_argumentation.semantics.get_grounded_extension \
-    import get_grounded_extensions
+from py_arg.abstract_argumentation.semantics.clingo_based_solvers.\
+    grounded_solver import get_grounded_extensions
 from py_arg.abstract_argumentation.semantics.get_ideal_extension \
     import get_ideal_extensions
-from py_arg.abstract_argumentation.semantics.get_naive_extensions import \
-    get_naive_extensions
-from py_arg.abstract_argumentation.semantics.get_preferred_extensions import \
-    get_preferred_extensions
-from py_arg.abstract_argumentation.semantics.get_semistable_extensions \
-    import get_semi_stable_extensions
-from py_arg.abstract_argumentation.semantics.get_stable_extensions \
-    import get_stable_extensions
+from py_arg.abstract_argumentation.semantics.clingo_based_solvers.\
+    naive_solver import get_naive_extensions
+from py_arg.abstract_argumentation.semantics.clingo_based_solvers.\
+    preferred_solver import get_preferred_extensions
+from py_arg.abstract_argumentation.semantics.clingo_based_solvers.\
+    semi_stable_solver import get_semi_stable_extensions
+from py_arg.abstract_argumentation.semantics.clingo_based_solvers.\
+    stable_solver import get_stable_extensions
 
 
 T = TypeVar('T', bound=Argument)
@@ -48,6 +50,8 @@ def get_argumentation_framework_extensions(
         return get_preferred_extensions(argumentation_framework)
     if semantics_specification == 'Ideal':
         return get_ideal_extensions(argumentation_framework)
+    if semantics_specification == 'Stage':
+        return get_stage_extensions(argumentation_framework)
     if semantics_specification == 'Stable':
         return get_stable_extensions(argumentation_framework)
     if semantics_specification == 'SemiStable':
