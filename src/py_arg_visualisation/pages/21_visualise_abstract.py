@@ -131,7 +131,7 @@ def get_abstract_evaluation_div():
                     {'label': 'Naive', 'value': 'Naive'}
                 ], value='Complete', id='abstract-evaluation-semantics')),
             ]),
-
+            dbc.Row(id='21-abstract-evaluation-semantics'),
             dbc.Row([
                 dbc.Col(html.B('Evaluation strategy')),
                 dbc.Col(dbc.Select(
@@ -140,7 +140,7 @@ def get_abstract_evaluation_div():
                         {'label': 'Skeptical', 'value': 'Skeptical'}
                     ], value='Credulous', id='abstract-evaluation-strategy')),
             ]),
-            dbc.Row(id='abstract-evaluation')
+            dbc.Row(id='21-abstract-evaluation-accepted')
         ]),
     ])
 
@@ -343,7 +343,8 @@ def download_generated_abstract_argumentation_framework(
 
 
 @callback(
-    Output('abstract-evaluation', 'children'),
+    Output('21-abstract-evaluation-semantics', 'children'),
+    Output('21-abstract-evaluation-accepted', 'children'),
     State('abstract-arguments', 'value'),
     State('abstract-attacks', 'value'),
     Input('abstract-evaluation-accordion', 'active_item'),
@@ -405,12 +406,25 @@ def evaluate_abstract_argumentation_framework(arguments: str, attacks: str,
                        'index': argument.name})
         for argument in sorted(accepted_arguments)]
 
-    return html.Div([html.B('The extension(s):'), html.Div(extension_buttons),
-                     html.B('The accepted argument(s):'),
-                     html.Div(accepted_argument_buttons),
-                     html.P('Click on the extension/argument buttons to '
-                            'display the corresponding argument(s) '
-                            'in the graph.')])
+    semantics_div = html.Div([
+        html.B('The extension(s):'),
+        html.Br(),
+        html.I('Click on the extension buttons to '
+               'display the corresponding extension '
+               'in the graph.'),
+        html.Div(extension_buttons),
+        html.Br()
+    ])
+    accepted_div = html.Div([
+        html.B('The accepted argument(s):'),
+        html.Br(),
+        html.I('Click on the accepted argument buttons to '
+               'display the corresponding argument '
+               'in the graph.'),
+        html.Div(accepted_argument_buttons),
+    ])
+
+    return semantics_div, accepted_div
 
 
 @callback(
