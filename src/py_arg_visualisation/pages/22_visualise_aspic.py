@@ -205,10 +205,9 @@ def get_structured_evaluation_specification_div():
                     {'label': 'Stable', 'value': 'Stable'},
                     {'label': 'Semi-stable', 'value': 'SemiStable'},
                     {'label': 'Eager', 'value': 'Eager'},
-                ],
-                    value='Complete', id='structured-evaluation-semantics')),
+                ], value='Complete', id='structured-evaluation-semantics')),
             ]),
-
+            dbc.Row(id='22-aspic-evaluation-semantics'),
             dbc.Row([
                 dbc.Col(html.B('Evaluation strategy')),
                 dbc.Col(dbc.Select(
@@ -220,7 +219,7 @@ def get_structured_evaluation_specification_div():
                     ],
                     value='Credulous', id='structured-evaluation-strategy')),
             ]),
-            dbc.Row(id='structured-evaluation')
+            dbc.Row(id='22-aspic-evaluation-accepted')
         ]),
     ])
 
@@ -426,7 +425,8 @@ def create_argumentation_theory(
 
 
 @callback(
-    Output('structured-evaluation', 'children'),
+    Output('22-aspic-evaluation-semantics', 'children'),
+    Output('22-aspic-evaluation-accepted', 'children'),
     State('aspic-axioms', 'value'),
     State('aspic-ordinary-premises', 'value'),
     State('aspic-strict-rules', 'value'),
@@ -514,10 +514,25 @@ def evaluate_structured_argumentation_framework(
             'index': '+'.join(formula_arguments[formula.s1])})
         for formula in sorted(accepted_formulas)]
 
-    return [html.B('The extension(s):'),
-            html.Div(extension_buttons),
-            html.B('The accepted formula(s):'),
-            html.Div(accepted_formula_buttons)]
+    semantics_div = html.Div([
+        html.B('The extension(s):'),
+        html.Br(),
+        html.I('Click on the extension buttons to '
+               'display the corresponding extension '
+               'in the graph.'),
+        html.Div(extension_buttons),
+        html.Br()
+    ])
+    accepted_div = html.Div([
+        html.B('The accepted formula(s):'),
+        html.Br(),
+        html.I('Click on the accepted formula buttons to '
+               'display the corresponding argument '
+               'in the graph.'),
+        html.Div(accepted_formula_buttons),
+    ])
+
+    return semantics_div, accepted_div
 
 
 @callback(
