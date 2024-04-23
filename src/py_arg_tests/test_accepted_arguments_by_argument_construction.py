@@ -21,3 +21,10 @@ class TestASPICAcceptedArguments(unittest.TestCase):
             file_path, 'elitist_last_link', 'Complete',
             AcceptanceStrategy.SKEPTICAL)
         self.assertEqual(py_arg_result, ['a', 'b', 'c', 'nx', 'x', 'y', 'z'])
+
+    def test_with_support_cycle(self):
+        file_path = str(RESOURCE_DIR / 'aspic_support_cycle.lp')
+        py_arg_result = get_accepted_formulas_for_file(
+            file_path, 'democratic_last_link', 'Complete',
+            AcceptanceStrategy.SKEPTICAL)
+        self.assertEqual(py_arg_result, ['a', 'b', 'c'])
