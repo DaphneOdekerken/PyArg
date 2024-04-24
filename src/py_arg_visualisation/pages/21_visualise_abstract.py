@@ -180,7 +180,7 @@ right_column = dbc.Col([
                 dcc.Tab(label='Default visualisation', children=[
                     visdcc.Network(data={'nodes': [], 'edges': []},
                                    id='abstract-argumentation-graph',
-                                   options={'height': '500px'})]),
+                                   options={'height': '545px'},)]),
                 dcc.Tab(label='Layered visualisation', children=[
                     dbc.Row([
                         dbc.Col(html.B('Layout')),
@@ -194,14 +194,18 @@ right_column = dbc.Col([
                                 ],
                                 value='BT',
                                 id='21-abstract-graph-layout',
-                            )
+                            ), 
                         )
                     ]),
                     html.Div([
                         dash_interactive_graphviz.DashInteractiveGraphviz(
                             id='explanation-graph',
-                            style={'height': '500px'}
-                        )], style={'height': '500px'}),
+                            style={'height': '500px',
+                                    'max-width': '98%',
+                                    'overflow': 'hidden'}
+                        )], style={'height': '510px',
+                                   'max-width': '98%',
+                                    'overflow': 'hidden'}),
                 ]),
             ]))])])
 
