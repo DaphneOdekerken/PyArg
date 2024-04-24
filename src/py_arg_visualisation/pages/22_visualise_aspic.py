@@ -473,7 +473,8 @@ def evaluate_structured_argumentation_framework(
                   for frozen_extension in frozen_extensions]
     acceptance_strategy = get_acceptance_strategy(
         acceptance_strategy_specification)
-    accepted_formulas = get_accepted_formulas(extensions, acceptance_strategy)
+    accepted_formulas = get_accepted_formulas(arg_theory, extensions,
+                                              acceptance_strategy)
 
     extension_buttons = []
     formula_arguments = {
@@ -608,7 +609,8 @@ def derive_explanation_structured(
         extension = [set(frozen_extension)
                      for frozen_extension in frozen_extensions]
         acceptance_strategy = get_acceptance_strategy(strategy)
-        accepted = get_accepted_formulas(extension, acceptance_strategy)
+        accepted = get_accepted_formulas(arg_theory, extension,
+                                         acceptance_strategy)
     explanations = get_str_explanations(arg_theory, semantics, ordering,
                                         extension, accepted, function,
                                         explanation_type, strategy, form)

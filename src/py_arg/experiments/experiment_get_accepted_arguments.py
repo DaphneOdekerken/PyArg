@@ -18,7 +18,7 @@ def get_accepted_formulas_for_file(
         argumentation_theory_file_path: str,
         ordering_specification: str,
         semantics_specification: str,
-        acceptance_strategy: AcceptanceStrategy
+        acceptance_strategy: str
 ) -> List[str]:
     # Step 1: read the argumentation theory from the LP file.
     reader = ArgumentationTheoryFromLPFileReader()
@@ -46,7 +46,15 @@ def get_accepted_formulas_for_file(
         arg_framework, semantics_specification)
 
     # Step 4: get the conclusions of accepted arguments.
+    if acceptance_strategy == 'credulous':
+        acc_strategy = AcceptanceStrategy.CREDULOUS
+    elif acceptance_strategy == 'skeptical':
+        acc_strategy = AcceptanceStrategy.WEAKLY_SKEPTICAL
+    else:
+        raise NotImplementedError('Choose "credulous" or "skeptical" for the '
+                                  'acceptance strategy.')
     accepted_formulas = \
-        get_accepted_formulas(frozen_extensions, acceptance_strategy)
+        get_accepted_formulas(arg_theory, frozen_extensions,
+                              acc_strategy)
     result = sorted([literal.s1 for literal in accepted_formulas])
     return result
