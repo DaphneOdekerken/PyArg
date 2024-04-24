@@ -101,30 +101,32 @@ class ArgumentationTheoryFromLPFileReader:
 
         def_rules_lookup = {defeasible_rule.id: defeasible_rule
                             for defeasible_rule in defeasible_rules}
-        preference_preorder = PreferencePreorder(
+        rule_preference_preorder = PreferencePreorder(
             [(def_rules_lookup[rule_a], def_rules_lookup[rule_b])
              for rule_b, rule_a in preferred_pairs
              if rule_a in def_rules_lookup])
+        rule_preference_preorder.fix_transitivity()
 
         argumentation_system = ArgumentationSystem(
             language=language,
             contraries_and_contradictories=contraries_and_contradictories,
             strict_rules=strict_rules, defeasible_rules=defeasible_rules,
-            defeasible_rule_preferences=preference_preorder,
+            defeasible_rule_preferences=rule_preference_preorder,
             add_defeasible_rule_literals=True)
 
         knowledge_base_axioms = [
             language[axiom_str] for axiom_str in axiom_strs]
         knowledge_base_ordinary_premises = [
             language[premise_str] for premise_str in premise_strs]
-        preference_preorder = PreferencePreorder(
+        premise_preference_preorder = PreferencePreorder(
             [(language[prem_a], language[prem_b])
              for prem_b, prem_a in preferred_pairs
              if prem_a in language])
+        premise_preference_preorder.fix_transitivity()
 
         return ArgumentationTheory(
             argumentation_system=argumentation_system,
             knowledge_base_axioms=knowledge_base_axioms,
             knowledge_base_ordinary_premises=knowledge_base_ordinary_premises,
-            ordinary_premise_preferences=preference_preorder
+            ordinary_premise_preferences=premise_preference_preorder
         )

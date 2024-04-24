@@ -39,3 +39,9 @@ class TestASPICAcceptedArguments(unittest.TestCase):
         py_arg_result = get_accepted_formulas_for_file(
             file_path, 'democratic_last_link', 'Complete', 'credulous')
         self.assertEqual(py_arg_result, ['b', 'c'])
+
+    def test_transitivity_fix(self):
+        file_path = str(RESOURCE_DIR / 'aspic_transitive_preference_test.lp')
+        py_arg_result = get_accepted_formulas_for_file(
+            file_path, 'elitist_last_link', 'Grounded', 'skeptical')
+        self.assertEqual(py_arg_result, ['a', 'x', 'y'])

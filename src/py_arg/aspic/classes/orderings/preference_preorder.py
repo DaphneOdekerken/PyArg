@@ -1,3 +1,4 @@
+import itertools
 from typing import List, Tuple, Hashable, Optional
 
 
@@ -29,3 +30,18 @@ class PreferencePreorder:
         preference_tuples = [(item_to_be_ordered, item_to_be_ordered)
                              for item_to_be_ordered in items_to_be_ordered]
         return cls(preference_tuples)
+
+    def fix_transitivity(self):
+        do_fix = True
+        while do_fix:
+            add_ordering_items = []
+            do_fix = False
+            for ordering_item_a, ordering_item_b in itertools.permutations(
+                    self.preference_tuples, 2):
+                if ordering_item_a[1] == ordering_item_b[0]:
+                    ordering_item_combined = \
+                        (ordering_item_a[0], ordering_item_b[1])
+                    if ordering_item_combined not in self.preference_tuples:
+                        add_ordering_items.append(ordering_item_combined)
+                        do_fix = True
+            self.preference_tuples += add_ordering_items
