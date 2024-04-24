@@ -197,6 +197,20 @@ right_column = dbc.Col([
                             ), 
                         )
                     ]),
+                    dbc.Row([
+                        dbc.Col(html.B('Rank')),
+                        dbc.Col(
+                            dbc.Select(
+                                options=[
+                                    {'label': 'No Rank', 'value': 'NR'},
+                                    {'label': 'Min Rank', 'value': 'MR'},
+                                    {'label': 'All Rank', 'value': 'AR'},
+                                ],
+                                value='NR',
+                                id='21-abstract-graph-rank',
+                            ), 
+                        )
+                    ]),
                     html.Div([
                         dash_interactive_graphviz.DashInteractiveGraphviz(
                             id='explanation-graph',
@@ -274,12 +288,13 @@ def generate_abstract_argumentation_framework(
     Input('selected-argument-store-abstract', 'data'),
     Input('color-blind-mode', 'on'),
     Input('21-abstract-graph-layout', 'value'),
+    Input('21-abstract-graph-rank', 'value'),
     Input('abstract-evaluation-accordion', 'active_item'),
     prevent_initial_call=True
 )
 def create_abstract_argumentation_framework(
         arguments: str, attacks: str, selected_arguments: Dict[str, List[str]],
-        color_blind_mode: bool, dot_layout: str, active_item: str):
+        color_blind_mode: bool, dot_layout: str, dot_rank:str, active_item: str):
     """
     Send the AF data to the graph for plotting.
     """
@@ -303,7 +318,7 @@ def create_abstract_argumentation_framework(
 
     if selected_arguments:
         dot_source = generate_dot_string(
-            arg_framework, selected_arguments, color_blind_mode, dot_layout)
+            arg_framework, selected_arguments, color_blind_mode, dot_layout, dot_rank)
     else:
         dot_source = generate_plain_dot_string(arg_framework, dot_layout)
 
