@@ -89,14 +89,24 @@ def generate_dot_string(
                 attack.to_argument.name]
             from_argument_number = \
                 number_by_argument[attack.from_argument.name]
-
-            constraint = False
+            to_argument_number = \
+                number_by_argument[attack.to_argument.name]
+            
+            against_wind = False
             style = 'solid'
-            try:
-                num = int(from_argument_number)
-                label = str( num + 1)
-            except ValueError:
-                label = from_argument_number
+            
+            from_num = float('inf') if from_argument_number == "∞" else int(from_argument_number)
+            to_num = float('inf') if to_argument_number == "∞" else int(to_argument_number)
+            against_wind = from_num == float('inf') and to_num != float('inf') 
+            against_wind = against_wind or (from_num > to_num)
+            
+            if from_num == float('inf'):
+                label = '∞'
+            else:
+                label = str( from_num + 1)
+
+            print(attack.from_argument.name, attack.to_argument.name,from_argument_number, to_argument_number, against_wind)
+
             if from_argument_grounded_state == 'accepted' and \
                     to_argument_grounded_state == 'defeated':
                 full_color = get_color('green', color_blind_mode)
@@ -105,7 +115,6 @@ def generate_dot_string(
                 full_color = get_color('red', color_blind_mode)
             elif from_argument_grounded_state != 'accepted' and \
                     to_argument_grounded_state == 'defeated':
-                constraint = True
                 full_color = get_color('gray', color_blind_mode)
                 style = 'dotted'
                 label = ''
@@ -126,23 +135,25 @@ def generate_dot_string(
                         to_argument_extension_state == 'undefined':
                     full_color = get_color('dark-yellow', color_blind_mode)
                 else:
-                    constraint = True
                     extension_edge_color = get_color('gray', color_blind_mode)
                     full_color = \
                         f'{extension_edge_color}'
                     style = 'dotted'
                     label = ''
 
-            if constraint:
-                constraint_str = "constraint=true"
+            if against_wind:
+                edge = f'"{attack.to_argument.name}" -> ' \
+                    f'"{attack.from_argument.name}" ' \
+                    f'[dir=back ' \
+                    f'color="{full_color}" ' \
+                    f'style="{style}" ' \
+                    f'taillabel="{label}"]\n'
             else:
-                constraint_str = ''
-
-            edge = f'"{attack.from_argument.name}" -> ' \
-                   f'"{attack.to_argument.name}" ' \
-                   f'[color="{full_color}" ' \
-                   f'style="{style}" ' \
-                   f'taillabel="{label}" {constraint_str}]\n'
+                 edge = f'"{attack.from_argument.name}" -> ' \
+                    f'"{attack.to_argument.name}" ' \
+                    f'[color="{full_color}" ' \
+                    f'style="{style}" ' \
+                    f'taillabel="{label}"]\n'
         else:
             edge = f'"{attack.from_argument.name}" -> ' \
                    f'"{attack.to_argument.name}"\n'
@@ -150,13 +161,14 @@ def generate_dot_string(
     
     
     number_by_argument = {k: v for k, v in number_by_argument.items() if v != '∞'}
+    
     min_state_nodes = [node for node, value in number_by_argument.items() if value == min(number_by_argument.values())]
     max_state_nodes = [node for node, value in number_by_argument.items() if value == max(number_by_argument.values())]
-
     min_rank_string = f"{{rank = min {' '.join(min_state_nodes)}}}"
     max_rank_string = f"{{rank = max {' '.join(max_state_nodes+undefined_arguments)}}}"
     dot_string += f"    {min_rank_string}\n   {max_rank_string}\n"
     dot_string += "}"
+    print(dot_string)
     return dot_string
 
 
