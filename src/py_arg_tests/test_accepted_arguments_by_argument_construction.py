@@ -18,6 +18,12 @@ class TestASPICAcceptedArguments(unittest.TestCase):
             file_path, 'elitist_last_link', 'Complete', 'skeptical')
         self.assertEqual(py_arg_result, ['a', 'b', 'c', 'nx', 'x', 'y', 'z'])
 
+    def test_undercutter(self):
+        file_path = str(RESOURCE_DIR / 'aspic_undercutter.lp')
+        py_arg_result = get_accepted_formulas_for_file(
+            file_path, 'democratic_last_link', 'Complete', 'skeptical')
+        self.assertEqual(py_arg_result, ['-d1', '-d3', 'a', 'b', 'c'])
+
     def test_with_support_cycle(self):
         file_path = str(RESOURCE_DIR / 'aspic_support_cycle.lp')
         py_arg_result = get_accepted_formulas_for_file(
@@ -27,10 +33,10 @@ class TestASPICAcceptedArguments(unittest.TestCase):
     def test_no_stable_extensions(self):
         # If there are no (stable) extensions, all arguments are skeptically
         # accepted.
-        file_path = str(RESOURCE_DIR / 'no_stable_extensions.lp')
+        file_path = str(RESOURCE_DIR / 'aspic_no_stable_extensions.lp')
         py_arg_result = get_accepted_formulas_for_file(
             file_path, 'democratic_last_link', 'Stable', 'skeptical')
-        self.assertEqual(py_arg_result, ['a', 'b', 'c', 'na'])
+        self.assertEqual(py_arg_result, ['2', 'a', 'b', 'c', 'na', 'q'])
 
         # For complete semantics, this is no issue.
         py_arg_result = get_accepted_formulas_for_file(

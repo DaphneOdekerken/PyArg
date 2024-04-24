@@ -20,12 +20,6 @@ class ArgumentationSystem:
         # Language
         self.language = language
 
-        # Contradiction function
-        for literal_str, literal_contraries in \
-                contraries_and_contradictories.items():
-            self.language[literal_str].contraries_and_contradictories = \
-                literal_contraries
-
         # Rules
         self.defeasible_rules = defeasible_rules
         self.strict_rules = strict_rules
@@ -33,16 +27,22 @@ class ArgumentationSystem:
             for defeasible_rule in defeasible_rules:
                 defeasible_rule_literal = \
                     Literal.from_defeasible_rule(defeasible_rule)
-                defeasible_rule_literal_negation = \
-                    Literal.from_defeasible_rule_negation(defeasible_rule)
-                defeasible_rule_literal.contraries_and_contradictories = \
-                    {defeasible_rule_literal_negation}
-                defeasible_rule_literal_negation.\
-                    contraries_and_contradictories = {defeasible_rule_literal}
+                # defeasible_rule_literal_negation = \
+                #     Literal.from_defeasible_rule_negation(defeasible_rule)
+                # defeasible_rule_literal.contraries_and_contradictories = \
+                #     {defeasible_rule_literal_negation}
+                # defeasible_rule_literal_negation.\
+                #     contraries_and_contradictories = {defeasible_rule_literal}
                 self.language[str(defeasible_rule_literal)] = \
                     defeasible_rule_literal
-                self.language[str(defeasible_rule_literal_negation)] = \
-                    defeasible_rule_literal_negation
+                # self.language[str(defeasible_rule_literal_negation)] = \
+                #     defeasible_rule_literal_negation
+
+        # Contradiction function
+        for literal_str, literal_contraries in \
+                contraries_and_contradictories.items():
+            self.language[literal_str].contraries_and_contradictories = \
+                literal_contraries
 
         # Rule preferences
         if defeasible_rule_preferences:
