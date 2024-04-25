@@ -244,12 +244,14 @@ right_column = dbc.Col([
                         )
                     ]),
                     html.Div([
+                        dbc.Button('Download dot', id='21-dot-download-button'),
+                        dcc.Download(id="21-dot-download"),
                         dash_interactive_graphviz.DashInteractiveGraphviz(
                             id='explanation-graph',
                             style={'height': '500px',
                                     'max-width': '98%',
                                     'overflow': 'hidden'}
-                        )], style={'height': '510px',
+                        )], style={'height': '550px',
                                    'max-width': '98%',
                                     'overflow': 'hidden'}),
                 ]),
@@ -313,8 +315,10 @@ def generate_abstract_argumentation_framework(
 
 
 @callback(
+    Output('21-dot-download', 'data'),
     Output('abstract-argumentation-graph', 'data'),
     Output('explanation-graph', 'dot_source'),
+    Input('21-dot-download-button', 'n_clicks'),
     Input('abstract-arguments', 'value'),
     Input('abstract-attacks', 'value'),
     Input('selected-argument-store-abstract', 'data'),
@@ -327,7 +331,7 @@ def generate_abstract_argumentation_framework(
     prevent_initial_call=True
 )
 def create_abstract_argumentation_framework(
-        arguments: str, attacks: str, selected_arguments: Dict[str, List[str]],
+        _nr_clicks: int, arguments: str, attacks: str, selected_arguments: Dict[str, List[str]],
         color_blind_mode: bool, dot_layout: str, dot_rank:str, dot_con:List[str], 
         dot_rm_edge: List[str], active_item: str):
     """
@@ -355,8 +359,12 @@ def create_abstract_argumentation_framework(
             arg_framework, selected_arguments, color_blind_mode, dot_layout, dot_rank, dot_con, dot_rm_edge)
     else:
         dot_source = generate_plain_dot_string(arg_framework, dot_layout)
-
-    return data, dot_source
+    
+    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    if "21-dot-download-button" in changed_id:
+        return dict(content=dot_source, filename="pyarg_output.dot"), data, dot_source
+    else:
+        return None, data, dot_source
 
 
 @callback(

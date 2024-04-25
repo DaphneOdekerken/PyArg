@@ -226,7 +226,7 @@ def generate_dot_string(
         dot_string += f"    {min_rank_string}\n"
     
     dot_string += "}"
-    print(dot_string)
+    # print(dot_string)
     return dot_string
 
 
