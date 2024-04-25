@@ -29,7 +29,8 @@ def generate_dot_string(
         argumentation_framework, selected_arguments, 
         color_blind_mode=False, 
         layout=any, 
-        rank=any):
+        rank=any,
+        dot_rm_edge=any):
     gr_status_by_arg, number_by_argument = get_numbered_grounded_extension(
         argumentation_framework)
     dot_string = "digraph {\n"
@@ -80,8 +81,6 @@ def generate_dot_string(
 
     # Adding edge information
     dot_string += f'    edge[labeldistance=1.5 fontsize=12]\n'
-    print(gr_status_by_arg)
-    print(argument_extension_state)
     for attack in argumentation_framework.defeats:
         if is_extension_representation:
             from_argument_grounded_state = gr_status_by_arg[
@@ -96,9 +95,7 @@ def generate_dot_string(
                 number_by_argument[attack.from_argument.name]
             to_argument_number = \
                 number_by_argument[attack.to_argument.name]
-            
-           
-            
+
             # cal the against wind
             against_wind = False
             from_num = float('inf') if from_argument_number == "∞" else int(from_argument_number)
@@ -144,12 +141,13 @@ def generate_dot_string(
                 elif from_argument_extension_state == 'undefined' and \
                         to_argument_extension_state == 'undefined':
                     full_color = get_color('dark-yellow', color_blind_mode)
-                
+                    style = set_style("UU", style, dot_rm_edge)
                 # Undefined -> Defeated
                 elif from_argument_extension_state == 'undefined' and \
                         to_argument_extension_state == 'defeated':
                     full_color = get_color('gray', color_blind_mode)
                     style = 'dotted'
+                    style = set_style("UD", style, dot_rm_edge)
                     arrow_style = 'onormal'
                     label = ''
                 # Defeated -> Undefined
@@ -157,6 +155,7 @@ def generate_dot_string(
                         to_argument_extension_state == 'undefined':
                     full_color = get_color('gray', color_blind_mode)
                     style = 'dotted'
+                    style = set_style("DU", style, dot_rm_edge)
                     arrow_style = 'onormal'
                     label = ''
                 # Defeated -> Defeated
@@ -164,14 +163,18 @@ def generate_dot_string(
                     from_argument_extension_state == 'defeated':
                     full_color = get_color('gray', color_blind_mode)
                     style = 'dotted'
+                    style = set_style("DD", style, dot_rm_edge)
                     arrow_style = 'onormal'
                     label = ''
 
             if against_wind:
-                if style != 'dotted':
-                    style = 'dashed'
+                if style == 'dotted':
+                    pass
+                elif style == "invis":
+                    pass
                 else:
-                    style = 'dotted'
+                    style = 'dashed'
+                style = set_style("AW", style, dot_rm_edge)
                 edge = f'"{attack.to_argument.name}" -> ' \
                     f'"{attack.from_argument.name}" ' \
                     f'[dir=back ' \
@@ -215,7 +218,6 @@ def generate_dot_string(
         dot_string += f"    {min_rank_string}\n"
     
     dot_string += "}"
-    # print(dot_string)
     return dot_string
 
 
@@ -253,3 +255,10 @@ def get_numbered_grounded_extension(argumentation_framework):
                 number_by_argument[argument_name] = str(atom.arguments[2])
             status_by_argument[argument_name] = atom.arguments[0].name
     return status_by_argument, number_by_argument
+
+
+def set_style(keyword, style, rm_edge):
+    if rm_edge!= None and keyword in rm_edge:
+        return "invis"
+    else:
+        return style

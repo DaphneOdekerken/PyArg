@@ -211,6 +211,23 @@ right_column = dbc.Col([
                             ), 
                         )
                     ]),
+
+                    dbc.Row([
+                        dbc.Col(html.B('Remove Edges')),
+                        dbc.Col(
+                            dcc.Dropdown(
+                                options=[
+                                    {'label': 'Defeated ⟶ Defeated', 'value': 'DD'},
+                                    {'label': 'Undecided ⟶ Defeated', 'value': 'UD'},
+                                    {'label': 'Defeated ⟶ Undecided', 'value': 'DU'},
+                                    {'label': 'Undecided ⟶ Undecided', 'value': 'UU'},
+                                    {'label': 'Against the Wind', 'value': 'AW'},
+                                ],
+                                multi=True,
+                                id='21-abstract-graph-edge-rm',
+                            )
+                        )
+                    ]),
                     html.Div([
                         dash_interactive_graphviz.DashInteractiveGraphviz(
                             id='explanation-graph',
@@ -289,12 +306,13 @@ def generate_abstract_argumentation_framework(
     Input('color-blind-mode', 'on'),
     Input('21-abstract-graph-layout', 'value'),
     Input('21-abstract-graph-rank', 'value'),
+    Input('21-abstract-graph-edge-rm', 'value'),
     Input('abstract-evaluation-accordion', 'active_item'),
     prevent_initial_call=True
 )
 def create_abstract_argumentation_framework(
         arguments: str, attacks: str, selected_arguments: Dict[str, List[str]],
-        color_blind_mode: bool, dot_layout: str, dot_rank:str, active_item: str):
+        color_blind_mode: bool, dot_layout: str, dot_rank:str, dot_rm_edge: List[str], active_item: str):
     """
     Send the AF data to the graph for plotting.
     """
@@ -315,10 +333,9 @@ def create_abstract_argumentation_framework(
 
     data = get_argumentation_framework_graph_data(
         arg_framework, selected_arguments, color_blind_mode)
-
     if selected_arguments:
         dot_source = generate_dot_string(
-            arg_framework, selected_arguments, color_blind_mode, dot_layout, dot_rank)
+            arg_framework, selected_arguments, color_blind_mode, dot_layout, dot_rank, dot_rm_edge)
     else:
         dot_source = generate_plain_dot_string(arg_framework, dot_layout)
 
