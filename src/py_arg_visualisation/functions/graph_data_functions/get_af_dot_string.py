@@ -80,6 +80,8 @@ def generate_dot_string(
 
     # Adding edge information
     dot_string += f'    edge[labeldistance=1.5 fontsize=12]\n'
+    print(gr_status_by_arg)
+    print(argument_extension_state)
     for attack in argumentation_framework.defeats:
         if is_extension_representation:
             from_argument_grounded_state = gr_status_by_arg[
@@ -95,9 +97,10 @@ def generate_dot_string(
             to_argument_number = \
                 number_by_argument[attack.to_argument.name]
             
-            against_wind = False
-            style = 'solid'
+           
             
+            # cal the against wind
+            against_wind = False
             from_num = float('inf') if from_argument_number == "∞" else int(from_argument_number)
             to_num = float('inf') if to_argument_number == "∞" else int(to_argument_number)
             against_wind = from_num == float('inf') and to_num != float('inf') 
@@ -108,39 +111,58 @@ def generate_dot_string(
             else:
                 label = str( from_num + 1)
 
-            # print(attack.from_argument.name, attack.to_argument.name,from_argument_number, to_argument_number, against_wind)
+            
+             # set initial style
+            style = 'solid'
             arrow_style = 'vee'
+            # handle grounded extensions
+            # Accepted -> Defeated
             if from_argument_grounded_state == 'accepted' and \
                     to_argument_grounded_state == 'defeated':
                 full_color = get_color('green', color_blind_mode)
+            # Defeated -> Accepted
             elif from_argument_grounded_state == 'defeated' and \
                     to_argument_grounded_state == 'accepted':
                 full_color = get_color('red', color_blind_mode)
-            elif from_argument_grounded_state != 'accepted' and \
-                    to_argument_grounded_state == 'defeated':
-                full_color = get_color('gray', color_blind_mode)
-                style = 'dotted'
-                arrow_style = 'onormal'
-                label = ''
             else:
-                # grounded_edge_color = get_color('yellow', color_blind_mode)
+                #handle the stable extensions
+                # Stable Accepted -> Defeated (Grounded Undefined)
                 if from_argument_extension_state == 'accepted' and \
                         to_argument_extension_state == 'defeated':
                     extension_edge_color = get_color('green', color_blind_mode)
                     full_color = \
                         f'{extension_edge_color}'
+                    label = ''
+                # Stable Defeated -> Accepted(Grounded Undefined)
                 elif from_argument_extension_state == 'defeated' and \
                         to_argument_extension_state == 'accepted':
                     extension_edge_color = get_color('red', color_blind_mode)
                     full_color = \
                         f'{extension_edge_color}'
+                    label = ''
+                # Undefined -> Undefined
                 elif from_argument_extension_state == 'undefined' and \
                         to_argument_extension_state == 'undefined':
                     full_color = get_color('dark-yellow', color_blind_mode)
-                else:
-                    extension_edge_color = get_color('gray', color_blind_mode)
-                    full_color = \
-                        f'{extension_edge_color}'
+                
+                # Undefined -> Defeated
+                elif from_argument_extension_state == 'undefined' and \
+                        to_argument_extension_state == 'defeated':
+                    full_color = get_color('gray', color_blind_mode)
+                    style = 'dotted'
+                    arrow_style = 'onormal'
+                    label = ''
+                # Defeated -> Undefined
+                elif from_argument_extension_state == 'defeated' and \
+                        to_argument_extension_state == 'undefined':
+                    full_color = get_color('gray', color_blind_mode)
+                    style = 'dotted'
+                    arrow_style = 'onormal'
+                    label = ''
+                # Defeated -> Defeated
+                elif from_argument_extension_state == 'defeated' and \
+                    from_argument_extension_state == 'defeated':
+                    full_color = get_color('gray', color_blind_mode)
                     style = 'dotted'
                     arrow_style = 'onormal'
                     label = ''
@@ -148,6 +170,8 @@ def generate_dot_string(
             if against_wind:
                 if style != 'dotted':
                     style = 'dashed'
+                else:
+                    style = 'dotted'
                 edge = f'"{attack.to_argument.name}" -> ' \
                     f'"{attack.from_argument.name}" ' \
                     f'[dir=back ' \
@@ -171,7 +195,7 @@ def generate_dot_string(
                    f'"{attack.to_argument.name}"\n'
         dot_string += "    "+edge
     
-    
+    # Enable Ranks
     number_by_argument = {k: v for k, v in number_by_argument.items() if v != '∞'}
     if rank=="NR":
         pass
@@ -191,7 +215,7 @@ def generate_dot_string(
         dot_string += f"    {min_rank_string}\n"
     
     dot_string += "}"
-    print(dot_string)
+    # print(dot_string)
     return dot_string
 
 
