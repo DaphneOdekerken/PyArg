@@ -30,6 +30,7 @@ def generate_dot_string(
         color_blind_mode=False, 
         layout=any, 
         rank=any,
+        dot_con=any,
         dot_rm_edge=any):
     gr_status_by_arg, number_by_argument = get_numbered_grounded_extension(
         argumentation_framework)
@@ -112,6 +113,7 @@ def generate_dot_string(
              # set initial style
             style = 'solid'
             arrow_style = 'vee'
+            constraint_value = ''
             # handle grounded extensions
             # Accepted -> Defeated
             if from_argument_grounded_state == 'accepted' and \
@@ -142,6 +144,7 @@ def generate_dot_string(
                         to_argument_extension_state == 'undefined':
                     full_color = get_color('dark-yellow', color_blind_mode)
                     style = set_style("UU", style, dot_rm_edge)
+                    constraint_value = set_con("UU", dot_con)
                 # Undefined -> Defeated
                 elif from_argument_extension_state == 'undefined' and \
                         to_argument_extension_state == 'defeated':
@@ -149,6 +152,7 @@ def generate_dot_string(
                     style = 'dotted'
                     style = set_style("UD", style, dot_rm_edge)
                     arrow_style = 'onormal'
+                    constraint_value= set_con("UD", dot_con)
                     label = ''
                 # Defeated -> Undefined
                 elif from_argument_extension_state == 'defeated' and \
@@ -157,6 +161,7 @@ def generate_dot_string(
                     style = 'dotted'
                     style = set_style("DU", style, dot_rm_edge)
                     arrow_style = 'onormal'
+                    constraint_value = set_con("DU", dot_con)
                     label = ''
                 # Defeated -> Defeated
                 elif from_argument_extension_state == 'defeated' and \
@@ -165,6 +170,7 @@ def generate_dot_string(
                     style = 'dotted'
                     style = set_style("DD", style, dot_rm_edge)
                     arrow_style = 'onormal'
+                    constraint_value = set_con("DD", dot_con)
                     label = ''
 
             if against_wind:
@@ -180,6 +186,7 @@ def generate_dot_string(
                     f'[dir=back ' \
                     f'color="{full_color}" ' \
                     f'style= "{style}"' \
+                    f'{constraint_value}' \
                     f'fontcolor="{full_color}"' \
                     f'arrowtail="{arrow_style}"' \
                     f'arrowhead="{arrow_style}"' \
@@ -189,6 +196,7 @@ def generate_dot_string(
                     f'"{attack.to_argument.name}" ' \
                     f'[color="{full_color}" ' \
                     f'style="{style}"' \
+                    f'{constraint_value}' \
                     f'fontcolor="{full_color}"' \
                     f'arrowtail="{arrow_style}"' \
                     f'arrowhead="{arrow_style}"' \
@@ -218,6 +226,7 @@ def generate_dot_string(
         dot_string += f"    {min_rank_string}\n"
     
     dot_string += "}"
+    print(dot_string)
     return dot_string
 
 
@@ -262,3 +271,9 @@ def set_style(keyword, style, rm_edge):
         return "invis"
     else:
         return style
+
+def set_con(keyword, rm_edge):
+    if rm_edge!= None and keyword in rm_edge:
+        return 'constraint="false"'
+    else:
+        return ''
