@@ -178,84 +178,111 @@ right_column = dbc.Col([
         dbc.Card(
             dcc.Tabs([
                 dcc.Tab(label='Default visualisation', children=[
-                    visdcc.Network(data={'nodes': [], 'edges': []},
-                                   id='abstract-argumentation-graph',
-                                   options={'height': '545px'},)]),
+                    visdcc.Network(
+                        data={'nodes': [], 'edges': []},
+                        id='abstract-argumentation-graph',
+                        options={'height': '545px'}
+                    ),
+                ]),
                 dcc.Tab(label='Layered visualisation', children=[
+                    html.Div(style={'height': '5px'}),
                     dbc.Row([
-                        dbc.Col(html.B('Layout')),
                         dbc.Col(
-                            dbc.Select(
-                                options=[
-                                    {'label': 'Left to right', 'value': 'LR'},
-                                    {'label': 'Right to left', 'value': 'RL'},
-                                    {'label': 'Bottom to top', 'value': 'BT'},
-                                    {'label': 'Top to bottom', 'value': 'TB'}
-                                ],
-                                value='BT',
-                                id='21-abstract-graph-layout',
-                            ), 
-                        )
-                    ]),
-                    dbc.Row([
-                        dbc.Col(html.B('Rank')),
+                            [
+                                dbc.Row([
+                                    dbc.Col(html.B('Layout'), width=5),
+                                    dbc.Col(
+                                        dbc.Select(
+                                            options=[
+                                                {'label': 'Left to right', 'value': 'LR'},
+                                                {'label': 'Right to left', 'value': 'RL'},
+                                                {'label': 'Bottom to top', 'value': 'BT'},
+                                                {'label': 'Top to bottom', 'value': 'TB'}
+                                            ],
+                                            value='BT',
+                                            id='21-abstract-graph-layout',
+                                        ),
+                                    ),
+                                ]),
+                                html.Div(style={'height': '5px'}),
+                                dbc.Row([
+                                    dbc.Col(html.B('Rank'), width=5),
+                                    dbc.Col(
+                                        dbc.Select(
+                                            options=[
+                                                {'label': 'No Rank', 'value': 'NR'},
+                                                {'label': 'Min Rank', 'value': 'MR'},
+                                                {'label': 'All Rank', 'value': 'AR'},
+                                            ],
+                                            value='NR',
+                                            id='21-abstract-graph-rank',
+                                        ),
+                                    ),
+                                ]),
+                                html.Div(style={'height': '5px'}),
+                                dbc.Row([
+                                    dbc.Col(html.B('Edge Constraint (False)'), width=5),
+                                    dbc.Col(
+                                        dcc.Dropdown(
+                                            options=[
+                                                {'label': 'Defeated ⟶ Defeated', 'value': 'DD'},
+                                                {'label': 'Undecided ⟶ Defeated', 'value': 'UD'},
+                                                {'label': 'Defeated ⟶ Undecided', 'value': 'DU'},
+                                                {'label': 'Undecided ⟶ Undecided', 'value': 'UU'},
+                                                {'label': 'Against the Wind', 'value': 'AW'},
+                                            ],
+                                            multi=True,
+                                            id='21-abstract-graph-edge-con',
+                                        ),
+                                    ),
+                                ]),
+                                html.Div(style={'height': '5px'}),
+                                dbc.Row([
+                                    dbc.Col(html.B('Remove Edges'), width=5),
+                                    dbc.Col(
+                                        dcc.Dropdown(
+                                            options=[
+                                                {'label': 'Defeated ⟶ Defeated', 'value': 'DD'},
+                                                {'label': 'Undecided ⟶ Defeated', 'value': 'UD'},
+                                                {'label': 'Defeated ⟶ Undecided', 'value': 'DU'},
+                                                {'label': 'Undecided ⟶ Undecided', 'value': 'UU'},
+                                                {'label': 'Against the Wind', 'value': 'AW'},
+                                            ],
+                                            multi=True,
+                                            id='21-abstract-graph-edge-rm',
+                                        ),
+                                    ),
+                                ]),
+                            ],
+                            width=9,
+                        ),
                         dbc.Col(
-                            dbc.Select(
-                                options=[
-                                    {'label': 'No Rank', 'value': 'NR'},
-                                    {'label': 'Min Rank', 'value': 'MR'},
-                                    {'label': 'All Rank', 'value': 'AR'},
-                                ],
-                                value='NR',
-                                id='21-abstract-graph-rank',
-                            ), 
-                        )
-                    ]),
-                    dbc.Row([
-                        dbc.Col(html.B('Edge Constraint (False)')),
-                        dbc.Col(
-                            dcc.Dropdown(
-                                options=[
-                                    {'label': 'Defeated ⟶ Defeated', 'value': 'DD'},
-                                    {'label': 'Undecided ⟶ Defeated', 'value': 'UD'},
-                                    {'label': 'Defeated ⟶ Undecided', 'value': 'DU'},
-                                    {'label': 'Undecided ⟶ Undecided', 'value': 'UU'},
-                                    {'label': 'Against the Wind', 'value': 'AW'},
-                                ],
-                                multi=True,
-                                id='21-abstract-graph-edge-con',
-                            )
-                        )
-                    ]),
-                    dbc.Row([
-                        dbc.Col(html.B('Remove Edges')),
-                        dbc.Col(
-                            dcc.Dropdown(
-                                options=[
-                                    {'label': 'Defeated ⟶ Defeated', 'value': 'DD'},
-                                    {'label': 'Undecided ⟶ Defeated', 'value': 'UD'},
-                                    {'label': 'Defeated ⟶ Undecided', 'value': 'DU'},
-                                    {'label': 'Undecided ⟶ Undecided', 'value': 'UU'},
-                                    {'label': 'Against the Wind', 'value': 'AW'},
-                                ],
-                                multi=True,
-                                id='21-abstract-graph-edge-rm',
-                            )
-                        )
+                            [
+                                dbc.Button(
+                                    'Download dot', 
+                                    id='21-dot-download-button',
+                                    style={
+                                        'width': '95px',
+                                        'margin': '10px auto',
+                                    },
+                                ),
+                                dcc.Download(id="21-dot-download"),
+                            ],
+                            className="d-flex justify-content-center align-items-center",  
+                            width=3,
+                        ),
                     ]),
                     html.Div([
-                        dbc.Button('Download dot', id='21-dot-download-button'),
-                        dcc.Download(id="21-dot-download"),
                         dash_interactive_graphviz.DashInteractiveGraphviz(
                             id='explanation-graph',
-                            style={'height': '500px',
-                                    'max-width': '98%',
-                                    'overflow': 'hidden'}
-                        )], style={'height': '550px',
-                                   'max-width': '98%',
-                                    'overflow': 'hidden'}),
+                            style={'height': '550px', 'max-width': '98%', 'overflow': 'hidden'},
+                        ),
+                    ], style={'height': '550px', 'max-width': '98%', 'overflow': 'hidden'}),
                 ]),
-            ]))])])
+            ]),
+        ),
+    ]),
+])
 
 layout_abstract = dbc.Row([left_column, right_column])
 layout = html.Div([html.H1(
