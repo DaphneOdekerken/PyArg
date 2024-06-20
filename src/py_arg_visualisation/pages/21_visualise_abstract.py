@@ -275,6 +275,7 @@ right_column = dbc.Col([
                     html.Div([
                         dash_interactive_graphviz.DashInteractiveGraphviz(
                             id='explanation-graph',
+                            persisted_props={'engine': "neato"},
                             style={'height': '550px', 'max-width': '98%', 'overflow': 'hidden'},
                         ),
                     ], style={'height': '550px', 'max-width': '98%', 'overflow': 'hidden'}),
