@@ -179,32 +179,112 @@ right_column = dbc.Col([
         dbc.Card(
             dcc.Tabs([
                 dcc.Tab(label='Default visualisation', children=[
-                    visdcc.Network(data={'nodes': [], 'edges': []},
-                                   id='abstract-argumentation-graph',
-                                   options={'height': '500px'})]),
+                    visdcc.Network(
+                        data={'nodes': [], 'edges': []},
+                        id='abstract-argumentation-graph',
+                        options={'height': '545px'}
+                    ),
+                ]),
                 dcc.Tab(label='Layered visualisation', children=[
+                    html.Div(style={'height': '5px'}),
                     dbc.Row([
-                        dbc.Col(html.B('Layout')),
                         dbc.Col(
-                            dbc.Select(
-                                options=[
-                                    {'label': 'Left to right', 'value': 'LR'},
-                                    {'label': 'Right to left', 'value': 'RL'},
-                                    {'label': 'Bottom to top', 'value': 'BT'},
-                                    {'label': 'Top to bottom', 'value': 'TB'}
-                                ],
-                                value='BT',
-                                id='21-abstract-graph-layout',
-                            )
-                        )
+                            [
+                                dbc.Row([
+                                    dbc.Col(html.B('Layout'), width=5),
+                                    dbc.Col(
+                                        dbc.Select(
+                                            options=[
+                                                {'label': 'Left to right', 'value': 'LR'},
+                                                {'label': 'Right to left', 'value': 'RL'},
+                                                {'label': 'Bottom to top', 'value': 'BT'},
+                                                {'label': 'Top to bottom', 'value': 'TB'}
+                                            ],
+                                            value='BT',
+                                            id='21-abstract-graph-layout',
+                                        ),
+                                    ),
+                                ]),
+                                html.Div(style={'height': '5px'}),
+                                dbc.Row([
+                                    dbc.Col(html.B('Rank'), width=5),
+                                    dbc.Col(
+                                        dbc.Select(
+                                            options=[
+                                                {'label': 'No Rank', 'value': 'NR'},
+                                                {'label': 'Min Rank', 'value': 'MR'},
+                                                {'label': 'All Rank', 'value': 'AR'},
+                                            ],
+                                            value='NR',
+                                            id='21-abstract-graph-rank',
+                                        ),
+                                    ),
+                                ]),
+                                html.Div(style={'height': '5px'}),
+                                dbc.Row([
+                                    dbc.Col(html.B('Edge Constraint (False)'), width=5),
+                                    dbc.Col(
+                                        dcc.Dropdown(
+                                            options=[
+                                                {'label': 'Defeated ⟶ Defeated', 'value': 'DD'},
+                                                {'label': 'Undecided ⟶ Defeated', 'value': 'UD'},
+                                                {'label': 'Defeated ⟶ Undecided', 'value': 'DU'},
+                                                {'label': 'Undecided ⟶ Undecided', 'value': 'UU'},
+                                                {'label': 'Against the Wind', 'value': 'AW'},
+                                            ],
+                                            multi=True,
+                                            id='21-abstract-graph-edge-con',
+                                        ),
+                                    ),
+                                ]),
+                                html.Div(style={'height': '5px'}),
+                                dbc.Row([
+                                    dbc.Col(html.B('Remove Edges'), width=5),
+                                    dbc.Col(
+                                        dcc.Dropdown(
+                                            options=[
+                                                {'label': 'Defeated ⟶ Defeated', 'value': 'DD'},
+                                                {'label': 'Undecided ⟶ Defeated', 'value': 'UD'},
+                                                {'label': 'Defeated ⟶ Undecided', 'value': 'DU'},
+                                                {'label': 'Undecided ⟶ Undecided', 'value': 'UU'},
+                                                {'label': 'Against the Wind', 'value': 'AW'},
+                                            ],
+                                            multi=True,
+                                            id='21-abstract-graph-edge-rm',
+                                        ),
+                                    ),
+                                ]),
+                            ],
+                            width=9,
+                        ),
+                        dbc.Col(
+                            [
+                                dbc.Button(
+                                    'Download dot', 
+                                    id='21-dot-download-button',
+                                    style={
+                                        'width': '95px',
+                                        'margin': '10px auto',
+                                    },
+                                ),
+                                dcc.Download(id="21-dot-download"),
+                            ],
+                            className="d-flex justify-content-center align-items-center",  
+                            width=3,
+                        ),
                     ]),
                     html.Div([
                         dash_interactive_graphviz.DashInteractiveGraphviz(
                             id='explanation-graph',
-                            style={'height': '500px'}
-                        )], style={'height': '500px'}),
+                            persisted_props={'engine': "neato"},
+                            style={'height': '550px', 'max-width': '98%', 'overflow': 'hidden'},
+                        ),
+                    ], style={'height': '550px', 'max-width': '98%', 'overflow': 'hidden'}),
                 ]),
-            ]))])])
+            ]),
+        ),
+    ]),
+])
 
 layout_abstract = dbc.Row([left_column, right_column])
 layout = html.Div([html.H1(
@@ -264,19 +344,25 @@ def generate_abstract_argumentation_framework(
 
 
 @callback(
+    Output('21-dot-download', 'data'),
     Output('abstract-argumentation-graph', 'data'),
     Output('explanation-graph', 'dot_source'),
+    Input('21-dot-download-button', 'n_clicks'),
     Input('abstract-arguments', 'value'),
     Input('abstract-attacks', 'value'),
     Input('selected-argument-store-abstract', 'data'),
     Input('color-blind-mode', 'on'),
     Input('21-abstract-graph-layout', 'value'),
+    Input('21-abstract-graph-rank', 'value'),
+    Input('21-abstract-graph-edge-con', 'value'),
+    Input('21-abstract-graph-edge-rm', 'value'),
     Input('abstract-evaluation-accordion', 'active_item'),
     prevent_initial_call=True
 )
 def create_abstract_argumentation_framework(
-        arguments: str, attacks: str, selected_arguments: Dict[str, List[str]],
-        color_blind_mode: bool, dot_layout: str, active_item: str):
+        _nr_clicks: int, arguments: str, attacks: str, selected_arguments: Dict[str, List[str]],
+        color_blind_mode: bool, dot_layout: str, dot_rank:str, dot_con:List[str], 
+        dot_rm_edge: List[str], active_item: str):
     """
     Send the AF data to the graph for plotting.
     """
@@ -293,14 +379,17 @@ def create_abstract_argumentation_framework(
 
     data = get_argumentation_framework_graph_data(
         arg_framework, selected_arguments, color_blind_mode)
-
     if selected_arguments:
         dot_source = generate_dot_string(
-            arg_framework, selected_arguments, color_blind_mode, dot_layout)
+            arg_framework, selected_arguments, color_blind_mode, dot_layout, dot_rank, dot_con, dot_rm_edge)
     else:
         dot_source = generate_plain_dot_string(arg_framework, dot_layout)
-
-    return data, dot_source
+    
+    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    if "21-dot-download-button" in changed_id:
+        return dict(content=dot_source, filename="pyarg_output.dot"), data, dot_source
+    else:
+        return None, data, dot_source
 
 
 @callback(
