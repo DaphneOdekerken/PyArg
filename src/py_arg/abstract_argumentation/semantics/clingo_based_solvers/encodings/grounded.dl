@@ -1,0 +1,29 @@
+% https://www.dbai.tuwien.ac.at/research/argumentation/aspartix/dung.html
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Encoding for grounded extensions
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% For the remaining part we need to put an order on the domain.
+% Therefore, we define a successor-relation with infinum and supremum
+% as follows
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+lt(X,Y) :- arg(X),arg(Y), X<Y.
+nsucc(X,Z) :- lt(X,Y), lt(Y,Z).
+succ(X,Y) :- lt(X,Y), not nsucc(X,Y).
+ninf(X) :- lt(Y,X).
+nsup(X) :- lt(X,Y).
+inf(X) :- not ninf(X), arg(X).
+sup(X) :- not nsup(X), arg(X).
+
+%% we now fill up the predicate in(.) with arguments which are defended
+
+defended_upto(X,Y) :- inf(Y), arg(X), not att(Y,X).
+defended_upto(X,Y) :- inf(Y), in(Z), att(Z,Y), att(Y,X).
+defended_upto(X,Y) :- succ(Z,Y), defended_upto(X,Z), not att(Y,X).
+defended_upto(X,Y) :- succ(Z,Y), defended_upto(X,Z), in(V), att(V,Y), att(Y,X).
+
+defended(X) :- sup(Y), defended_upto(X,Y).
+in(X) :- defended(X).

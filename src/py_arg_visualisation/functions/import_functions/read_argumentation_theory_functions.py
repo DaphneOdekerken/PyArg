@@ -107,7 +107,10 @@ def read_argumentation_theory(axioms_str: str, ordinary_premises_str: str,
     # Derive the language: first obtain "absolute" literal strs from axioms and
     # rules
     def get_absolute(non_absolute_literal_str: str) -> str:
-        return non_absolute_literal_str.replace('~', '').replace('-', '')
+        while non_absolute_literal_str and non_absolute_literal_str[0] in '~-':
+            non_absolute_literal_str = non_absolute_literal_str[1:]
+        return non_absolute_literal_str
+
     absolute_literal_strs = set()
     for literal in axioms + ordinary_premises:
         absolute_literal_strs.add(get_absolute(literal))
@@ -124,32 +127,38 @@ def read_argumentation_theory(axioms_str: str, ordinary_premises_str: str,
     language = {}
     contraries_and_contradictories = {}
     for literal_str in absolute_literal_strs:
-        l_pos = Literal(literal_str)
-        l_naf = Literal('~' + literal_str)
-        l_neg = Literal('-' + literal_str)
-        language[l_pos.s1] = l_pos
-        language[l_naf.s1] = l_naf
-        language[l_neg.s1] = l_neg
+        if literal_str != '':
+            l_pos = Literal(literal_str)
+            l_naf = Literal('~' + literal_str)
+            l_neg = Literal('-' + literal_str)
+            language[l_pos.s1] = l_pos
+            language[l_naf.s1] = l_naf
+            language[l_neg.s1] = l_neg
 
-        # Derive the contradiction function
-        contraries_and_contradictories[l_pos.s1] = {l_neg}
-        contraries_and_contradictories[l_naf.s1] = {l_pos}
-        contraries_and_contradictories[l_neg.s1] = {l_pos}
+            # Derive the contradiction function
+            contraries_and_contradictories[l_pos.s1] = {l_neg}
+            contraries_and_contradictories[l_naf.s1] = {l_pos}
+            contraries_and_contradictories[l_neg.s1] = {l_pos}
 
     # Read axioms, ordinary premises, defeasible rules and strict rules, now in
     # the proper format
     axioms = [language[axiom_str] for axiom_str in axioms]
     ordinary_premises = [language[ordinary_premise_str]
-                         for ordinary_premise_str in ordinary_premises]
+                         for ordinary_premise_str in ordinary_premises
+                         if ordinary_premise_str != '']
     defeasible_rules = \
         [DefeasibleRule(rule_id, {language[antecedent]
-                                  for antecedent in antecedents},
+                                  for antecedent in antecedents
+                                  if antecedent != ''},
                         language[consequent])
-         for rule_id, antecedents, consequent in defeasible_rules]
+         for rule_id, antecedents, consequent in defeasible_rules
+         if consequent != '']
     strict_rules = [StrictRule(rule_id, {language[antecedent]
-                                         for antecedent in antecedents},
+                                         for antecedent in antecedents
+                                         if antecedent != ''},
                                language[consequent])
-                    for rule_id, antecedents, consequent in strict_rules]
+                    for rule_id, antecedents, consequent in strict_rules
+                    if consequent != '']
 
     # Read the ordinary premise preferences
     ordinary_premise_preference_strs = \

@@ -261,7 +261,7 @@ class TestNecessarySufficientExplanations(unittest.TestCase):
         arg_framework = arg_theory.create_abstract_argumentation_framework(
             'af')
         extensions = get_preferred_extensions(arg_framework)
-        accepted_formulas = get_accepted_formulas(extensions,
+        accepted_formulas = get_accepted_formulas(arg_theory, extensions,
                                                   AcceptanceStrategy.CREDULOUS)
 
         gt_accepted_formulas = [p, neg_p, q, neg_q, r, s, t, u, v]

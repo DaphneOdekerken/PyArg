@@ -1,0 +1,17 @@
+potential_argument(X) :- argument(X).
+potential_argument(X) :- uarg(X).
+potential_attack(X,Y) :- att(X,Y).
+potential_attack(X,Y) :- uatt(X,Y).
+
+reachable(T,T) :- potential_argument(T).
+reachable_att(X,T,T) :- potential_attack(X,T).
+reachable(X,T) :- reachable_att(X,_,T).
+reachable_att(X,Y,T) :- potential_attack(X,Y), reachable(Y,T).
+
+reachable_topic(Q,T) :- reachable(Q,T), topic(T), uarg(Q).
+reachable_topic_att(Q1,Q2,T) :- reachable_att(Q1,Q2,T), topic(T), uatt(Q1, Q2).
+
+%:- add_query_relevant_for(J,Q,T), query(Q), topic(T), not reachable(Q,T).
+%:- remove_query_relevant_for(J,Q,T), query(Q), topic(T), not reachable(Q,T).
+%:- add_query_att_relevant_for(J,Q1,Q2,T), query_att(Q1,Q2), topic(T), not reachable_att(Q1,Q2,T).
+%:- remove_query_att_relevant_for(J,Q1,Q2,T), query_att(Q1,Q2), topic(T), not reachable_att(Q1,Q2,T).

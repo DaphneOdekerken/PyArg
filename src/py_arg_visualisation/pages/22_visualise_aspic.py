@@ -8,8 +8,6 @@ import visdcc
 from dash import ctx, html, callback, Input, Output, State, ALL, dcc
 from dash.exceptions import PreventUpdate
 
-from py_arg.abstract_argumentation.import_export.argumentation_framework_from_json_reader import \
-    ArgumentationFrameworkFromJsonReader
 from py_arg.aspic.classes.argumentation_system import ArgumentationSystem
 from py_arg.aspic.classes.argumentation_theory import ArgumentationTheory
 from py_arg.aspic.classes.instantiated_argument import InstantiatedArgument
@@ -207,10 +205,9 @@ def get_structured_evaluation_specification_div():
                     {'label': 'Stable', 'value': 'Stable'},
                     {'label': 'Semi-stable', 'value': 'SemiStable'},
                     {'label': 'Eager', 'value': 'Eager'},
-                ],
-                    value='Complete', id='structured-evaluation-semantics')),
+                ], value='Complete', id='structured-evaluation-semantics')),
             ]),
-
+            dbc.Row(id='22-aspic-evaluation-semantics'),
             dbc.Row([
                 dbc.Col(html.B('Evaluation strategy')),
                 dbc.Col(dbc.Select(
@@ -222,7 +219,7 @@ def get_structured_evaluation_specification_div():
                     ],
                     value='Credulous', id='structured-evaluation-strategy')),
             ]),
-            dbc.Row(id='structured-evaluation')
+            dbc.Row(id='22-aspic-evaluation-accepted')
         ]),
     ])
 
@@ -428,7 +425,8 @@ def create_argumentation_theory(
 
 
 @callback(
-    Output('structured-evaluation', 'children'),
+    Output('22-aspic-evaluation-semantics', 'children'),
+    Output('22-aspic-evaluation-accepted', 'children'),
     State('aspic-axioms', 'value'),
     State('aspic-ordinary-premises', 'value'),
     State('aspic-strict-rules', 'value'),
@@ -475,7 +473,8 @@ def evaluate_structured_argumentation_framework(
                   for frozen_extension in frozen_extensions]
     acceptance_strategy = get_acceptance_strategy(
         acceptance_strategy_specification)
-    accepted_formulas = get_accepted_formulas(extensions, acceptance_strategy)
+    accepted_formulas = get_accepted_formulas(arg_theory, extensions,
+                                              acceptance_strategy)
 
     extension_buttons = []
     formula_arguments = {
@@ -516,10 +515,25 @@ def evaluate_structured_argumentation_framework(
             'index': '+'.join(formula_arguments[formula.s1])})
         for formula in sorted(accepted_formulas)]
 
-    return [html.B('The extension(s):'),
-            html.Div(extension_buttons),
-            html.B('The accepted formula(s):'),
-            html.Div(accepted_formula_buttons)]
+    semantics_div = html.Div([
+        html.B('The extension(s):'),
+        html.Br(),
+        html.I('Click on the extension buttons to '
+               'display the corresponding extension '
+               'in the graph.'),
+        html.Div(extension_buttons),
+        html.Br()
+    ])
+    accepted_div = html.Div([
+        html.B('The accepted formula(s):'),
+        html.Br(),
+        html.I('Click on the accepted formula buttons to '
+               'display the corresponding argument '
+               'in the graph.'),
+        html.Div(accepted_formula_buttons),
+    ])
+
+    return semantics_div, accepted_div
 
 
 @callback(
@@ -595,7 +609,8 @@ def derive_explanation_structured(
         extension = [set(frozen_extension)
                      for frozen_extension in frozen_extensions]
         acceptance_strategy = get_acceptance_strategy(strategy)
-        accepted = get_accepted_formulas(extension, acceptance_strategy)
+        accepted = get_accepted_formulas(arg_theory, extension,
+                                         acceptance_strategy)
     explanations = get_str_explanations(arg_theory, semantics, ordering,
                                         extension, accepted, function,
                                         explanation_type, strategy, form)

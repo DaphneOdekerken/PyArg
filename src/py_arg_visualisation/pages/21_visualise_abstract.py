@@ -123,6 +123,7 @@ def get_abstract_evaluation_div():
                     {'label': 'Grounded', 'value': 'Grounded'},
                     {'label': 'Preferred', 'value': 'Preferred'},
                     {'label': 'Ideal', 'value': 'Ideal'},
+                    {'label': 'Stage', 'value': 'Stage'},
                     {'label': 'Stable', 'value': 'Stable'},
                     {'label': 'Semi-stable', 'value': 'SemiStable'},
                     {'label': 'Eager', 'value': 'Eager'},
@@ -130,7 +131,7 @@ def get_abstract_evaluation_div():
                     {'label': 'Naive', 'value': 'Naive'}
                 ], value='Complete', id='abstract-evaluation-semantics')),
             ]),
-
+            dbc.Row(id='21-abstract-evaluation-semantics'),
             dbc.Row([
                 dbc.Col(html.B('Evaluation strategy')),
                 dbc.Col(dbc.Select(
@@ -139,7 +140,7 @@ def get_abstract_evaluation_div():
                         {'label': 'Skeptical', 'value': 'Skeptical'}
                     ], value='Credulous', id='abstract-evaluation-strategy')),
             ]),
-            dbc.Row(id='abstract-evaluation')
+            dbc.Row(id='21-abstract-evaluation-accepted')
         ]),
     ])
 
@@ -372,10 +373,6 @@ def create_abstract_argumentation_framework(
     except ValueError:
         arg_framework = AbstractArgumentationFramework()
 
-    # Do not display old colors if the argumentation framework has changed.
-    if dash.ctx.triggered_id in ['abstract-arguments', 'abstract-attacks']:
-        selected_arguments = None
-
     # Do not display colors if the argumentation framework tab is open.
     if active_item == 'ArgumentationFramework':
         selected_arguments = None
@@ -435,7 +432,8 @@ def download_generated_abstract_argumentation_framework(
 
 
 @callback(
-    Output('abstract-evaluation', 'children'),
+    Output('21-abstract-evaluation-semantics', 'children'),
+    Output('21-abstract-evaluation-accepted', 'children'),
     State('abstract-arguments', 'value'),
     State('abstract-attacks', 'value'),
     Input('abstract-evaluation-accordion', 'active_item'),
@@ -497,27 +495,50 @@ def evaluate_abstract_argumentation_framework(arguments: str, attacks: str,
                        'index': argument.name})
         for argument in sorted(accepted_arguments)]
 
-    return html.Div([html.B('The extension(s):'), html.Div(extension_buttons),
-                     html.B('The accepted argument(s):'),
-                     html.Div(accepted_argument_buttons),
-                     html.P('Click on the extension/argument buttons to '
-                            'display the corresponding argument(s) '
-                            'in the graph.')])
+    semantics_div = html.Div([
+        html.B('The extension(s):'),
+        html.Br(),
+        html.I('Click on the extension buttons to '
+               'display the corresponding extension '
+               'in the graph.'),
+        html.Div(extension_buttons),
+        html.Br()
+    ])
+    accepted_div = html.Div([
+        html.B('The accepted argument(s):'),
+        html.Br(),
+        html.I('Click on the accepted argument buttons to '
+               'display the corresponding argument '
+               'in the graph.'),
+        html.Div(accepted_argument_buttons),
+    ])
+
+    return semantics_div, accepted_div
 
 
 @callback(
     Output('selected-argument-store-abstract', 'data'),
     Input({'type': 'extension-button-abstract', 'index': ALL}, 'n_clicks'),
     Input({'type': 'argument-button-abstract', 'index': ALL}, 'n_clicks'),
-    State('selected-argument-store-abstract', 'data'),
+    Input('abstract-arguments', 'value'),
+    Input('abstract-attacks', 'value'),
 )
 def mark_extension_or_argument_in_graph(_nr_of_clicks_extension_values,
                                         _nr_of_clicks_argument_values,
-                                        old_selected_data: List[str]):
+                                        _arguments, _attacks):
+    # Remove stored selected arguments after any updates in arguments/attacks.
+    if dash.ctx.triggered_id in ['abstract-arguments', 'abstract-attacks']:
+        return []
+
+    # Find the triggered button.
     button_clicked_id = \
         dash.callback_context.triggered[0]['prop_id'].split('.')[0]
+
+    # No triggered button, keep old selection.
     if button_clicked_id == '':
-        return old_selected_data
+        return []
+
+    # Update selected argument based on the clicked button.
     button_clicked_id_content = json.loads(button_clicked_id)
     button_clicked_id_type = button_clicked_id_content['type']
     button_clicked_id_index = button_clicked_id_content['index']
@@ -529,6 +550,7 @@ def mark_extension_or_argument_in_graph(_nr_of_clicks_extension_values,
                 'red': out_part.split('+')}
     elif button_clicked_id_type == 'argument-button-abstract':
         return {'blue': [button_clicked_id_index]}
+
     return []
 
 

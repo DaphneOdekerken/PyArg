@@ -1,0 +1,19 @@
+potential_argument(X) :- argument(X).
+potential_argument(X) :- uarg(X).
+potential_attack(X,Y) :- att(X,Y).
+potential_attack(X,Y) :- uatt(X,Y).
+
+reachable(T,T) :- potential_argument(T).
+reachable_att(X,T,T) :- potential_attack(X,T).
+reachable(X,T) :- reachable_att(X,_,T).
+reachable_att(X,Y,T) :- potential_attack(X,Y), reachable(Y,T).
+
+r_argument(Q) :- reachable(Q,T), topic(T), argument(Q).
+r_att(Q1,Q2) :- reachable_att(Q1,Q2,T), topic(T), att(Q1,Q2).
+r_uarg(Q) :- reachable(Q,T), topic(T), uarg(Q).
+r_uatt(Q1,Q2) :- reachable_att(Q1,Q2,T), topic(T), uatt(Q1,Q2).
+
+#show r_argument/1.
+#show r_att/2.
+#show r_uarg/1.
+#show r_uatt/2.

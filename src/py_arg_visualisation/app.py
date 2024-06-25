@@ -40,12 +40,11 @@ navbar = dbc.NavbarSimple(
             children=[
                 dbc.DropdownMenuItem('Abstract', href='21-visualise-abstract',
                                      className='fw-bold text-white'),
-                dbc.DropdownMenuItem('Tweety API Test',
-                                     href='24-visualise-tweety-services-test',
-                                     className='fw-bold text-white'),
                 dbc.DropdownMenuItem('ASPIC+', href='22-visualise-aspic',
                                      className='fw-bold text-white'),
                 dbc.DropdownMenuItem('ABA', href='23-visualise-aba',
+                                     className='fw-bold text-white'),
+                dbc.DropdownMenuItem('IAF', href='24-visualise-iafs',
                                      className='fw-bold text-white'),
             ],
             nav=True,
@@ -153,4 +152,4 @@ def toggle_reference_modal(nr_of_clicks: int, is_open: bool, url_path: str):
 
 # Running the app.
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)

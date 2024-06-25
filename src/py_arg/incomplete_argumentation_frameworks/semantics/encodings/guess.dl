@@ -1,0 +1,2 @@
+{argument(X)} :- uarg(X).
+{att(X,Y)} :- uatt(X,Y).
