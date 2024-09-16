@@ -7,11 +7,6 @@ layout = html.Div(children=[
     html.H1('Welcome to PyArg!'),
     html.P('This is a Python package and web interface for solving various '
            'problems in computational argumentation.'),
-    html.P(['If you have any questions, feedback or ambitions to contribute, '
-            'feel free to contact ',
-            html.A('Daphne Odekerken (D.Odekerken@UU.nl)',
-                   href='mailto:d.odekerken@uu.nl?subject=PyArg'),
-            '.']),
     html.P('Contributors:'),
     html.Ul([
         html.Li(html.A(
@@ -35,5 +30,16 @@ layout = html.Div(children=[
         html.Li(html.A('Yilin Xia',
                        href='https://yilinxia.com/',
                        target='_blank'))
-    ])
+    ]),
+    html.P(['Source code (MIT license): ',
+            html.A('https://github.com/DaphneOdekerken/PyArg',
+                   href='https://github.com/DaphneOdekerken/PyArg')]),
+    html.P(['Documentation website: ',
+            html.A('https://daphneodekerken.github.io/PyArg/',
+                   href='https://daphneodekerken.github.io/PyArg/')]),
+    html.P(['If you have any questions, feedback or ambitions to contribute, '
+            'feel free to contact ',
+            html.A('Daphne Odekerken (D.Odekerken@UU.nl)',
+                   href='mailto:d.odekerken@uu.nl?subject=PyArg'),
+            '.']),
 ])
