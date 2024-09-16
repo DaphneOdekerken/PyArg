@@ -134,7 +134,8 @@ def toggle_reference_modal(nr_of_clicks: int, is_open: bool, url_path: str):
     if url_path[0] == '/':
         url_path = url_path[1:]
 
-    reference_folder = pathlib.Path.cwd() / 'reference_texts'
+    reference_folder = \
+        pathlib.Path(__file__).parent.resolve() / 'reference_texts'
     if url_path == '':
         search_name = '90_pyarg.md'
     else:
