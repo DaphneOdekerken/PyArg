@@ -131,18 +131,21 @@ def toggle_reference_modal(nr_of_clicks: int, is_open: bool, url_path: str):
     if not nr_of_clicks:
         return is_open, ''
 
+    if url_path[0] == '/':
+        url_path = url_path[1:]
+
     reference_folder = pathlib.Path.cwd() / 'reference_texts'
-    if url_path == '/':
+    if url_path == '':
         search_name = '90_pyarg.md'
     else:
-        search_name = url_path[1:].replace('-', '_') + '.md'
+        search_name = url_path.replace('-', '_') + '.md'
     search_file = reference_folder / search_name
     if search_file.is_file():
         with open(search_file, 'r') as file:
             latex_explanation = file.read()
     else:
         latex_explanation = \
-            f'There was no information for this page ({url_path[1:]}) ' \
+            f'There was no information for this page ({url_path}) ' \
             f'available.'
 
     return not is_open, \
